@@ -7,6 +7,7 @@ $(document).ready(function() {
 	var pages;
 
 	function initUser() {
+		// créer un identifiant
 		var randomId = Math.floor(Math.random()*99999999999);
 		localStorage.user = randomId;
 	}
@@ -17,8 +18,9 @@ $(document).ready(function() {
 		this.title = title;
 		this.real = real;
 
+		
 		this.go = function(user, load) {
-
+			// charge la page
 			console.log(currentPage);
 
 			if(push) {
@@ -35,12 +37,20 @@ $(document).ready(function() {
 			else {
 				$(".loader").remove();
 			}
+
+			updateTitle();
 		}
 	}
 
+	function updateTitle() {
+		// change le titre de la page
+		document.title = currentPage.title;
+	}
+
 	function initPage() {
+		// creation des différentes pages
 		pages = {
-			home: new Page(1, "La pause gaming", "home", "index.html"),
+			home: new Page(1, "La pause geek", "home", "index.html"),
 			puissance: new Page(2, "Puissance 4", "puissance", "pages/puissance.html"),
 			morpion: new Page(3, "Morpion", "morpion", "pages/morpion.html")};
 
@@ -48,6 +58,7 @@ $(document).ready(function() {
 		var p = url.split("/");
 		p = p[p.length - 1];
 		
+		// initialisation de la navigation
 		switch(p) {
 			case "puissance": 
 				currentPage = pages[p];
@@ -68,6 +79,7 @@ $(document).ready(function() {
 	}
 
 	function choice(div) {
+		// afficher et cacher les animations
 		$(".choice").addClass("hide");
 		$(div).removeClass("hide");
 		$(div).addClass("selected");
@@ -76,33 +88,27 @@ $(document).ready(function() {
 		$(".home").addClass("activ");
 	}
 	function home() {
+		// afficher et cacher les animations
 		$(".choice").removeClass("hide");
 		$(".choice").removeClass("selected");
 		$(".selector").removeClass("selected");
 		$("#title").removeClass("hide");
 		$(".home").removeClass("activ");
 	}
-
-	console.log("==== debut du script=====");
-
-	console.log("# Chargement de la config");
-
-	console.log("# Initialisation des pages");
 	
-
+	// récuperer l'id de l'utilisateur dans le localStorage
 	user = localStorage.user;
 	if(user) {
 
 	} else {
 		initUser();
 	}
-
+	// initialiser les pages
 	initPage();
 
 	$(".choice").click(function() {
 		if($(this).attr("class").indexOf("selected") === -1) {
-			var goTo = $(this).attr("alt")
-			console.log("> navigation vers : "+goTo);
+			var goTo = $(this).attr("alt");
 			currentPage = pages[goTo];
 
 			currentPage.go(user, true);
@@ -115,7 +121,6 @@ $(document).ready(function() {
 
 	$(".home").click(function() {
 		home();
-		console.log("> navigation vers Home");
 		currentPage = pages.home;
 		currentPage.go(user, false);
 	});
