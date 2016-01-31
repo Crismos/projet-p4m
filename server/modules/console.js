@@ -36,9 +36,16 @@ console.log=(function() {
   var orig=console.log;
   return function() {
     try {
+      var now = new Date();
+      var heure   = now.getHours();
+      var minute  = now.getMinutes();
+      var seconde = now.getSeconds();
+      if(heure<10) heure = "0"+heure;
+      if(minute<10) minute = "0"+minute;
+      if(seconde<10) seconde = "0"+seconde;
       var tmp=process.stdout;
       process.stdout=process.stderr;
-      arguments[0] = changeString((arguments[1]||"")+arguments[0]);
+      arguments[0] = changeString("["+heure+":"+minute+":"+seconde+"] > "+(arguments[1]||"")+arguments[0]);
       arguments[1] = "";
       orig.apply(console, arguments);
     } finally {
