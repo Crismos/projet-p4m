@@ -10,6 +10,11 @@ $(document).ready(function() {
 		// créer un identifiant
 		var randomId = Math.floor(Math.random()*99999999999);
 		localStorage.user = randomId;
+		showLoginPopup();
+	}
+	function showLoginPopup() {
+		var userName = prompt("Username : ");
+		localStorage.name = showLoginPopup();
 	}
 
 	var Page = function(id, title, url, real) {

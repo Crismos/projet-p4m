@@ -18,7 +18,9 @@ io.on('connection', function(socket){
 	  	console.log("::green::>>[USER]::white:: user ::green::"+o.id+"::white:: connected");
 
 	  	socket.user = o.id;
+	  	socket.name = o.name;
 	  	users[o.id] = new User(socket);
+
 
 	  	io.emit("connection infos", {onlines: onlines, onMorpionGame: 0, onPuissanceGame: 0});
 	});

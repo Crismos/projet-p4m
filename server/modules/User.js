@@ -1,7 +1,11 @@
 var User = function(socket) {
 	var onGame = false;
 	var socket = socket;
+	var name = socket.name;
 
+	this.getName = function() {
+		return name;
+	}
 	this.getId = function() {
 		return socket.user;
 	}

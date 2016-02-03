@@ -16,3 +16,4 @@ app.get("/:var", function(req, res) {
 });
 
 app.listen(3000);
+console.log("running > 127.0.0.1:3000");

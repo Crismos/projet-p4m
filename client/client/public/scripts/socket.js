@@ -1,7 +1,7 @@
 var IO = function() {
 
 	var soc = io.connect('http://127.0.0.1:8080');
-	soc.emit('user connection', {id: localStorage.user});
+	soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 
 	var params = {
 		onlines: 0,
