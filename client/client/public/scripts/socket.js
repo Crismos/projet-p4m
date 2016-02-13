@@ -28,6 +28,9 @@ var IO = function() {
 	this.unbind = function(ref, varName) {
 		delete binded[varName][ref];
 	}
+	this.updateName = function(newName) {
+		soc.emit('user update name', {name: newName});
+	}
 
 	soc.on("connection infos", function(o) {
 		params = o;

@@ -158,3 +158,21 @@ a.button.activ {
 a.button {
 	display: none;
 }
+#infos.filled {
+	display: block;
+	position: fixed;
+	top: 0px;
+	right: -9%;
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	-webkit-box-shadow: 2px 2px 4px 0 rgba(0,0,0,0.3);
+	box-shadow: 2px 2px 4px 0 rgba(0,0,0,0.3);
+	border: 1px solid #91AFFF;
+	margin: 10px 10% 10px 10%;
+	background: #3498db;
+	color: #ecf0f1;
+	padding: 10px;
+}
+#infos {
+	display: none;
+}

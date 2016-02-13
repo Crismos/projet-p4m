@@ -2,19 +2,28 @@ $(document).ready(function() {
 
 	var push = true;
 
-	var user;
+	var user = {};
 	var currentPage;
 	var pages;
 
 	function initUser() {
 		// créer un identifiant
-		var randomId = Math.floor(Math.random()*99999999999);
-		localStorage.user = randomId;
+		if(localStorage.user === undefined) {
+			var randomId = Math.floor(Math.random()*99999999999);
+			localStorage.user = randomId;
+		}
 		showLoginPopup();
 	}
 	function showLoginPopup() {
 		var userName = prompt("Username : ");
-		localStorage.name = showLoginPopup();
+		if(userName != null) {
+			localStorage.name = userName;
+			socket.updateName(userName);
+			setInfos();
+		} else {
+			showLoginPopup();
+		}
+		
 	}
 
 	var Page = function(id, title, url, real) {
@@ -100,11 +109,18 @@ $(document).ready(function() {
 		$("#title").removeClass("hide");
 		$(".home").removeClass("activ");
 	}
+	function setInfos() {
+		// met à jour les informations en haut à droite
+		$("#infos div").html("Pseudo : "+localStorage.name+"<br>ID : "+localStorage.user);
+		$("#infos").addClass("filled");
+	}
 	
 	// récuperer l'id de l'utilisateur dans le localStorage
-	user = localStorage.user;
-	if(user) {
+	user.id = localStorage.user;
+	user.name = localStorage.name;
 
+	if(user.id && user.name) {
+		setInfos();
 	} else {
 		initUser();
 	}
@@ -128,5 +144,8 @@ $(document).ready(function() {
 		home();
 		currentPage = pages.home;
 		currentPage.go(user, false);
+	});
+	$("#resetUser").click(function() {
+		initUser();
 	});
 });

@@ -3,6 +3,9 @@ var User = function(socket) {
 	var socket = socket;
 	var name = socket.name;
 
+	this.updateName = function(newName) {
+		name = newName;
+	}
 	this.getName = function() {
 		return name;
 	}
