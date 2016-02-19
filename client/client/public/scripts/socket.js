@@ -1,6 +1,6 @@
 var IO = function() {
 
-	var soc = io.connect('http://127.0.0.1:8080');
+	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
 	soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 
 	var params = {
