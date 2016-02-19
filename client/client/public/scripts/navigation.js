@@ -1,3 +1,23 @@
+/*
+* Ce fichier permet de gérer la navigation du site web
+*
+* Composition :
+*
+** initUser() > créer un utilisateur
+** showLoginPopup() > permet à l'utilisateur de choisir un pseudo
+*
+** class Page(id, title, url, real)
+**** go() > navigue vers cette page
+*
+** updateTitle() > met à jour le titre de la page
+** initPage() > Permet de créer les différentes pages de navigation
+*
+** choice() > gère le choix de l'utilisateur au moment du click sur le menu
+** home() > permet à l'utilisateur de revenir sur la page d'accueil
+*
+** setInfos() > met à jours les informations de l'utilisateur (pseudi/id) de manière visuelle
+*/
+
 $(document).ready(function() {
 
 	var push = true;

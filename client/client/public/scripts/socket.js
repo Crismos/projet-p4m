@@ -1,18 +1,28 @@
-var IO = function() {
+/*
+* Cette classe permet de mettre à jour des informations de façon asynchrone
+* en utilisant les sockets :
+*
+* socket.bind(id, var, callback)
+*
+* Appelera la fonction callback dès que la variable var sera modifiée
+* Il est possible de unbind une fonction
+*
+* socket.unbind(id, var)
+*/
 
+
+var IO = function() {
+	// connection au socket
 	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
+	// envoi d'une requete d'identification
 	soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 
 	var params = {
-		onlines: 0,
-		onMorpionGame: 0,
-		onPuissanceGame: 0
+		onlines: 0
 	};
 
 	var binded = {
-		onlines: {},
-		onMorpionGame: {},
-		onPuissanceGame: {}
+		onlines: {}
 	};
 	this.binded = binded;
 
@@ -35,8 +45,6 @@ var IO = function() {
 	soc.on("connection infos", function(o) {
 		params = o;
 		call("onlines");
-		call("onPuissanceGame");
-		call("onMorpionGame");
 	});
 }
 
