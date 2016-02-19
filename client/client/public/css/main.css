@@ -176,3 +176,12 @@ a.button {
 #infos {
 	display: none;
 }
+
+#game {
+	background: rgba(255,255,255,0.3);
+	padding: 5px;
+}
+#game #canvas {
+	background: #fff;
+	width: 100%;
+}

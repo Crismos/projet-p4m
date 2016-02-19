@@ -26,8 +26,17 @@
 			<a class="button home">Accueil</a>
 		</div>
 		<div id="infos">
-			<div></div>
+			<div>
+				Pseudo : <span id="pseudo"></span><br>
+				ID : <span id="id"></span><br>
+				Live : <span id="live"></span><br>
+			</div>
 			<button id="resetUser">Reset</button>
 		</div>
+		<script>
+			socket.bind("main/online", "onlines", function(o) {
+				$("#infos #live").html(""+o);
+			});
+		</script>
 	</body>
 </html>

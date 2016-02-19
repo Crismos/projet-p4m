@@ -23,7 +23,6 @@ $(document).ready(function() {
 		} else {
 			showLoginPopup();
 		}
-		
 	}
 
 	var Page = function(id, title, url, real) {
@@ -111,7 +110,8 @@ $(document).ready(function() {
 	}
 	function setInfos() {
 		// met à jour les informations en haut à droite
-		$("#infos div").html("Pseudo : "+localStorage.name+"<br>ID : "+localStorage.user);
+		$("#infos #pseudo").html(localStorage.name);
+		$("#infos #id").html(localStorage.user);
 		$("#infos").addClass("filled");
 	}
 	

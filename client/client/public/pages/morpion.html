@@ -1,19 +1,4 @@
-<div class="file">
-	<div class="infos">
-		Il y a actuellement <b>0</b> joueurs connectés, et <b>0</b> parties en cours, nous attendons qu'une place se libère pour vous
-	</div>
-	<div class="game">
-		<div id="morpion"></div>
-	</div>
-</div>
 
-<script>
-	function updateOnline(nb) {
-		$($("b").get(0)).html(nb);
-	}
-	function updateGame(nb) {
-		$($("b").get(1)).html(nb);
-	}
-	socket.bind("morpion/online", "onlines", updateOnline);
-	socket.bind("morpion/game", "onMorpionGame", updateGame);
-</script>
+<div id="game">
+	<canvas id="canvas"></canvas>
+</div>

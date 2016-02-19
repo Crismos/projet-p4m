@@ -1,16 +1,4 @@
-<div class="file">
-	<div class="infos">
-		Il y a actuellement <b>0</b> joueurs connectés, et <b>0</b> parties en cours, nous attendons qu'une place se libère pour vous
-	</div>
-</div>
 
-<script>
-	function updateOnline(nb) {
-		$($("b").get(0)).html(nb);
-	}
-	function updateGame(nb) {
-		$($("b").get(1)).html(nb);
-	}
-	socket.bind("puissance/online", "onlines", updateOnline);
-	socket.bind("puissance/game", "onPuissanceGame", updateGame);
-</script>
+<div id="game">
+	<canvas id="canvas"></canvas>
+</div>
