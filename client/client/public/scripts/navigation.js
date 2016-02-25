@@ -72,6 +72,7 @@ $(document).ready(function() {
 			}
 
 			updateTitle();
+			//draw();
 		}
 	}
 
@@ -118,7 +119,7 @@ $(document).ready(function() {
 		$(div).addClass("selected");
 		$(".selector").addClass("selected");
 		$("#title").addClass("hide");
-		$(".home").addClass("activ");
+		$(".home").addClass("activ");		
 	}
 	function home() {
 		// afficher et cacher les animations
@@ -127,6 +128,7 @@ $(document).ready(function() {
 		$(".selector").removeClass("selected");
 		$("#title").removeClass("hide");
 		$(".home").removeClass("activ");
+
 	}
 	function setInfos() {
 		// met à jour les informations en haut à droite
