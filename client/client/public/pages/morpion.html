@@ -19,18 +19,24 @@ function Grid(morpion){
 	this.size = {width : 450, height:450};//taille de la grille
 	this.lineNumber = 3;//nb nignes
 	this.columnNumber = 3;//nb colonnes
+	this.values = []
 	this.style = {borderColor:"rgb(255,255,250)",lineWidth:6,backgroundColor:"rgb(0,128,192)"};
 	this.cell = {width : (this.size.width / this.columnNumber), height : (this.size.height / this.lineNumber)}//hauteur et largeur d'une cellule, déterminé à partir de la taille de la grille et du nombre de lignes colonnes
 	this.cellHover = false;//la cellule qui est en surbrillance si on pointe dessus
 
 	this.draw = function(){
  		var ctx = this.morpion.canvas.getContext("2d");
-		ctx.fillStyle = this.style.backgroundColor;
+ 		ctx.clearRect(0, 0, this.morpion.canvas.width, this.morpion.canvas.height);
+
 
 		//on dessine chaque carré, pour linstant cest aussi rapide de dessiner un gros carré mais si on veut mettre une image stylé ou alterner les couleur ca peut etre utile.
 		for(i=0; i<this.columnNumber; i++){
  			for(j=0;j<this.lineNumber;j++){ 	
- 				ctx.fillRect((this.cell.width*i+this.position.x),(this.cell.height*j+this.position.y),this.cell.width,this.cell.height);
+ 				ctx.beginPath();
+				ctx.rect((this.cell.width*i+this.position.x),(this.cell.height*j+this.position.y),this.cell.width,this.cell.height);
+				ctx.fillStyle = this.style.backgroundColor;
+				ctx.fill();
+				ctx.closePath();
  				//on remplit un rect avec sa position x,y et sa largeur, hauteur, cest pas comme sur android
  			}
  		}
@@ -41,25 +47,33 @@ function Grid(morpion){
  		
  		//on trace les ligne et colonnes et contours
  		for(j=0;j<=this.lineNumber;j++){
+ 			ctx.beginPath();
 			ctx.moveTo(this.position.x,j*this.cell.height+this.position.y);
 			ctx.lineTo(this.columnNumber*this.cell.width+this.position.x,j*this.cell.height+this.position.y);
 			ctx.strokeStyle = this.style.borderColor;
 			ctx.stroke();
+			ctx.closePath();
  		}
   		for(j=0;j<=this.columnNumber;j++){
+  			ctx.beginPath();
 			ctx.moveTo(j*this.cell.width+this.position.x,this.position.y);
 			ctx.lineTo(j*this.cell.width+this.position.x,this.lineNumber*this.cell.height+this.position.y);
 			ctx.stroke();
+			ctx.closePath();
  		}
+
 
  		//on dessine la cellule en surbrillance(si la souris pointe sur la grille), ca pu la merde la pcq il n y a pas de transparence .. mais osef
  		if(this.cell){
- 			ctx.fillStyle = "rgb(120,120,120)";
-			ctx.fillRect(
+ 			ctx.beginPath(); 			
+			ctx.rect(
 				this.cellHover.column*this.cell.width+this.position.x, 
 				this.cellHover.line*this.cell.height+this.position.y, 
 				this.cell.width, 
 				this.cell.height);
+			ctx.fillStyle = "rgb(120,120,120)";
+			ctx.fill();
+			ctx.closePath();
  		}
 
 	};
@@ -89,8 +103,7 @@ function MouseEvent(morpion){
 	this.morpion = morpion;
 	this.click = function(evt){
 		var pos = this.morpion.grid.getGridMousePos(evt);
-		coord = {column:Math.floor(pos.x/this.morpion.grid.cell.width),line:Math.floor(pos.y/this.morpion.grid.cell.height)};
-		console.log("pos : "+coord.column+"/"+coord.line);
+		console.log(pos);
 	};
 
 	this.move = function(evt){
@@ -101,10 +114,15 @@ function MouseEvent(morpion){
 
 function init(){
 	morpion = new Morpion();
-
-	/*setInterval(function() {
+	var i = 0, j = 0;
+	for(i = 0; i<morpion.lineNumber;i++){
+		for(j=0;j<morpion.columnNumber;j++){
+			morpion.values[i][j] = 0;
+		}
+	}
+	setInterval(function() {
 		morpion.grid.draw();
-	}, 10);*/
+	}, 10);
 
 	morpion.canvas.onclick = function(e){
 		morpion.mouseEvent.click(e);
