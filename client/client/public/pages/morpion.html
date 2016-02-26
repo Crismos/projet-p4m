@@ -10,19 +10,36 @@
 function Morpion(){
 	//object représentant le jeu du morpion, cette objet est composé pour l'instant du canvas, d'une grille et d'un classe qui gère les évènement
 	this.canvas = document.getElementById("morpion_canvas");	
+	this.lineNumber = 3;//nb nignes
+	this.columnNumber = 3;//nb colonnes
 	this.grid = new Grid(this);
 	this.mouseEvent = new MouseEvent(this);
+
 	this.values = [];
+	/*DOC
+	0-->CASE VIDE
+	1-->CASE JOUE AVEC UN ROND
+	2-->CASE JOUE AVEC UNE CROIX
+	la grille sera passer au server et uniquement à partir de celle-ci il pourra déduire si la partie est terminée et qui a gagné.
+	*/
+	//initialisation de la grille
+	var i = 0, j = 0;
+	for(i = 0; i<this.lineNumber;i++){
+		this.values[i] = [];
+		for(j=0;j<this.columnNumber;j++){
+			this.values[i][j] = 0;
+		}
+	}
 }
 
 function Grid(morpion){
+	//les propriété de la grille sont des trucs de css rien d'important que pourrais utiliser les sockets
 	this.morpion = morpion;
 	this.position = {x:200,y:20};//permet de positionner la grille à partir du coin en haut a gauche
 	this.size = {width : 450, height:450};//taille de la grille
-	this.lineNumber = 3;//nb nignes
-	this.columnNumber = 3;//nb colonnes
+
 	this.style = {borderColor:"rgb(116,70,21)",lineWidth:6,backgroundColor:"rgb(234,178,118)"};
-	this.cell = {width : (this.size.width / this.columnNumber), height : (this.size.height / this.lineNumber)}//hauteur et largeur d'une cellule, déterminé à partir de la taille de la grille et du nombre de lignes colonnes
+	this.cell = {width : (this.size.width / this.morpion.columnNumber), height : (this.size.height / this.morpion.lineNumber)}//hauteur et largeur d'une cellule, déterminé à partir de la taille de la grille et du nombre de lignes colonnes
 	this.cellHover = false;//la cellule qui est en surbrillance si on pointe dessus
 	this.highlightedSquare = new Image();
 	this.highlightedSquare.src= 'highlightedSquare.png';
@@ -38,8 +55,8 @@ function Grid(morpion){
  		this.ctx.clearRect(0, 0, this.morpion.canvas.width, this.morpion.canvas.height);
 
 		//on dessine chaque carré, pour linstant cest aussi rapide de dessiner un gros carré mais si on veut mettre une image stylé ou alterner les couleur ca peut etre utile.
-		for(i=0; i<this.columnNumber; i++){
- 			for(j=0;j<this.lineNumber;j++){ 	
+		for(i=0; i<this.morpion.columnNumber; i++){
+ 			for(j=0;j<this.morpion.lineNumber;j++){ 	
  				this.ctx.beginPath();
 				this.ctx.rect((this.cell.width*i+this.position.x),(this.cell.height*j+this.position.y),this.cell.width,this.cell.height);
 				this.ctx.fillStyle = this.style.backgroundColor;
@@ -58,8 +75,8 @@ function Grid(morpion){
 				this.cell.height);
 			this.ctx.closePath();
  		}
- 		for(i = 0; i<this.lineNumber;i++){
-			for(j=0;j<this.columnNumber;j++){
+ 		for(i = 0; i<this.morpion.lineNumber;i++){
+			for(j=0;j<this.morpion.columnNumber;j++){
 				
 				if(this.morpion.values[i][j] == 1){
 					this.ctx.beginPath();
@@ -78,18 +95,18 @@ function Grid(morpion){
  		//cest propriété sers à régler l'épaisseur du trait
  		this.ctx.lineWidth=this.style.lineWidth; 		
  		//on trace les ligne et colonnes et contours
- 		for(j=0;j<=this.lineNumber;j++){
+ 		for(j=0;j<=this.morpion.lineNumber;j++){
  			this.ctx.beginPath();
 			this.ctx.moveTo(this.position.x,j*this.cell.height+this.position.y);
-			this.ctx.lineTo(this.columnNumber*this.cell.width+this.position.x,j*this.cell.height+this.position.y);
+			this.ctx.lineTo(this.morpion.columnNumber*this.cell.width+this.position.x,j*this.cell.height+this.position.y);
 			this.ctx.strokeStyle = this.style.borderColor;
 			this.ctx.stroke();
 			this.ctx.closePath();
  		}
-  		for(j=0;j<=this.columnNumber;j++){
+  		for(j=0;j<=this.morpion.columnNumber;j++){
   			this.ctx.beginPath();
 			this.ctx.moveTo(j*this.cell.width+this.position.x,this.position.y);
-			this.ctx.lineTo(j*this.cell.width+this.position.x,this.lineNumber*this.cell.height+this.position.y);
+			this.ctx.lineTo(j*this.cell.width+this.position.x,this.morpion.lineNumber*this.cell.height+this.position.y);
 			this.ctx.stroke();
 			this.ctx.closePath();
  		}
@@ -122,6 +139,9 @@ function MouseEvent(morpion){
 	this.click = function(evt){
 		
 		var pos = this.morpion.grid.getGridMousePos(evt);
+		if(this.morpion.values[pos.column][pos.line]!=0){
+			return;
+		}
 		if(MouseEvent.statique%2 == 0){
 			this.morpion.values[pos.column][pos.line] = 1;
 		}else{
@@ -139,16 +159,7 @@ function MouseEvent(morpion){
 
 function init(){
 	morpion = new Morpion();
-	var i = 0, j = 0;
-	for(i = 0; i<morpion.grid.lineNumber;i++){
-		morpion.values[i] = [];
-		for(j=0;j<morpion.grid.columnNumber;j++){
-			morpion.values[i][j] = 0;
-		}
-	}
-	//setInterval(function() {
-	//	morpion.grid.draw();
-	//}, 10);
+		morpion.grid.draw();
 
 	morpion.canvas.onclick = function(e){
 		morpion.mouseEvent.click(e);
