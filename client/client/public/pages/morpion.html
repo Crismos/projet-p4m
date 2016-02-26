@@ -1,6 +1,7 @@
 
 <div id="game">
 	<canvas id="morpion_canvas" width="1920" height="900"></canvas>
+
 </div>
 
 
@@ -15,67 +16,62 @@ function Morpion(){
 
 function Grid(morpion){
 	this.morpion = morpion;
-	this.position = {x:200,y:0};//permet de positionner la grille à partir du coin en haut a gauche
+	this.position = {x:200,y:20};//permet de positionner la grille à partir du coin en haut a gauche
 	this.size = {width : 450, height:450};//taille de la grille
 	this.lineNumber = 3;//nb nignes
 	this.columnNumber = 3;//nb colonnes
 	this.values = []
-	this.style = {borderColor:"rgb(255,255,250)",lineWidth:6,backgroundColor:"rgb(0,128,192)"};
+	this.style = {borderColor:"rgb(116,70,21)",lineWidth:6,backgroundColor:"rgb(234,178,118)"};
 	this.cell = {width : (this.size.width / this.columnNumber), height : (this.size.height / this.lineNumber)}//hauteur et largeur d'une cellule, déterminé à partir de la taille de la grille et du nombre de lignes colonnes
 	this.cellHover = false;//la cellule qui est en surbrillance si on pointe dessus
+	this.highlightedSquare = new Image();
+	this.highlightedSquare.src= 'highlightedSquare.png';
+	this.ctx = this.morpion.canvas.getContext("2d");
 
-	this.draw = function(){
- 		var ctx = this.morpion.canvas.getContext("2d");
- 		ctx.clearRect(0, 0, this.morpion.canvas.width, this.morpion.canvas.height);
 
+	this.draw = function(){	
+ 		this.ctx.clearRect(0, 0, this.morpion.canvas.width, this.morpion.canvas.height);
 
 		//on dessine chaque carré, pour linstant cest aussi rapide de dessiner un gros carré mais si on veut mettre une image stylé ou alterner les couleur ca peut etre utile.
 		for(i=0; i<this.columnNumber; i++){
  			for(j=0;j<this.lineNumber;j++){ 	
- 				ctx.beginPath();
-				ctx.rect((this.cell.width*i+this.position.x),(this.cell.height*j+this.position.y),this.cell.width,this.cell.height);
-				ctx.fillStyle = this.style.backgroundColor;
-				ctx.fill();
-				ctx.closePath();
+ 				this.ctx.beginPath();
+				this.ctx.rect((this.cell.width*i+this.position.x),(this.cell.height*j+this.position.y),this.cell.width,this.cell.height);
+				this.ctx.fillStyle = this.style.backgroundColor;
+				this.ctx.fill();
+				this.ctx.closePath();
  				//on remplit un rect avec sa position x,y et sa largeur, hauteur, cest pas comme sur android
  			}
  		}
 
-
- 		//cest propriété sers à régler l'épaisseur du trait
- 		ctx.lineWidth=this.style.lineWidth;
- 		
- 		//on trace les ligne et colonnes et contours
- 		for(j=0;j<=this.lineNumber;j++){
- 			ctx.beginPath();
-			ctx.moveTo(this.position.x,j*this.cell.height+this.position.y);
-			ctx.lineTo(this.columnNumber*this.cell.width+this.position.x,j*this.cell.height+this.position.y);
-			ctx.strokeStyle = this.style.borderColor;
-			ctx.stroke();
-			ctx.closePath();
- 		}
-  		for(j=0;j<=this.columnNumber;j++){
-  			ctx.beginPath();
-			ctx.moveTo(j*this.cell.width+this.position.x,this.position.y);
-			ctx.lineTo(j*this.cell.width+this.position.x,this.lineNumber*this.cell.height+this.position.y);
-			ctx.stroke();
-			ctx.closePath();
- 		}
-
-
  		//on dessine la cellule en surbrillance(si la souris pointe sur la grille), ca pu la merde la pcq il n y a pas de transparence .. mais osef
  		if(this.cell){
- 			ctx.beginPath(); 			
-			ctx.rect(
-				this.cellHover.column*this.cell.width+this.position.x, 
+			this.ctx.beginPath();
+			this.ctx.drawImage(this.highlightedSquare,this.cellHover.column*this.cell.width+this.position.x, 
 				this.cellHover.line*this.cell.height+this.position.y, 
 				this.cell.width, 
 				this.cell.height);
-			ctx.fillStyle = "rgb(120,120,120)";
-			ctx.fill();
-			ctx.closePath();
+			this.ctx.closePath();
  		}
 
+ 		//cest propriété sers à régler l'épaisseur du trait
+ 		this.ctx.lineWidth=this.style.lineWidth; 		
+ 		//on trace les ligne et colonnes et contours
+ 		for(j=0;j<=this.lineNumber;j++){
+ 			this.ctx.beginPath();
+			this.ctx.moveTo(this.position.x,j*this.cell.height+this.position.y);
+			this.ctx.lineTo(this.columnNumber*this.cell.width+this.position.x,j*this.cell.height+this.position.y);
+			this.ctx.strokeStyle = this.style.borderColor;
+			this.ctx.stroke();
+			this.ctx.closePath();
+ 		}
+  		for(j=0;j<=this.columnNumber;j++){
+  			this.ctx.beginPath();
+			this.ctx.moveTo(j*this.cell.width+this.position.x,this.position.y);
+			this.ctx.lineTo(j*this.cell.width+this.position.x,this.lineNumber*this.cell.height+this.position.y);
+			this.ctx.stroke();
+			this.ctx.closePath();
+ 		}
 	};
 
 
@@ -120,9 +116,9 @@ function init(){
 			morpion.values[i][j] = 0;
 		}
 	}
-	setInterval(function() {
-		morpion.grid.draw();
-	}, 10);
+	//setInterval(function() {
+	//	morpion.grid.draw();
+	//}, 10);
 
 	morpion.canvas.onclick = function(e){
 		morpion.mouseEvent.click(e);
