@@ -8,70 +8,43 @@
 <script>
 
 function Morpion(){
-	//object représentant le jeu du morpion, cette objet est composé pour l'instant du canvas, d'une grille et d'un classe qui gère les évènement
-	
-	this.lineNumber = 3;//nb nignes
-	this.columnNumber = 3;//nb colonnes
 	this.grid = new Grid(this);
 	this.mouseEvent = new MouseEvent(this);
-
-	this.values = [];
-	/*DOC
-	0-->CASE VIDE
-	1-->CASE JOUE AVEC UN ROND
-	2-->CASE JOUE AVEC UNE CROIX
-	la grille sera passer au server et uniquement à partir de celle-ci il pourra déduire si la partie est terminée et qui a gagné.
-	*/
-	//initialisation de la grille
-	var i = 0, j = 0;
-	for(i = 0; i<this.lineNumber;i++){
-		this.values[i] = [];
-		for(j=0;j<this.columnNumber;j++){
-			this.values[i][j] = 0;
-		}
-	}
 }
 
-function Grid(morpion){
-	//les propriété de la grille sont des trucs de css rien d'important que pourrais utiliser les sockets
-	var morpion = morpion;
+function Grid(morp){
+	var i = 0, j = 0;
+	var lineNumber = 9;//nb lignes
+	var columnNumber = 9;//nb colonnes
+	var canvas = document.getElementById("morpion_canvas");	
+	var ctx = canvas.getContext("2d");
 	var position = {x:200,y:20};//permet de positionner la grille à partir du coin en haut a gauche
 	var size = {width : 750, height:750};//taille de la grille
-
-	var style = {borderColor:"rgb(116,70,21)",lineWidth:6,backgroundColor:"rgb(234,178,118)"};
-	var cell = {width : (size.width / morpion.columnNumber), height : (size.height / morpion.lineNumber)};//hauteur et largeur d'une cellule, déterminé à partir de la taille de la grille et du nombre de lignes colonnes
-	var cellHover = false;//la cellule qui est en surbrillance si on pointe dessus
-
+	var cell = {width : (size.width / columnNumber), height : (size.height / lineNumber)};//hauteur et largeur d'une cellule
+	var cells = [];//tab des cellules
+	var cellHover = false;//la cellule qui est en surbrillance si on passe la souris dessus
 	var highlightedSquare = new Image();
 	highlightedSquare.src= 'highlightedSquare.png';
 
-	var cross = new Image();
-	cross.src = 'cross.png';
-
-	var circle = new Image();
-	circle.src = 'circle.png';
-	var canvas = document.getElementById("morpion_canvas");	
-	var ctx = canvas.getContext("2d");
-
+	for(i=0; i<columnNumber; i++){
+		cells[i] = [];
+ 		for(j=0;j<lineNumber;j++){ 	
+ 			cells[i][j]=new Cell((cell.width*i+position.x),(cell.height*j+position.y),cell.width,cell.height); 			
+ 		}
+ 	}
 
 	this.draw = function(){	
-		var i = 0,j =0;
+
  		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-		//on dessine chaque carré, pour linstant cest aussi rapide de dessiner un gros carré mais si on veut mettre une image stylé ou alterner les couleur ca peut etre utile.
-		for(i=0; i<morpion.columnNumber; i++){
- 			for(j=0;j<morpion.lineNumber;j++){ 	
- 				ctx.beginPath();
-				ctx.rect((cell.width*i+position.x),(cell.height*j+position.y),cell.width,cell.height);
-				ctx.fillStyle = style.backgroundColor;
-				ctx.fill();
-				ctx.closePath();
- 				//on remplit un rect avec sa position x,y et sa largeur, hauteur, cest pas comme sur android
+ 		for (i = 0; i < columnNumber; i++) {
+ 			for(j = 0; j < lineNumber; j++){
+ 				cells[i][j].draw(ctx);
  			}
- 		}
+ 		} 			
 
- 		//on dessine la cellule en surbrillance(si la souris pointe sur la grille), ca pu la merde la pcq il n y a pas de transparence .. mais osef
- 		if(cellHover && morpion.values[cellHover.column][cellHover.line] == 0){
+ 		//on dessine la cellule en surbrillance si celle-ci elle existe et est vide
+ 		if(cellHover && cells[cellHover.column][cellHover.line].getValue() == 0){
 			ctx.beginPath();
 			ctx.drawImage(highlightedSquare,cellHover.column*cell.width+position.x, 
 				cellHover.line*cell.height+position.y, 
@@ -79,46 +52,55 @@ function Grid(morpion){
 				cell.height);
 			ctx.closePath();
  		}
- 		for(i = 0; i<morpion.lineNumber;i++){
-			for(j=0;j<morpion.columnNumber;j++){
-				
-				if(morpion.values[i][j] == 1){
-					ctx.beginPath();
-					console.log("b");
-					ctx.drawImage(circle,(cell.width*i+position.x)+10,(cell.height*j+position.y)+10,cell.width-20,cell.height-20);
-					ctx.closePath();
-				}else if(morpion.values[i][j] == 2){
-					ctx.beginPath();
-					ctx.drawImage(cross,(cell.width*i+position.x)+10,(cell.height*j+position.y)+10,cell.width-20,cell.height-20);
-					ctx.closePath();
-				}
-				
-			}
-		}
 
  		//cest propriété sers à régler l'épaisseur du trait
- 		ctx.lineWidth=style.lineWidth; 		
+ 		ctx.lineWidth=6; 		
  		//on trace les ligne et colonnes et contours
- 		for(j=0;j<=morpion.lineNumber;j++){
+ 		for(j=0;j<=lineNumber;j++){
  			ctx.beginPath();
 			ctx.moveTo(position.x,j*cell.height+position.y);
-			ctx.lineTo(morpion.columnNumber*cell.width+position.x,j*cell.height+position.y);
-			ctx.strokeStyle = style.borderColor;
+			ctx.lineTo(columnNumber*cell.width+position.x,j*cell.height+position.y);
+			ctx.strokeStyle = "rgb(116,70,21)";
 			ctx.stroke();
 			ctx.closePath();
  		}
-  		for(j=0;j<=morpion.columnNumber;j++){
+  		for(j=0;j<=columnNumber;j++){
   			ctx.beginPath();
 			ctx.moveTo(j*cell.width+position.x,position.y);
-			ctx.lineTo(j*cell.width+position.x,morpion.lineNumber*cell.height+position.y);
+			ctx.lineTo(j*cell.width+position.x,lineNumber*cell.height+position.y);
+			ctx.strokeStyle = "rgb(116,70,21)";
 			ctx.stroke();
 			ctx.closePath();
+ 		}
+ 		if(lineNumber == 9 && columnNumber == 9){
+
+ 			ctx.lineWidth=10; 		
+
+ 			for(i = 0; i <4; i++){
+ 				ctx.beginPath();
+ 				ctx.moveTo(position.x+i*3*cell.width,position.y);
+ 				ctx.lineTo(position.x+i*3*cell.width,position.y+9*cell.height); 		
+ 				ctx.strokeStyle = "rgb(70,43,13)";
+ 				ctx.stroke();
+ 				ctx.closePath();
+ 			}
+
+ 			for(i = 0; i <4; i++){
+ 				ctx.beginPath();
+ 				ctx.moveTo(position.x,position.y+i*3*cell.height);
+ 				ctx.lineTo(position.x+9*cell.width,position.y+i*3*cell.height); 		
+ 				ctx.strokeStyle = "rgb(70,43,13)";
+ 				ctx.stroke();
+ 				ctx.closePath();
+ 			}
+ 			
+
  		}
 	};
 
 
 	//donne false si la souris est hors de la grille, sinon donne la la cellule en identifiant ligne et colonne (les lignes et colonnes partent de 0)
-	this.getGridMousePos = function(evt){
+	this.getMouseCell = function(evt){
 		var rect = canvas.getBoundingClientRect();
     	var pos =  {
     	  			x: evt.clientX - rect.left - position.x,
@@ -137,37 +119,83 @@ function Grid(morpion){
 		cellHover = cell;
 	}
 
+	this.getCells = function(){
+		return cells;
+	}
+
+
 
 } 
 
+function Cell(x, y, width, height){
+
+	var x = x;
+	var y = y;
+	var width = width;
+	var height = height;
+
+	var value = 0;
+	/*DOC
+	0-->CASE VIDE
+	1-->CASE JOUE AVEC UN ROND
+	2-->CASE JOUE AVEC UNE CROIX
+	*/
+
+	var cross = new Image();
+	cross.src = 'cross.png';
+	var circle = new Image();
+	circle.src = 'circle.png';
+
+	this.draw = function(ctx){
+ 		ctx.beginPath();
+		ctx.rect(x,y,width,height);
+		ctx.fillStyle = "rgb(234,178,118)";
+		ctx.fill();
+		ctx.closePath();
+		if(value == 1){
+			ctx.drawImage(circle,x+10,y+10,width-20,height-20);
+		}else if(value == 2){
+			ctx.drawImage(cross,x+10,y+10,width-20,height-20);
+		}
+	};
+	this.setValue = function(nv_value){
+		value = nv_value;
+	};
+	this.getValue = function(){
+		return value;
+	};
+}
+
 //jai créé un object pour les event histoire de faire un peu plus propre
-function MouseEvent(morpion){
-	this.morpion = morpion;
-	MouseEvent.statique = 0;
+function MouseEvent(morpion){	
+	var morpion = morpion;
+	var statique = 0;
+
 	this.click = function(evt){		
-		var pos = this.morpion.grid.getGridMousePos(evt);
+		var pos = morpion.grid.getMouseCell(evt);
 		//evite de changer une case déjà attribuée.
-		if(this.morpion.values[pos.column][pos.line]!=0){
+		
+		if(morpion.grid.getCells()[pos.column][pos.line].getValue()!=0){
 			return;
 		}
-		if(MouseEvent.statique%2 == 0){
-			this.morpion.values[pos.column][pos.line] = 1;
+		if(statique%2 == 0){
+			morpion.grid.getCells()[pos.column][pos.line].setValue(1);
 		}else{
-			this.morpion.values[pos.column][pos.line] = 2;
+			morpion.grid.getCells()[pos.column][pos.line].setValue(2);
 		}
-		this.morpion.grid.draw();
-		MouseEvent.statique = MouseEvent.statique + 1;
+		morpion.grid.draw();
+		statique = statique + 1;
 	};
 
 	this.move = function(evt){
-		this.morpion.grid.setCellHover(this.morpion.grid.getGridMousePos(evt));
-		this.morpion.grid.draw();
+		morpion.grid.setCellHover(morpion.grid.getMouseCell(evt));
+		morpion.grid.draw();
 	};
 }
 
 function init(){
 	morpion = new Morpion();
-		morpion.grid.draw();
+	morpion.grid.draw();
 
 	document.getElementById("morpion_canvas").onclick = function(e){
 		morpion.mouseEvent.click(e);
