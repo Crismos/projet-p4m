@@ -1,4 +1,37 @@
 
 <div id="game">
-	<canvas id="canvas"></canvas>
+	<canvas id="p4_canvas" width="700" height="700"></canvas>
 </div>
+
+<script>
+
+function Game(){
+	var grid = new Grid(this);
+
+	this.getGrid = function(){
+		return grid;
+	}
+}
+
+function Grid(g){
+	var i =0, j=0;
+	var game = g;
+	var canvas = document.getElementById("p4_canvas");	
+	var ctx = canvas.getContext("2d");
+	var backgroundCell = new Image();
+	backgroundCell.src = 'p4cell.png';
+	console.log(backgroundCell);
+	
+	this.draw = function(){
+		
+		for(i = 0; i<6; i++){
+			for(j = 0; j<6; j++){
+				ctx.drawImage(backgroundCell,i*100,j*100,100,100);
+			}
+		}
+	}
+}
+
+game = new Game();
+game.getGrid().draw();
+</script>
