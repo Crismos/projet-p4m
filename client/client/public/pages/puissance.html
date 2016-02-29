@@ -1,6 +1,7 @@
 
-<div id="game">
-	<canvas id="p4_canvas" width="700" height="700"></canvas>
+<div id="game">	
+	<canvas id="pcanvas" width="700" height="700"></canvas>
+
 </div>
 
 <script>
@@ -10,17 +11,16 @@ function Game(){
 
 	this.getGrid = function(){
 		return grid;
-	}
+	};
 }
 
 function Grid(g){
 	var i =0, j=0;
 	var game = g;
-	var canvas = document.getElementById("p4_canvas");	
+	var canvas = document.getElementById("pcanvas");	
 	var ctx = canvas.getContext("2d");
 	var backgroundCell = new Image();
-	backgroundCell.src = 'p4cell.png';
-	console.log(backgroundCell);
+	backgroundCell.src = 'pcell.png';
 	
 	this.draw = function(){
 		
@@ -29,9 +29,14 @@ function Grid(g){
 				ctx.drawImage(backgroundCell,i*100,j*100,100,100);
 			}
 		}
-	}
+	};
+	this.getImg = function(){
+		return backgroundCell;
+	};
 }
 
 game = new Game();
-game.getGrid().draw();
+game.getGrid().getImg().onload = function(){
+	game.getGrid().draw();
+};
 </script>
