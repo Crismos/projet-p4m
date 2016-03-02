@@ -1,12 +1,13 @@
 
 <div id="game">	
-	<canvas id="pcanvas" width="700" height="700"></canvas>
+	<canvas id="pcanvas" width="1920" height="1080"></canvas>
 
 </div>
 
 <script>
 
 function Game(){
+
 	var grid = new Grid(this);
 
 	this.getGrid = function(){
@@ -15,28 +16,108 @@ function Game(){
 }
 
 function Grid(g){
+
 	var i =0, j=0;
 	var game = g;
 	var canvas = document.getElementById("pcanvas");	
 	var ctx = canvas.getContext("2d");
-	var backgroundCell = new Image();
-	backgroundCell.src = 'pcell.png';
-	
+	var size = 1000;
+	var sizeCell = 1000/7;
+	var position = {x:200,y:0};
+	var tokens = [];
+
+	for(i = 0; i<7; i++){
+		tokens[i] = []
+		for(j = 0; j<7; j++){
+			tokens[i][j] = null;
+		}
+	}
+
 	this.draw = function(){
-		
-		for(i = 0; i<6; i++){
-			for(j = 0; j<6; j++){
-				ctx.drawImage(backgroundCell,i*100,j*100,100,100);
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for(i = 0; i<7; i++){
+			for(j = 0; j<7; j++){
+				if(tokens[i][j] !=null){
+					tokens[i][j].draw(ctx, position);
+				}
+			}
+		}
+		for(i = 0; i<7; i++){
+			for(j = 0; j<7; j++){
+				ctx.drawImage(Grid.backgroundCell,i*sizeCell+position.x,j*sizeCell+position.y,sizeCell,sizeCell);
 			}
 		}
 	};
-	this.getImg = function(){
-		return backgroundCell;
-	};
+
+	this.getMouseColumn = function(e){
+		var rect = canvas.getBoundingClientRect();
+		var x = e.clientX - rect.left - position.x;		
+		var column = Math.floor(x/sizeCell);
+		if(column<0 || column >6){
+			return false
+		}
+		return column;
+	}
+
+	this.addToken = function(column){
+		for(i = 0; i<7; i++){
+			if(tokens[column][i]==null){
+				tokens[column][i] = new Token(column, i, sizeCell);
+				return;
+			}
+		}
+	}
+
 }
+Grid.backgroundCell = new Image();
+Grid.backgroundCell.src = 'pcell.png';
+
+function Token(column,line,size){
+
+	var column = column;
+	var line = line;
+	var size = size;
+	var x = column*size;
+	var yStart = -size;
+	var yFinal = size*7 - line*size - size;
+	var yTmp = yStart;
+	var animation = true;
+	var token = null;
+
+	if(Token.count%2==0){
+		token = Token.redToken;
+	}else{
+		token = Token.yellowToken;
+	}
+	Token.count++;
+
+	this.draw = function(ctx, position){
+		ctx.drawImage(token,x+position.x,yTmp+position.y,size,size);
+		if(animation){
+			yTmp = yTmp + 10;
+			if(yTmp>=yFinal){
+				yTmp = yFinal;
+				animation = false;
+			}
+		}
+
+	}
+}
+Token.redToken = new Image();
+Token.redToken.src = 'redToken.png';
+Token.yellowToken = new Image();
+Token.yellowToken.src = 'yellowToken.png';
+Token.count = 0;
+
 
 game = new Game();
-game.getGrid().getImg().onload = function(){
+
+document.getElementById("pcanvas").onclick = function(e){
+	var column = game.getGrid().getMouseColumn(e);
+	game.getGrid().addToken(column);
 	game.getGrid().draw();
-};
+}
+
+setInterval(function(){game.getGrid().draw();}, 1);
+
 </script>
