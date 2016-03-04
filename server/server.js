@@ -19,43 +19,26 @@ function run() {
 
 	console.log("Listening port *: ::green::"+config.server.socket.port);
 
+	var _UserManager = require("./modules/UserManager.js");
+	var _User = require("./modules/User.js");
 
-	var onlines = 0;
-	var users = {};
-	var User = require("./modules/User.js");
+	var UserManager = new _UserManager();
 
 	// connection d'un nouvel utilisateur
 	io.on('connection', function(socket){
-
-		onlines++;
+		var user;
 		// l'utilisateur envoi une requete pour s'identifier
 		socket.on('user connection', function(o){
-
-		  	console.log("::green::>>[USER]::white:: user ::green::"+o.id+"("+(o.name || "no name")+")::white:: connected");
-
-		  	socket.user = o.id;
-		  	socket.name = o.name;
-		  	users[socket.id] = new User(socket);
-
-
-		  	io.emit("connection infos", {onlines: onlines});
+			user = new _User(socket, o.name);
+			UserManager.addUser(user);
 		});
 		// l'utilisateur met à jour son pseudo
 		socket.on('user update name', function(o) {
-			console.log("::green::>>[USER]::white:: user ::green::"+users[socket.id].getId()+" ::white::update name to ::green::"+o.name+"");
-
-			users[socket.id].updateName(o.name);
+			UserManager.getUserById(socket.id).setPseudo(o.name);
 		});
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
-
-			onlines--;
-
-			delete users[socket.user];
-
-			console.log('::green::<<[USER]::white:: user ::green:: '+(users[socket.id].getId()||"undefined")+' ::white::disconnected');
-		
-			io.emit("connection infos", {onlines: onlines});
+			UserManager.removeUser(UserManager.getUserById(socket.id));
 		});
 	});
 }
