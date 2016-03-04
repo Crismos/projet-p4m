@@ -35,14 +35,14 @@ function UserManager() {
 		return null;
 	}
 	this.addUser = function(user) {
-		console.log("::green::[UserManager]::white:: > new User added ("+(user.getPseudo() ||"undefined")+")");
+		console.log("::green::[UserManager]::white:: > new User added ("+((user) ? user.getPseudo() :"undefined")+")");
 		if(user)
 			users[user.getId()] = user;
 		else
 			console.log("::red:: UserManager >> can't add this user undefined");
 	}
 	this.removeUser = function(user) {
-		console.log("::green::[UserManager]::white:: > remove User ("+(user.getPseudo() ||"undefined")+")");
+		console.log("::green::[UserManager]::white:: > remove User ("+((user) ? user.getPseudo() :"undefined")+")");
 		if(user)
 			delete users[user.getId()];
 		else

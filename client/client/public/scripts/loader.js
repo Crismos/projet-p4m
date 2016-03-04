@@ -1,3 +1,6 @@
+var speed = 10000;
+
+
 var preload = ["images/blurredBg/1.jpg"
 			, "images/blurredBg/2.jpg"
 			, "images/blurredBg/3.jpg"
@@ -27,12 +30,12 @@ $.when.apply($, promises).done(function() {
 	  	var next = ($('#background .active').next().length > 0) ? $('#background .active').next() : $('#background img:first');
 	  	console.log(next);
 	  	$("#background-switcher img").attr("src", next.attr("src"));
-	  	active.fadeOut(5000,function(){
+	  	active.fadeOut(speed/2,function(){
 	    	active.removeClass('active');
-	    	next.fadeIn(5000).addClass('active');
+	    	next.fadeIn(speed/2).addClass('active');
 	  	});
 	}
 	swap();
-	setInterval(swap, 10000);
+	setInterval(swap, speed);
  	
 });
