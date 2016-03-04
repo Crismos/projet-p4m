@@ -1,7 +1,21 @@
+/*
+* Class UserManager
+*
+*	Manage all connected user
+*	
+*	Object users
+*
+*	getUserById(id):user 				get user from connected users by id
+* 	getUsersByPseudo(pseudo):user[] 	get users array from connected users by pseudo (useless atm)
+* 	addUser(user):void 					add user to the manager
+*	removeUser(user):void 				remove user from manager
+* 	getOnlines():onlines 				get how many users are connected
+*/
+
 function UserManager() {
 	var users = {};
 
-	this.getUserByPseudo = function(pseudo) {
+	this.getUsersByPseudo = function(pseudo) {
 		var user = [];
 		for(var key in users) {
 			if(users[key].getPseudo() == pseudo)
