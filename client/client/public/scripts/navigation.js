@@ -26,25 +26,6 @@ $(document).ready(function() {
 	var currentPage;
 	var pages;
 
-	function initUser() {
-		// créer un identifiant
-		if(localStorage.user === undefined) {
-			var randomId = Math.floor(Math.random()*99999999999);
-			localStorage.user = randomId;
-		}
-		showLoginPopup();
-	}
-	function showLoginPopup() {
-		var userName = prompt("Username : ");
-		if(userName != null) {
-			localStorage.name = userName;
-			socket.updateName(userName);
-			setInfos();
-		} else {
-			showLoginPopup();
-		}
-	}
-
 	var Page = function(id, title, url, real) {
 		this.id = id;
 		this.url = url;
@@ -105,69 +86,50 @@ $(document).ready(function() {
 				currentPage.go(user, true);
 			break;
 			default: 
+				$("#login").removeClass("hide");
 				currentPage = pages.home;
-				home();
 				currentPage.go(user, false);
 			break;
 		}
 	}
 
-	function choice(div) {
+	function choice(id) {
 		// afficher et cacher les animations
-		$(".choice").addClass("hide");
-		$(div).removeClass("hide");
-		$(div).addClass("selected");
-		$(".selector").addClass("selected");
-		$("#title").addClass("hide");
-		$(".home").addClass("activ");		
+		switch(id) {
+			default : break;
+			case "p4": 
+				var goTo = "puissance";
+				currentPage = pages[goTo];
+				currentPage.go(user, true);
+				break;
+			case "morpion" :
+				var goTo = "morpion";
+				currentPage = pages[goTo];
+				currentPage.go(user, true);
+				break;
+		}		
 	}
-	function home() {
-		// afficher et cacher les animations
-		$(".choice").removeClass("hide");
-		$(".choice").removeClass("selected");
-		$(".selector").removeClass("selected");
-		$("#title").removeClass("hide");
-		$(".home").removeClass("activ");
 
-	}
-	function setInfos() {
-		// met à jour les informations en haut à droite
-		$("#infos #pseudo").html(localStorage.name);
-		$("#infos #id").html(localStorage.user);
-		$("#infos").addClass("filled");
-	}
 	
 	// récuperer l'id de l'utilisateur dans le localStorage
-	user.id = localStorage.user;
 	user.name = localStorage.name;
 
-	if(user.id && user.name) {
-		setInfos();
-	} else {
-		initUser();
-	}
 	// initialiser les pages
 	initPage();
 
-	$(".choice").click(function() {
-		if($(this).attr("class").indexOf("selected") === -1) {
-			var goTo = $(this).attr("alt");
-			currentPage = pages[goTo];
-
-			currentPage.go(user, true);
-			choice($(this));
-		} else {
-			console.log("> choix deja selectionné");
-		}
-		
-	});
-
-	$(".home").click(function() {
-		home();
-		currentPage = pages.home;
-		currentPage.go(user, false);
-	});
 	$("#resetUser").click(function() {
 		initUser();
+	});
+
+	$("#connect").click(function() {
+		$("#login").addClass("hide");
+		$("#game-selection").removeClass("hide");
+		user.name = $("#pseudo").val();
+		localStorage.name = user.name;
+	});
+
+	$("#play").click(function() {
+		choice($("#game").val());
+		$("#game-selection").addClass("hide");
 	});
 });
