@@ -126,6 +126,7 @@ $(document).ready(function() {
 		$("#game-selection").removeClass("hide");
 		user.name = $("#pseudo").val();
 		localStorage.name = user.name;
+		socket.login();
 	});
 
 	$("#play").click(function() {

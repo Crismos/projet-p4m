@@ -15,7 +15,7 @@ var IO = function() {
 	// connection au socket
 	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
 	// envoi d'une requete d'identification
-	soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
+	
 
 	var params = {
 		onlines: 0
@@ -46,6 +46,10 @@ var IO = function() {
 		params = o;
 		call("onlines");
 	});
+
+	this.login = function() {
+		soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
+	}
 }
 
 var socket = new IO();
