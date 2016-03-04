@@ -1,3 +1,17 @@
+/*
+* Class User
+*	id, pseudo, socket, currentGame, MessageManager
+*
+*	define a user when he's connected
+*
+*	connectToChat():void  	connect user to tchat
+*	getSocket():socket 		get socket of the user
+*	getId():id  			get user ID
+*	setPseudo(pseudo):void 	update user pseudo
+*	getPseudo():pseudo 		get user pseudo
+*	getStatus():status 		get user status (-1: error, 0: connected, 1: on Morpion game, 2: on p4 game)
+*	getGame():game 			get user current game;
+*/
 var _MessageManager = require("./MessageManager.js");
 
 var User = function(socket, pseudo) {
@@ -23,6 +37,15 @@ var User = function(socket, pseudo) {
 	}
 	this.getPseudo = function() {
 		return pseudo;
+	}
+	this.getStatus = function() {
+		if(!currentGame) 
+			return 0;
+		if(currentGame.name == "morpion")
+			return 1;
+		if(currentGame.name == "p4")
+			return 2;
+		return -1;
 	}
 }
 module.exports = User;
