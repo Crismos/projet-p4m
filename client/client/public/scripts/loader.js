@@ -11,7 +11,6 @@ var preload = ["images/blurredBg/1.jpg"
 			, "images/blurredBg/8.jpg"];
 var promises = [];
 for (var i = 0; i < preload.length; i++) {
-	console.log(i);
     (function(url, promise) {
         var img = new Image();
         img.onload = function() {
@@ -28,7 +27,6 @@ $.when.apply($, promises).done(function() {
 	function swap() {
 		var active = $('#background .active');
 	  	var next = ($('#background .active').next().length > 0) ? $('#background .active').next() : $('#background img:first');
-	  	console.log(next);
 	  	$("#background-switcher img").attr("src", next.attr("src"));
 	  	active.fadeOut(speed/2,function(){
 	    	active.removeClass('active');
