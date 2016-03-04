@@ -42,11 +42,10 @@ function UserManager() {
 			console.log("::red:: UserManager >> can't add this user undefined");
 	}
 	this.removeUser = function(user) {
-		console.log("::green::[UserManager]::white:: > remove User ("+((user) ? user.getPseudo() :"undefined")+")");
-		if(user)
+		if(user) {
+			console.log("::green::[UserManager]::white:: > remove User ("+((user) ? user.getPseudo() :"undefined")+")");
 			delete users[user.getId()];
-		else
-			console.log("::red:: UserManager >> can't remove this user undefined");
+		}
 	}
 
 	this.getOnlines = function() {
