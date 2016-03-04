@@ -22,14 +22,17 @@ $.when.apply($, promises).done(function() {
 	for(var i=1; i<9; i++) {
 		$("#img"+i).attr("src","images/blurredBg/"+i+".jpg");
 	}
-	setInterval(function() {
-	  	var active = $('#background .active');
+	function swap() {
+		var active = $('#background .active');
 	  	var next = ($('#background .active').next().length > 0) ? $('#background .active').next() : $('#background img:first');
+	  	console.log(next);
 	  	$("#background-switcher img").attr("src", next.attr("src"));
 	  	active.fadeOut(5000,function(){
 	    	active.removeClass('active');
 	    	next.fadeIn(5000).addClass('active');
 	  	});
-	}, 10000);
+	}
+	swap();
+	setInterval(swap, 10000);
  	
 });
