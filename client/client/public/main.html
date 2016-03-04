@@ -1,8 +1,11 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="css/main.css">
-		<script src="config.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+		<script src="config.js"></script>
+		<script src="scripts/loader.js"></script>
+		
 		<script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>
 		<script src="scripts/socket.js"></script>
 		<script src="scripts/navigation.js"></script>
@@ -11,35 +14,55 @@
 		
 	</head>
 	<body>
-		<div id="title">
-			La pause [ geek ]
+		<div id="background-switcher">
+			<img />
+		</div>
+		<div id="background">
+			<img id="img1" width="100%" class="active"/>
+			<img id="img2" width="100%" />
+			<img id="img3" width="100%" />
+			<img id="img4" width="100%" />
+			<img id="img5" width="100%" />
+			<img id="img6" width="100%" />
+			<img id="img7" width="100%" />
+			<img id="img8" width="100%" />
 		</div>
 
-		<div class="selector">
-			<div class="choice" alt="puissance">
-				Puissance 4
-			</div>
-			<div class="choice" alt="morpion">
-				Ultimate Morpion
-			</div>
-		</div>
+		<div class="selector hide" id="login">
+			<h2>La pause [ geek ]</h2>
+			<hr>
+			
+			<input id="pseudo" class="form-control" placeholder="pseudo" maxlength="15" autofocus="">
 
-		<div class="back">
-			<a class="button home">Accueil</a>
+			<hr>
+			<center>
+				<button class="button" id="connect">
+					Se connecter
+				</button>
+			</center>
+
 		</div>
-		<div id="infos">
-			<div>
-				Pseudo : <span id="pseudo"></span><br>
-				ID : <span id="id"></span><br>
-				Live : <span id="live"></span><br>
-			</div>
-			<button id="resetUser">Reset</button>
+		<div class="selector hide" id="game-selection">
+			<h2>Jouer</h2>
+
+			<hr>
+
+			<select id="game" class="form-control">
+				<option value="p4">Puissance 4</option>
+				<option value="morpion">Morpion</option>
+			</select>
+
+			<hr>
+
+			<center>
+				<button class="button" id="play">
+					Jouer
+				</button>
+			</center>
 		</div>
-		<script>
-			socket.bind("main/online", "onlines", function(o) {
-				$("#infos #live").html(""+o);
-			});
-		</script>
+		<div class="loader">
+
+		</div>
 
 	</body>
 
