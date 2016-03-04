@@ -30,8 +30,6 @@ function UserManager() {
 	this.getUserById = function(id) {
 		if(users[id])
 			return users[id];
-		else
-			console.log("::red:: UserManager >> can't get undefined user ("+(id ||"undefined")+")");
 		return null;
 	}
 	this.addUser = function(user) {
