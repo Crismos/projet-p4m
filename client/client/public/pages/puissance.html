@@ -1,8 +1,10 @@
 
 <div id="game">	
-	<canvas id="pcanvas" width="1920" height="1080"></canvas>
+	<canvas id="pcanvas" width="750" height="750"></canvas>
 
 </div>
+
+<div class="button" id="home">Accueil</div>
 
 <script>
 
@@ -21,9 +23,9 @@ function Grid(g){
 	var game = g;
 	var canvas = document.getElementById("pcanvas");	
 	var ctx = canvas.getContext("2d");
-	var size = 1000;
-	var sizeCell = 1000/7;
-	var position = {x:200,y:0};
+	var size = canvas.height;
+	var sizeCell = size/7;
+	var position = {x:0,y:0};
 	var tokens = [];
 
 	for(i = 0; i<7; i++){
@@ -35,6 +37,8 @@ function Grid(g){
 
 	this.draw = function(){
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		ctx.fillStyle = "#ecf0f1";
+		ctx.fillRect(0,0,canvas.width, canvas.height)
 		for(i = 0; i<7; i++){
 			for(j = 0; j<7; j++){
 				if(tokens[i][j] !=null){
@@ -112,12 +116,13 @@ Token.count = 0;
 
 game = new Game();
 
-document.getElementById("pcanvas").onclick = function(e){
-	var column = game.getGrid().getMouseColumn(e);
-	game.getGrid().addToken(column);
-	game.getGrid().draw();
-}
+$(document).ready(function() {
+	$(document).on("click", "#pcanvas", function(e) {
+		var column = game.getGrid().getMouseColumn(e);
+		game.getGrid().addToken(column);
+		game.getGrid().draw();
+	});
+});
 
 setInterval(function(){game.getGrid().draw();}, 1);
-
 </script>

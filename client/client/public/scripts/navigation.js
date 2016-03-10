@@ -26,6 +26,8 @@ $(document).ready(function() {
 	var currentPage;
 	var pages;
 
+	var logged = false;
+
 	var Page = function(id, title, url, real) {
 		this.id = id;
 		this.url = url;
@@ -91,6 +93,8 @@ $(document).ready(function() {
 				currentPage.go(user, false);
 			break;
 		}
+
+		
 	}
 
 	function choice(id) {
@@ -127,10 +131,27 @@ $(document).ready(function() {
 		user.name = $("#pseudo").val();
 		localStorage.name = user.name;
 		socket.login();
+		logged = true;
 	});
 
 	$("#play").click(function() {
 		choice($("#game").val());
 		$("#game-selection").addClass("hide");
 	});
+
+	function home() {
+		currentPage = pages.home;
+		currentPage.go();
+		if(logged) {
+			$("#login").addClass("hide");
+			$("#game-selection").removeClass("hide");
+		} else {
+			$("#login").removeClass("hide");
+		}
+		$(document).off("click");
+		$(document).on("click", "#home", home);
+		$(".loader").remove();
+	}
+
+	$(document).on("click", "#home", home);
 });

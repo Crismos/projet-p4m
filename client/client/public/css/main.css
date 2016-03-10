@@ -135,13 +135,15 @@ hr {
 	left: 10%;
 	right: 10%;
 	bottom: 10%;
-	background: rgba(255,255,255,0.5);
-	padding: 10px;
+	/*background: rgba(255,255,255,0.5);
+	padding: 10px;*/
 }
 
 .loader canvas {
-	margin: auto;
 	position: relative;
 	z-index: 900;
+	height:100%;
+	margin:auto;
+	display:block;
 }
 

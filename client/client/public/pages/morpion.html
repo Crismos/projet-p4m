@@ -1,8 +1,8 @@
 
 <div id="game">
-	<canvas id="morpion_canvas" width="1920" height="1500"></canvas>
+	<canvas id="morpion_canvas" width="750" height="750"></canvas>
 </div>
-
+<div class="button" id="home">Accueil</div>
 
 <script>
 
@@ -17,7 +17,7 @@ function Grid(morp){
 	var columnNumber = 9;//nb colonnes
 	var canvas = document.getElementById("morpion_canvas");	
 	var ctx = canvas.getContext("2d");
-	var position = {x:200,y:20};//permet de positionner la grille à partir du coin en haut a gauche
+	var position = {x:0,y:0};//permet de positionner la grille à partir du coin en haut a gauche
 	var size = {width : 750, height:750};//taille de la grille
 	var cell = {width : (size.width / columnNumber), height : (size.height / lineNumber)};//hauteur et largeur d'une cellule
 	var cells = [];//tab des cellules
@@ -171,6 +171,7 @@ function MouseEvent(morpion){
 	var statique = 0;
 
 	this.click = function(evt){		
+		console.log("yep");
 		var pos = morpion.grid.getMouseCell(evt);
 		//evite de changer une case déjà attribuée.
 		
@@ -196,12 +197,15 @@ function init(){
 	morpion = new Morpion();
 	morpion.grid.draw();
 
-	document.getElementById("morpion_canvas").onclick = function(e){
-		morpion.mouseEvent.click(e);
-	};
-	document.getElementById("morpion_canvas").onmousemove = function(e){
-		morpion.mouseEvent.move(e);
-	};
+	$(document).ready(function() {
+		$(document).on("click", "#morpion_canvas", function(e) {
+			morpion.mouseEvent.click(e);
+		});
+		$(document).on("mousemove", "#morpion_canvas", function(e) {
+			morpion.mouseEvent.move(e);
+		});
+	});
+
 }
 
 init();
