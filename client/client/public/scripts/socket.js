@@ -50,6 +50,18 @@ var IO = function() {
 	this.login = function() {
 		soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 	}
+
+	this.requestGameId = function(game, callback) {
+		var fct = callback || function(){};
+
+		soc.on("your game id", function(o) {callback(o)});
+
+		soc.emit("request game id", {game: game});
+	}
+	this.connectTo = function(idGame) {
+
+		soc.emit("user want to connect to a game", {id: idGame});
+	}
 }
 
 var socket = new IO();

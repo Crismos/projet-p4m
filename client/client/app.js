@@ -18,21 +18,37 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
   	// ajout du dossier publique
 	app.use(express.static(__dirname + '/public'));
 
+	// ejs
+	app.engine('.html', require('ejs').__express);
+	app.set('views', __dirname + '/public');
+	app.set('view engine', 'html');
+
 	// routes
 	//config.js
 	// sans url
 	app.get("/", function(req, res) {
-		res.sendFile("main.html", {root: './public'});
+		//res.sendFile("main.html", {root: './public'});
+		res.render("main", {
+			id : 0
+		});
 	});
 	// avec url
-	app.get("/:var", function(req, res) {
+	app.get("/:var(home|config.js)", function(req, res) {
 		console.log(req.params.var);
 		if(req.params.var == "config.js") {
 			//envoi du fichier de configuration au client
 			res.send("var config = "+JSON.stringify(config));
 		} else {
-			res.sendFile("main.html", {root: './public'});
+			//res.sendFile("main.html", {root: './public'});
+			res.render("main", {
+				id : 0
+			});
 		}
+	});
+	app.get("/:id(\\d+)", function(req, res) {
+		res.render("main", {
+			id : req.params.id
+		});
 	});
 
 

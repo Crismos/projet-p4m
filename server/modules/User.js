@@ -47,5 +47,8 @@ var User = function(socket, pseudo) {
 			return 2;
 		return -1;
 	}
+	this.setGame = function(game) {
+		currentGame = game;
+	}
 }
 module.exports = User;
