@@ -22,7 +22,6 @@ $(document).ready(function() {
 
 	var push = true;
 
-	var user = {};
 	var currentPage;
 	var pages;
 
@@ -40,8 +39,8 @@ $(document).ready(function() {
 			console.log(currentPage);
 
 			if(push) {
-				var state = {"page_id": currentPage.id, "user": user};
-				history.pushState(state, currentPage.title, currentPage.url);
+				var state = {"page_id": currentPage.id, "user": user.getName()};
+				history.pushState(state, currentPage.title, (idGame != "0" ? idGame : "home"));
 			}
 
 			$("body").append("<div class='loader hide'></div>");
@@ -56,6 +55,45 @@ $(document).ready(function() {
 
 			updateTitle();
 			//draw();
+		}
+	}
+
+	var User = function() {
+		var logged = false;
+
+		this.requestName = function() {
+			$("#login").removeClass("hide");
+			$("#game-selection").addClass("hide");
+		}
+		this.setName = function(pseudo) {
+			localStorage.name = pseudo;
+			logged = true;
+			socket.login();
+
+			if(idGame == "0") {
+				// si l'utilisateur n'a pas été invité
+				this.requestGame();
+			} else {
+				socket.connectTo(idGame);
+			}
+		}
+		this.requestGame = function() {
+			$("#login").addClass("hide");
+			$("#game-selection").removeClass("hide");
+		}
+		this.gameChosen = function(game) {
+			$("#game-selection").addClass("hide");
+
+			socket.requestGameId(game, function(o) {
+				idGame = o.id;
+				choice(o.game);
+			});
+		}
+		this.isLogged = function() {
+			return logged;
+		}
+		this.getName = function() {
+			return localStorage.name;
 		}
 	}
 
@@ -116,7 +154,11 @@ $(document).ready(function() {
 
 	
 	// récuperer l'id de l'utilisateur dans le localStorage
-	user.name = localStorage.name;
+	//user.name = localStorage.name;
+
+	var user = new User();
+
+	user.requestName();
 
 	// initialiser les pages
 	initPage();
@@ -126,17 +168,11 @@ $(document).ready(function() {
 	});
 
 	$("#connect").click(function() {
-		$("#login").addClass("hide");
-		$("#game-selection").removeClass("hide");
-		user.name = $("#pseudo").val();
-		localStorage.name = user.name;
-		socket.login();
-		logged = true;
+		user.setName($("#pseudo").val());
 	});
 
 	$("#play").click(function() {
-		choice($("#game").val());
-		$("#game-selection").addClass("hide");
+		user.gameChosen($("#game").val());
 	});
 
 	function home() {
