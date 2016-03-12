@@ -46,11 +46,25 @@ function run() {
 		// code temporaire
 		socket.on("request game id", function(o) {
 			var game = GameManager.addGame(o.game);
-
-			if(game)
+			if(game){
 				user.setGame(game);
-
+				game.addPlayer(user);
+			}
 			socket.emit("your game id", {game: o.game, id: game.getId()})
+		});
+		socket.on("user want to connect to a game", function(o) {
+			var game = GameManager.getGame(o.id);
+			if(game) {
+				// la game existe
+				var valide = game.addPlayer(user);
+				if(valide) {
+					// il y a assez de place
+				} else {
+					// partie pleine
+				}
+			} else {
+				// retourner une erreur
+			}
 		});
 	});
 }

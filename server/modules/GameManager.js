@@ -19,6 +19,9 @@ function GameManager() {
 
 		return game;
 	}
+	this.getGame = function(idGame) {
+		return games[idGame];
+	}
 
 }
 
