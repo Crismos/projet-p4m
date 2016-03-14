@@ -12,20 +12,15 @@
 *	getStatus():status 		get user status (-1: error, 0: connected, 1: on Morpion game, 2: on p4 game)
 *	getGame():game 			get user current game;
 */
-var _MessageManager = require("./MessageManager.js");
 
 var User = function(socket, pseudo) {
 	var id = socket.id;
 	var pseudo = pseudo;
 	var socket = socket;
 	var currentGame = null;
-	var MessageManager = null;
 
 	console.log("::green::[User]::white:: > Create new user "+(id ||"undefined")+"("+(pseudo ||"undefined")+")");
 
-	this.connectToChat = function() {
-		MessageManager = new _MessageManager(this);
-	}
 	this.getSocket = function() {
 		return socket;
 	}
