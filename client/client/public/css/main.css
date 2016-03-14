@@ -162,6 +162,12 @@ hr {
 
 	-webkit-box-shadow:inset 2px 0 2px 0 rgba(0,0,0,0.3);
 	box-shadow:inset 2px 0 2px 0 rgba(0,0,0,0.3);
+
+	-webkit-transition: all 0.15s ease-in-out;
+	-moz-transition: all 0.15s ease-in-out;
+	-ms-transition: all 0.15s ease-in-out;
+	-o-transition: all 0.15s ease-in-out;
+	transition: all 0.15s ease-in-out;
 }
 
 #chat #panel::-webkit-scrollbar-track
@@ -256,4 +262,43 @@ hr {
 	color: orange;
 }
 
+#chat #opener {
+	color: #fff;
+	position: absolute;
+	right: 260px;
+	bottom: 30px;
+	-webkit-animation: pulsate 1.5s linear infinite;
+    -moz-animation: pulsate 1.5s linear infinite;
+    animation: pulsate 1.5s linear infinite;
+    cursor: pointer;
+
+    -webkit-transition: all 0.15s ease-in-out;
+	-moz-transition: all 0.15s ease-in-out;
+	-ms-transition: all 0.15s ease-in-out;
+	-o-transition: all 0.15s ease-in-out;
+	transition: all 0.15s ease-in-out;
+}
+
+#chat.close #opener {
+	right: 30px;
+}
+#chat.close #panel {
+	right: -250px;
+}
+
+@-webkit-keyframes pulsate {
+    0% {font-size: 15px; margin-top: 0px}
+    50% {font-size: 18px; margin-top: -2px;}
+    100% {font-size: 15px; margin-top: 0px}
+}
+@-moz-keyframes pulsate {
+    0% {font-size: 15px; margin-top: 0px}
+    50% {font-size: 18px; margin-top: -2px;}
+    100% {font-size: 15px; margin-top: 0px}
+}
+@keyframes pulsate {
+    0% {font-size: 15px; margin-top: 0px}
+    50% {font-size: 18px; margin-top: -2px;}
+    100% {font-size: 15px; margin-top: 0px}
+}
 

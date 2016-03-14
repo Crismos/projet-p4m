@@ -175,6 +175,11 @@ $(document).ready(function() {
 		user.gameChosen($("#game").val());
 	});
 
+	$("#opener").click(function() {
+		$("#chat").toggleClass("close");
+		$(".fa").toggleClass("fa-flip-horizontal");
+	})
+
 	function home() {
 		currentPage = pages.home;
 		currentPage.go();
