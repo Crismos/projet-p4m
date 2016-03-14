@@ -285,6 +285,9 @@ hr {
 #chat.close #panel {
 	right: -250px;
 }
+#chat.disabled {
+	display: none;
+}
 
 @-webkit-keyframes pulsate {
     0% {font-size: 15px; margin-top: 0px}

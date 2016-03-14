@@ -47,7 +47,11 @@ var IO = function() {
 		call("onlines");
 	});
 
-	this.login = function() {
+	this.login = function(callback) {
+		var fct = callback || function() {};
+
+		soc.on("connection success", function(o){fct(o);});
+
 		soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 	}
 

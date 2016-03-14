@@ -33,6 +33,7 @@ function run() {
 		socket.on('user connection', function(o){
 			user = new _User(socket, o.name);
 			UserManager.addUser(user);
+			socket.emit("connection success", {name: o.name});
 		});
 		// l'utilisateur met à jour son pseudo
 		socket.on('user update name', function(o) {

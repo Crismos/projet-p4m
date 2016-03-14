@@ -68,7 +68,10 @@ $(document).ready(function() {
 		this.setName = function(pseudo) {
 			localStorage.name = pseudo;
 			logged = true;
-			socket.login();
+			
+			socket.login(function(o) {
+				$("#chat").removeClass("disabled");
+			});
 
 			if(idGame == "0") {
 				// si l'utilisateur n'a pas été invité
