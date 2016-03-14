@@ -55,6 +55,21 @@ var IO = function() {
 		soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 	}
 
+	this.onUserConnection = function(callback) {
+		var fct = callback || function(){};
+		soc.on("new user connected", function(o) {
+			fct(o.id, {name: o.name, status: o.status});
+		});
+	}
+
+	this.onUserDisconnect = function(callback) {
+		var fct = callback || function() {};
+
+		soc.on("user disconnect", function(o) {
+			fct(o.id);
+		});
+	}
+
 	this.requestGameId = function(game, callback) {
 		var fct = callback || function(){};
 

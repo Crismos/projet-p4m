@@ -9,7 +9,7 @@
 * 	getUsersByPseudo(pseudo):user[] 	get users array from connected users by pseudo (useless atm)
 * 	addUser(user):void 					add user to the manager
 *	removeUser(user):void 				remove user from manager
-* 	getOnlines():onlines 				get how many users are connected
+* 	getOnlines():user 				get how many users are connected
 */
 
 function UserManager() {
@@ -46,8 +46,17 @@ function UserManager() {
 		}
 	}
 
-	this.getOnlines = function() {
-		return Object.keys(users).length - 1;
+	this.getOnlines = function(id) {
+		var id = id || -1;
+		var tmp = {};
+		for(var key in users) {
+			if(id == -1 || key != id) {
+				tmp[key] = {};
+				tmp[key].name = users[key].getPseudo();
+				tmp[key].status = users[key].getStatus();
+			}
+		}
+		return tmp;
 	}
 }
 

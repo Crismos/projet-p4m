@@ -60,6 +60,7 @@ $(document).ready(function() {
 
 	var User = function() {
 		var logged = false;
+		var id = -1
 
 		this.requestName = function() {
 			$("#login").removeClass("hide");
@@ -70,7 +71,9 @@ $(document).ready(function() {
 			logged = true;
 			
 			socket.login(function(o) {
+				id = o.id;
 				$("#chat").removeClass("disabled");
+				chat.updateUsers(o.users);
 			});
 
 			if(idGame == "0") {
@@ -98,7 +101,62 @@ $(document).ready(function() {
 		this.getName = function() {
 			return localStorage.name;
 		}
+		this.getId = function() {
+			return id;
+		}
 	}
+
+	/*
+	* modifier l'emplacement de ce code
+	*
+	*/
+	var Chat = function() {
+		var users = {};
+
+		this.updateUsers = function(u) {
+			console.log(u);
+			users = u;
+			_updateChatPanel();
+		}
+		this.addUser = function(id, user) {
+			users[id] = user;
+			_updateChatPanel();
+		}
+		this.removeUser = function(id) {
+			delete users[id];
+			_updateChatPanel();
+		}
+		this.updateUserStatus = function(id, status) {
+			users[id].status = status;
+			var status = (status == 0 ? "online" : "ongame");
+			$("#"+id+" .status").html(status);
+			$("#"+id+" .status").removeClass("ongame");
+			$("#"+id+" .status").removeClass("online");
+			$("#"+id+" .status").addClass(status);
+		}
+
+		function _updateChatPanel() {
+			$("#panel .user").remove();
+			var html = "";
+
+			for(var key in users) {
+				if(key != user.getId()) {
+					html += "<div class='user' id='"+key+"'>";
+
+					html += "<span class='name'>"+users[key].name+"</span>";
+					html += "<span class='status "+(users[key].status == 0 ? "online" : "ongame")+"'>"+(users[key].status == 0 ? "online" : "ongame")+"</span>";
+
+					html += "</div>";
+				}
+			}
+
+			$("#panel").append(html);
+		}
+
+		socket.onUserConnection(this.addUser);
+		socket.onUserDisconnect(this.removeUser);
+	}
+	var chat = new Chat();
 
 	function updateTitle() {
 		// change le titre de la page
