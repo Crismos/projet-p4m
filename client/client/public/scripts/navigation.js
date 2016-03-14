@@ -68,7 +68,10 @@ $(document).ready(function() {
 		this.setName = function(pseudo) {
 			localStorage.name = pseudo;
 			logged = true;
-			socket.login();
+			
+			socket.login(function(o) {
+				$("#chat").removeClass("disabled");
+			});
 
 			if(idGame == "0") {
 				// si l'utilisateur n'a pas été invité
@@ -174,6 +177,11 @@ $(document).ready(function() {
 	$("#play").click(function() {
 		user.gameChosen($("#game").val());
 	});
+
+	$("#opener").click(function() {
+		$("#chat").toggleClass("close");
+		$(".fa").toggleClass("fa-flip-horizontal");
+	})
 
 	function home() {
 		currentPage = pages.home;
