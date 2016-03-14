@@ -118,6 +118,9 @@ $(document).ready(function() {
 			users = u;
 			_updateChatPanel();
 		}
+		var openChat = function(id) {
+
+		}
 		this.addUser = function(id, user) {
 			users[id] = user;
 			_updateChatPanel();
@@ -239,7 +242,14 @@ $(document).ready(function() {
 	$("#opener").click(function() {
 		$("#chat").toggleClass("close");
 		$(".fa").toggleClass("fa-flip-horizontal");
-	})
+	});
+
+	$(document).on("click", ".conv .header", function() {
+		$($(this).parent()).toggleClass("minified");
+	});
+	$(document).on("click", "span.alert", function() {
+		$(".convhist").toggleClass("hide");
+	});
 
 	function home() {
 		currentPage = pages.home;
@@ -250,7 +260,7 @@ $(document).ready(function() {
 		} else {
 			$("#login").removeClass("hide");
 		}
-		$(document).off("click");
+		$(document).off("click", "#home");
 		$(document).on("click", "#home", home);
 		$(".loader").remove();
 	}
