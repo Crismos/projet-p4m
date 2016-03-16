@@ -396,6 +396,9 @@ hr {
 	width: 200px;
 	overflow: hidden;
 }
+#chat #convbar .convswitcher .convhist .lilconv:hover {
+	background: rgba(0,0,0,0.2);
+}
 #chat #convbar .convswitcher .convhist .lilconv.new {
 	-webkit-animation: notif 2.5s linear infinite;
     -moz-animation: notif 2.5s linear infinite;
@@ -414,6 +417,41 @@ hr {
 	-webkit-box-shadow: 1px 1px 2px 0 rgba(0,0,0,0.5);
 	box-shadow: 1px 1px 2px 0 rgba(0,0,0,0.5);
 }
+#chat #convbar .convswitcher .lilconv i {
+	display: block;
+	float: right;
+	color: rgba(0,0,0,0.3);
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	padding: 3px 4px 3px 4px;
+	-webkit-transition: all 150ms ease-in-out;
+	-moz-transition: all 150ms ease-in-out;
+	-ms-transition: all 150ms ease-in-out;
+	-o-transition: all 150ms ease-in-out;
+	transition: all 150ms ease-in-out;
+}
+#chat #convbar .convswitcher .lilconv i:hover {
+	color: rgba(0,0,0,0.7);
+	background: rgba(0,0,0,0.2);
+}
+#chat #convbar #conv .header i {
+	display: block;
+	float: right;
+	color: rgba(255,255,255,0.3);
+	-webkit-border-radius: 2px;
+	border-radius: 2px;
+	padding: 3px 4px 3px 4px;
+	-webkit-transition: all 150ms ease-in-out;
+	-moz-transition: all 150ms ease-in-out;
+	-ms-transition: all 150ms ease-in-out;
+	-o-transition: all 150ms ease-in-out;
+	transition: all 150ms ease-in-out;
+}
+#chat #convbar #conv .header i:hover {
+	color: rgba(255,255,255,0.7);
+	background: rgba(255,255,255,0.2);
+}
+
 
 @-webkit-keyframes pulsate {
     0% {font-size: 15px; margin-top: 0px}

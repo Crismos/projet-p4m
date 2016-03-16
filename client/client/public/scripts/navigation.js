@@ -173,6 +173,7 @@ $(document).ready(function() {
 		this.open = function(id) {
 			if(!convs[id]) {
 				convs[id] = {};
+				convs[id].id = id;
 				convs[id].title = chat.getUserName(id);
 				convs[id].new = false;
 				convs[id].messages = {};
@@ -180,10 +181,18 @@ $(document).ready(function() {
 			}
 			_openChatTab(convs[id]);
 		}
-
+		this.close = function(id) {
+			console.log("close id:"+id);
+			_clearChatTab();
+			delete convs[id];
+			_updateSwitcher();
+		}
+		var _clearChatTab = function() {
+			$("#conv").html("");
+		}
 		var _openChatTab = function(conv) {
 			var html = "";
-			html += "<div class='header'>"+conv.title+"</div>";
+			html += "<div class='header' id='"+conv.id+"'>"+conv.title+'<i class="fa fa-times"></i></div>';
 			html += "<div class='messages'>";
 			for(var key in conv.messages) {
 				// afficher les messages
@@ -205,8 +214,8 @@ $(document).ready(function() {
 			if(Object.keys(convs).length > 0) {
 				html += "<div class='convhist hide'>";
 				for(var key in convs) {
-					html += "<div class='lilconv"+ (convs[key].new ? " new": "")+"'>";
-					html += '<span class="convName">'+convs[key].title+'</span>';
+					html += "<div id='"+key+"' class='lilconv"+ (convs[key].new ? " new": "")+"'>";
+					html += '<span class="convName">'+convs[key].title+'</span><i class="fa fa-times"></i>';
 					html += "</div>";
 				}
 				html += "</div>";
@@ -301,7 +310,7 @@ $(document).ready(function() {
 		$(".fa").toggleClass("fa-flip-horizontal");
 	});
 
-	$(document).on("click", ".conv .header", function() {
+	$(document).on("click", "#conv .header", function() {
 		$($(this).parent()).toggleClass("minified");
 	});
 	$(document).on("click", "span.alert", function() {
@@ -309,6 +318,17 @@ $(document).ready(function() {
 	});
 	$(document).on("click", "#panel .user", function() {
 		convs.open($(this)[0].id);
+	});
+	$(document).on("click", ".lilconv", function() {
+		convs.open($(this)[0].id);
+		$(".convhist").toggleClass("hide");
+	});
+	$(document).on("click", "#chat #convbar #conv .header i", function() {
+		convs.close($(this).parent()[0].id);
+	});
+	$(document).on("click", "#chat #convbar .convswitcher .lilconv i", function(event) {
+		event.stopImmediatePropagation();
+		convs.close($(this).parent()[0].id);
 	});
 
 	function home() {
