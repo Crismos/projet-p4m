@@ -81,6 +81,10 @@ var IO = function() {
 
 		soc.emit("user want to connect to a game", {id: idGame});
 	}
+	this.connectChat = function(callback) {
+		var fct = callback || function() {};
+		soc.on("receive chat infos", function(o) {callback(o)});
+	}
 }
 
 var socket = new IO();

@@ -73,7 +73,6 @@ $(document).ready(function() {
 			socket.login(function(o) {
 				id = o.id;
 				$("#chat").removeClass("disabled");
-				chat.updateUsers(o.users);
 			});
 
 			if(idGame == "0") {
@@ -112,6 +111,11 @@ $(document).ready(function() {
 	*/
 	var Chat = function() {
 		var users = {};
+		var chat = this;
+
+		socket.connectChat(function(o) {
+			chat.updateUsers(o.users);
+		});
 
 		this.updateUsers = function(u) {
 			console.log(u);
@@ -137,6 +141,10 @@ $(document).ready(function() {
 			$("#"+id+" .status").removeClass("online");
 			$("#"+id+" .status").addClass(status);
 		}
+		this.getUserName = function(id) {
+			console.log(id);
+			return users[id].name || "undefined";
+		}
 
 		function _updateChatPanel() {
 			$("#panel .user").remove();
@@ -159,6 +167,55 @@ $(document).ready(function() {
 		socket.onUserConnection(this.addUser);
 		socket.onUserDisconnect(this.removeUser);
 	}
+	var Conversations = function() {
+		var convs = {};
+
+		this.open = function(id) {
+			if(!convs[id]) {
+				convs[id] = {};
+				convs[id].title = chat.getUserName(id);
+				convs[id].new = false;
+				convs[id].messages = {};
+				_updateSwitcher();
+			}
+			_openChatTab(convs[id]);
+		}
+
+		var _openChatTab = function(conv) {
+			var html = "";
+			html += "<div class='header'>"+conv.title+"</div>";
+			html += "<div class='messages'>";
+			for(var key in conv.messages) {
+				// afficher les messages
+			}
+			html += "</div>";
+			html += "<div class='sender'>";
+			html += '<input type="text" id="sendMessage" placeholder="Ecrivez un message...">';
+			html += "</div>";
+
+			$("#conv").html(html);
+		}
+
+		var _updateSwitcher = function() {
+			console.log(convs);
+			console.log(Object.keys(convs).length);
+			var html = "";
+			html = "<span class='alert'>"+Object.keys(convs).length+"</span>";
+
+			if(Object.keys(convs).length > 0) {
+				html += "<div class='convhist hide'>";
+				for(var key in convs) {
+					html += "<div class='lilconv"+ (convs[key].new ? " new": "")+"'>";
+					html += '<span class="convName">'+convs[key].title+'</span>';
+					html += "</div>";
+				}
+				html += "</div>";
+			}
+
+			$($(".convswitcher").get(0)).html(html);
+		}
+	}
+	var convs = new Conversations();
 	var chat = new Chat();
 
 	function updateTitle() {
@@ -249,6 +306,9 @@ $(document).ready(function() {
 	});
 	$(document).on("click", "span.alert", function() {
 		$(".convhist").toggleClass("hide");
+	});
+	$(document).on("click", "#panel .user", function() {
+		convs.open($(this)[0].id);
 	});
 
 	function home() {

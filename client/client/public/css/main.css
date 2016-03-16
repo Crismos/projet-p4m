@@ -294,7 +294,7 @@ hr {
 	bottom: -5px;
 	left: 5px;
 }
-#chat #convbar .conv {
+#chat #convbar #conv {
 	display: inline-block;
 	margin: auto 3px auto 2px;
 	width: 300px;
@@ -303,10 +303,10 @@ hr {
 	bottom: 0px;
 	display: inline-block;
 }
-#chat #convbar .conv.minified {
+#chat #convbar #conv.minified {
 	height: 31px;
 }
-#chat #convbar .conv .header {
+#chat #convbar #conv .header {
 	font-size: 14px;
 	background: #6441a5;
 	color: #fff;
@@ -320,7 +320,7 @@ hr {
 	border-radius: 2px 2px 0 0;
 	width: 280px;
 }
-#chat #convbar .conv .messages {
+#chat #convbar #conv .messages {
 	color: #313139;
 	width: 280px;
 	background: #dedbe3;
@@ -331,14 +331,14 @@ hr {
 	padding: 5px 10px 5px 10px;
 	height: 340px;
 }
-#chat #convbar .conv .sender input {
+#chat #convbar #conv .sender input {
 	position: absolute;
 	margin-top: -60px;
 	width: 300px;
     height: 34px;
     margin-left: 1px;
 }
-#chat #convbar .conv.minified .header {
+#chat #convbar #conv.minified .header {
 	background: #dedbe3;
 	border-color: #4e4958;
 	color: #4e4958;
@@ -346,12 +346,12 @@ hr {
 	width: 150px;
 	overflow: hidden;
 }
-#chat #convbar .conv.minified .messages {
+#chat #convbar #conv.minified .messages {
 	height: 0px;
 	padding: 0px;
 	overflow: hidden;
 }
-#chat #convbar .conv.minified .sender {
+#chat #convbar #conv.minified .sender {
 	display: none;
 }
 
