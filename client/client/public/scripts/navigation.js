@@ -208,10 +208,12 @@ $(document).ready(function() {
 		var _updateSwitcher = function() {
 			console.log(convs);
 			console.log(Object.keys(convs).length);
-			var html = "";
-			html = "<span class='alert'>"+Object.keys(convs).length+"</span>";
 
+			var html = "";
 			if(Object.keys(convs).length > 0) {
+				html = "<span class='alert'>"+Object.keys(convs).length+"</span>";
+
+			
 				html += "<div class='convhist hide'>";
 				for(var key in convs) {
 					html += "<div id='"+key+"' class='lilconv"+ (convs[key].new ? " new": "")+"'>";
