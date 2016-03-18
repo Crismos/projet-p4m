@@ -60,6 +60,7 @@ $(document).ready(function() {
 
 	var User = function() {
 		var logged = false;
+		var id = -1
 
 		this.requestName = function() {
 			$("#login").removeClass("hide");
@@ -70,6 +71,7 @@ $(document).ready(function() {
 			logged = true;
 			
 			socket.login(function(o) {
+				id = o.id;
 				$("#chat").removeClass("disabled");
 			});
 
@@ -98,11 +100,201 @@ $(document).ready(function() {
 		this.getName = function() {
 			return localStorage.name;
 		}
+		this.getId = function() {
+			return id;
+		}
 	}
+
+	/*
+	* modifier l'emplacement de ce code
+	*
+	*/
+	var Chat = function() {
+		var users = {};
+		var chat = this;
+
+		socket.connectChat(function(o) {
+			chat.updateUsers(o.users);
+		});
+
+		this.updateUsers = function(u) {
+			//console.log(u);
+			users = u;
+			_updateChatPanel();
+		}
+		var openChat = function(id) {
+
+		}
+		this.addUser = function(id, user) {
+			users[id] = user;
+			_updateChatPanel();
+		}
+		this.removeUser = function(id) {
+			delete users[id];
+			_updateChatPanel();
+		}
+		this.updateUserStatus = function(id, status) {
+			users[id].status = status;
+			var status = (status == 0 ? "online" : "ongame");
+			$("#"+id+" .status").html(status);
+			$("#"+id+" .status").removeClass("ongame");
+			$("#"+id+" .status").removeClass("online");
+			$("#"+id+" .status").addClass(status);
+		}
+		this.getUserName = function(id) {
+			console.log("<<users + "+id+">>");
+			console.log(users);
+			//return users[id].name || "undefined";
+			return users[id].name;
+		}
+
+		function _updateChatPanel() {
+			$("#panel .user").remove();
+			var html = "";
+
+			for(var key in users) {
+				if(key != user.getId()) {
+					html += "<div class='user' id='"+key+"'>";
+
+					html += "<span class='name'>"+users[key].name+"</span>";
+					html += "<span class='status "+(users[key].status == 0 ? "online" : "ongame")+"'>"+(users[key].status == 0 ? "online" : "ongame")+"</span>";
+
+					html += "</div>";
+				}
+			}
+
+			$("#panel").append(html);
+		}
+
+		socket.onUserConnection(this.addUser);
+		socket.onUserDisconnect(this.removeUser);
+	}
+	var Conversations = function() {
+		var convs = {};
+		var conv = this;
+
+		
+
+		this.open = function(id) {
+			if(!convs[id]) {
+				_initConv(id);
+				_updateSwitcher();
+			}
+			_openChatTab(convs[id]);
+			convs[id].new  = false;
+			_updateSwitcher();
+		}
+		this.close = function(id) {
+			console.log("close id:"+id);
+			_clearChatTab();
+			delete convs[id];
+			_updateSwitcher();
+		}
+		this.send = function(id) {
+			var msg = $("#sendMessage").val();
+			if(msg != "") {
+				$("#sendMessage").val("");
+				//console.log("sending to ["+id+"] : "+msg);
+				socket.send({content: msg, to: id});
+				$("#sendMessage").focus();
+			}
+		}
+
+		var _valideMessage = function(o) {
+			var msg = {content: o.content, from: "me", to: {id: o.to, name: o.toName}};
+			convs[o.to].messages.push(msg);
+			_updateChat(o.to);
+		}
+		var _receiveMessage = function(o) {
+			if(!convs[o.from]) {
+				_initConv(o.from);
+			}
+			var msg = {content: o.content, from: {id: o.from, name: o.fromName}, to: "me"};
+			convs[o.from].messages.push(msg);
+			_updateChat(o.from);
+		}
+
+		var _clearChatTab = function() {
+			$("#conv").html("");
+		}
+		var _updateChat = function(idConv) {
+			var id = -1;
+			if($("#conv .header")[0])
+				id = $("#conv .header")[0].id;
+			console.log(">>>>> conv à mettre à jour : "+idConv);
+			console.log ("<<<<< conv ouverte : "+id);
+			if(id == idConv)
+				_openChatTab(convs[id]);
+			else {
+				convs[idConv].new = true;
+				
+			}
+			_updateSwitcher();
+		}
+		var _initConv = function(id) {
+			convs[id] = {};
+			convs[id].id = id;
+			convs[id].title = chat.getUserName(id);
+			convs[id].new = false;
+			convs[id].messages = [];
+		}
+		var _openChatTab = function(conv) {
+			var html = "";
+			html += "<div class='header' id='"+conv.id+"'>"+conv.title+'<i class="fa fa-times"></i></div>';
+			html += "<div class='messages'>";
+			for(var key in conv.messages) {
+				// afficher les messages
+				html += '<div class="msg'+(conv.messages[key].from == "me" ? " me" : " other")+'">';
+				html += '<span calss="pseudo">'+(conv.messages[key].from == "me" ? "vous" : conv.messages[key].from.name)+" : </span>";
+				html += conv.messages[key].content;
+				html += '</div>';
+			}
+			html += "</div>";
+			html += "<div class='sender'>";
+			html += '<input type="text" id="sendMessage" placeholder="Ecrivez un message...">';
+			html += "</div>";
+
+			$("#conv").html(html);
+			$("#sendMessage").focus();
+		}
+
+		var _updateSwitcher = function() {
+			//console.log(convs);
+			//console.log(Object.keys(convs).length);
+
+			var html = "";
+			if(Object.keys(convs).length > 0) {
+				html = "<span class='alert'>"+Object.keys(convs).length+"</span>";
+
+			
+				html += "<div class='convhist hide'>";
+				for(var key in convs) {
+					html += "<div id='"+key+"' class='lilconv"+ (convs[key].new ? " new": "")+"'>";
+					html += '<span class="convName">'+convs[key].title+'</span><i class="fa fa-times"></i>';
+					html += "</div>";
+				}
+				html += "</div>";
+			}
+
+			$($(".convswitcher").get(0)).html(html);
+		}
+
+		socket.valideMessage(_valideMessage);
+		socket.receiveMessage(_receiveMessage);
+	}
+	var convs = new Conversations();
+	var chat = new Chat();
 
 	function updateTitle() {
 		// change le titre de la page
 		document.title = currentPage.title;
+	}
+
+	function send(e) {
+	    if (e.keyCode == 13) {
+	        // envoi message
+	        convs.send($("#sendMessage").parent().parent()[0].children[0].id);
+	    }
 	}
 
 	function initPage() {
@@ -169,6 +361,10 @@ $(document).ready(function() {
 	$("#resetUser").click(function() {
 		initUser();
 	});
+	$("#pseudo").keypress(function(e) {
+		if(e.keyCode == 13)
+			$("#connect").click();
+	});
 
 	$("#connect").click(function() {
 		user.setName($("#pseudo").val());
@@ -181,7 +377,31 @@ $(document).ready(function() {
 	$("#opener").click(function() {
 		$("#chat").toggleClass("close");
 		$(".fa").toggleClass("fa-flip-horizontal");
-	})
+	});
+
+	$(document).on("click", "#conv .header", function() {
+		$($(this).parent()).toggleClass("minified");
+	});
+	$(document).on("click", "span.alert", function() {
+		$(".convhist").toggleClass("hide");
+	});
+	$(document).on("click", "#panel .user", function() {
+		convs.open($(this)[0].id);
+	});
+	$(document).on("click", ".lilconv", function() {
+		convs.open($(this)[0].id);
+		$(".convhist").toggleClass("hide");
+	});
+	$(document).on("click", "#chat #convbar #conv .header i", function() {
+		convs.close($(this).parent()[0].id);
+	});
+	$(document).on("click", "#chat #convbar .convswitcher .lilconv i", function(event) {
+		event.stopImmediatePropagation();
+		convs.close($(this).parent()[0].id);
+	});
+	$(document).on("keypress", "#sendMessage", function(event) {
+		send(event);
+	});
 
 	function home() {
 		currentPage = pages.home;
@@ -192,7 +412,7 @@ $(document).ready(function() {
 		} else {
 			$("#login").removeClass("hide");
 		}
-		$(document).off("click");
+		$(document).off("click", "#home");
 		$(document).on("click", "#home", home);
 		$(".loader").remove();
 	}

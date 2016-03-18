@@ -55,6 +55,21 @@ var IO = function() {
 		soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
 	}
 
+	this.onUserConnection = function(callback) {
+		var fct = callback || function(){};
+		soc.on("new user connected", function(o) {
+			fct(o.id, {name: o.name, status: o.status});
+		});
+	}
+
+	this.onUserDisconnect = function(callback) {
+		var fct = callback || function() {};
+
+		soc.on("user disconnect", function(o) {
+			fct(o.id);
+		});
+	}
+
 	this.requestGameId = function(game, callback) {
 		var fct = callback || function(){};
 
@@ -65,6 +80,37 @@ var IO = function() {
 	this.connectTo = function(idGame) {
 
 		soc.emit("user want to connect to a game", {id: idGame});
+	}
+	this.connectChat = function(callback) {
+		var fct = callback || function() {};
+		soc.on("receive chat infos", function(o) {callback(o)});
+	}
+	this.send = function(o) {
+		soc.emit("client send message", o);
+	}
+	this.receiveMessage = function(callback) {
+
+		console.log("receive message binded");
+
+		var fct = callback || function(){};
+
+		soc.on("receive message", function(o) {
+			console.log(">> receive message");
+			console.log(o);
+			fct(o);
+		})
+	}
+	this.valideMessage = function(callback) {
+		console.log("valide message binded");
+		console.log(callback);
+
+		var fct = callback || function() {};
+
+		soc.on("message sended", function(o) {
+			console.log(">> message sended");
+			console.log(o);
+			fct(o);
+		});
 	}
 }
 

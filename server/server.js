@@ -33,7 +33,9 @@ function run() {
 		socket.on('user connection', function(o){
 			user = new _User(socket, o.name);
 			UserManager.addUser(user);
-			socket.emit("connection success", {name: o.name});
+			socket.emit("connection success", {id: socket.id});
+			socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)})
+			io.emit("new user connected", {id: socket.id, name:o.name, status:0});
 		});
 		// l'utilisateur met à jour son pseudo
 		socket.on('user update name', function(o) {
@@ -41,6 +43,7 @@ function run() {
 		});
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
+			io.emit("user disconnect", {id: socket.id});
 			UserManager.removeUser(UserManager.getUserById(socket.id));
 		});
 
@@ -52,6 +55,24 @@ function run() {
 				game.addPlayer(user);
 			}
 			socket.emit("your game id", {game: o.game, id: game.getId()})
+		});
+
+		// messages
+		socket.on("client send message", function(o) {
+			o.from = socket.id;
+			var u = UserManager.getUserById(o.to);
+			if(u) {
+
+				o.toName = u.getPseudo();
+				o.fromName = UserManager.getUserById(socket.id).getPseudo();
+				o.to = u.getSocket().id;
+
+				console.log("::red::>>::white:: ["+o.fromName+"] > ["+ o.toName+"] : "+o.content);
+				socket.emit("message sended", o);
+				u.getSocket().emit("receive message", o);
+			} else {
+				console.log("::red:: error when trying to send message");
+			}
 		});
 		socket.on("user want to connect to a game", function(o) {
 			var game = GameManager.getGame(o.id);
