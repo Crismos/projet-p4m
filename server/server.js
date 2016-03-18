@@ -62,7 +62,12 @@ function run() {
 			o.from = socket.id;
 			var u = UserManager.getUserById(o.to);
 			if(u) {
-				console.log("::red::>>::white:: ["+o.from+"] > ["+ o.to+"] : "+o.content);
+
+				o.toName = u.getPseudo();
+				o.fromName = UserManager.getUserById(socket.id).getPseudo();
+				o.to = u.getSocket().id;
+
+				console.log("::red::>>::white:: ["+o.fromName+"] > ["+ o.toName+"] : "+o.content);
 				socket.emit("message sended", o);
 				u.getSocket().emit("receive message", o);
 			} else {

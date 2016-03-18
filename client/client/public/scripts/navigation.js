@@ -142,8 +142,10 @@ $(document).ready(function() {
 			$("#"+id+" .status").addClass(status);
 		}
 		this.getUserName = function(id) {
-			//console.log(id);
-			return users[id].name || "undefined";
+			console.log("<<users + "+id+">>");
+			console.log(users);
+			//return users[id].name || "undefined";
+			return users[id].name;
 		}
 
 		function _updateChatPanel() {
@@ -169,20 +171,18 @@ $(document).ready(function() {
 	}
 	var Conversations = function() {
 		var convs = {};
+		var conv = this;
 
-		socket.valideMessage(_valideMessage);
-		socket.receiveMessage(_receiveMessage);
+		
 
 		this.open = function(id) {
 			if(!convs[id]) {
-				convs[id] = {};
-				convs[id].id = id;
-				convs[id].title = chat.getUserName(id);
-				convs[id].new = false;
-				convs[id].messages = {};
+				_initConv(id);
 				_updateSwitcher();
 			}
 			_openChatTab(convs[id]);
+			convs[id].new  = false;
+			_updateSwitcher();
 		}
 		this.close = function(id) {
 			console.log("close id:"+id);
@@ -196,18 +196,47 @@ $(document).ready(function() {
 				$("#sendMessage").val("");
 				//console.log("sending to ["+id+"] : "+msg);
 				socket.send({content: msg, to: id});
+				$("#sendMessage").focus();
 			}
 		}
 
 		var _valideMessage = function(o) {
-
+			var msg = {content: o.content, from: "me", to: {id: o.to, name: o.toName}};
+			convs[o.to].messages.push(msg);
+			_updateChat(o.to);
 		}
 		var _receiveMessage = function(o) {
-
+			if(!convs[o.from]) {
+				_initConv(o.from);
+			}
+			var msg = {content: o.content, from: {id: o.from, name: o.fromName}, to: "me"};
+			convs[o.from].messages.push(msg);
+			_updateChat(o.from);
 		}
 
 		var _clearChatTab = function() {
 			$("#conv").html("");
+		}
+		var _updateChat = function(idConv) {
+			var id = -1;
+			if($("#conv .header")[0])
+				id = $("#conv .header")[0].id;
+			console.log(">>>>> conv à mettre à jour : "+idConv);
+			console.log ("<<<<< conv ouverte : "+id);
+			if(id == idConv)
+				_openChatTab(convs[id]);
+			else {
+				convs[idConv].new = true;
+				
+			}
+			_updateSwitcher();
+		}
+		var _initConv = function(id) {
+			convs[id] = {};
+			convs[id].id = id;
+			convs[id].title = chat.getUserName(id);
+			convs[id].new = false;
+			convs[id].messages = [];
 		}
 		var _openChatTab = function(conv) {
 			var html = "";
@@ -215,12 +244,18 @@ $(document).ready(function() {
 			html += "<div class='messages'>";
 			for(var key in conv.messages) {
 				// afficher les messages
+				html += '<div class="msg'+(conv.messages[key].from == "me" ? " me" : " other")+'">';
+				html += '<span calss="pseudo">'+(conv.messages[key].from == "me" ? "vous" : conv.messages[key].from.name)+" : </span>";
+				html += conv.messages[key].content;
+				html += '</div>';
 			}
 			html += "</div>";
 			html += "<div class='sender'>";
 			html += '<input type="text" id="sendMessage" placeholder="Ecrivez un message...">';
 			html += "</div>";
+
 			$("#conv").html(html);
+			$("#sendMessage").focus();
 		}
 
 		var _updateSwitcher = function() {
@@ -228,7 +263,7 @@ $(document).ready(function() {
 			//console.log(Object.keys(convs).length);
 
 			var html = "";
-			if(Object.keys(convs).length > 1) {
+			if(Object.keys(convs).length > 0) {
 				html = "<span class='alert'>"+Object.keys(convs).length+"</span>";
 
 			
@@ -243,6 +278,9 @@ $(document).ready(function() {
 
 			$($(".convswitcher").get(0)).html(html);
 		}
+
+		socket.valideMessage(_valideMessage);
+		socket.receiveMessage(_receiveMessage);
 	}
 	var convs = new Conversations();
 	var chat = new Chat();
@@ -323,6 +361,10 @@ $(document).ready(function() {
 	$("#resetUser").click(function() {
 		initUser();
 	});
+	$("#pseudo").keypress(function(e) {
+		if(e.keyCode == 13)
+			$("#connect").click();
+	});
 
 	$("#connect").click(function() {
 		user.setName($("#pseudo").val());
@@ -358,7 +400,6 @@ $(document).ready(function() {
 		convs.close($(this).parent()[0].id);
 	});
 	$(document).on("keypress", "#sendMessage", function(event) {
-
 		send(event);
 	});
 
