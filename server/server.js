@@ -56,6 +56,19 @@ function run() {
 			}
 			socket.emit("your game id", {game: o.game, id: game.getId()})
 		});
+
+		// messages
+		socket.on("client send message", function(o) {
+			o.from = socket.id;
+			var u = UserManager.getUserById(o.to);
+			if(u) {
+				console.log("::red::>>::white:: ["+o.from+"] > ["+ o.to+"] : "+o.content);
+				socket.emit("message sended", o);
+				u.getSocket().emit("receive message", o);
+			} else {
+				console.log("::red:: error when trying to send message");
+			}
+		});
 		socket.on("user want to connect to a game", function(o) {
 			var game = GameManager.getGame(o.id);
 			if(game) {

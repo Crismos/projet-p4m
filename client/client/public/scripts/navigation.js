@@ -118,7 +118,7 @@ $(document).ready(function() {
 		});
 
 		this.updateUsers = function(u) {
-			console.log(u);
+			//console.log(u);
 			users = u;
 			_updateChatPanel();
 		}
@@ -142,7 +142,7 @@ $(document).ready(function() {
 			$("#"+id+" .status").addClass(status);
 		}
 		this.getUserName = function(id) {
-			console.log(id);
+			//console.log(id);
 			return users[id].name || "undefined";
 		}
 
@@ -170,6 +170,9 @@ $(document).ready(function() {
 	var Conversations = function() {
 		var convs = {};
 
+		socket.valideMessage(_valideMessage);
+		socket.receiveMessage(_receiveMessage);
+
 		this.open = function(id) {
 			if(!convs[id]) {
 				convs[id] = {};
@@ -187,6 +190,22 @@ $(document).ready(function() {
 			delete convs[id];
 			_updateSwitcher();
 		}
+		this.send = function(id) {
+			var msg = $("#sendMessage").val();
+			if(msg != "") {
+				$("#sendMessage").val("");
+				//console.log("sending to ["+id+"] : "+msg);
+				socket.send({content: msg, to: id});
+			}
+		}
+
+		var _valideMessage = function(o) {
+
+		}
+		var _receiveMessage = function(o) {
+
+		}
+
 		var _clearChatTab = function() {
 			$("#conv").html("");
 		}
@@ -201,16 +220,15 @@ $(document).ready(function() {
 			html += "<div class='sender'>";
 			html += '<input type="text" id="sendMessage" placeholder="Ecrivez un message...">';
 			html += "</div>";
-
 			$("#conv").html(html);
 		}
 
 		var _updateSwitcher = function() {
-			console.log(convs);
-			console.log(Object.keys(convs).length);
+			//console.log(convs);
+			//console.log(Object.keys(convs).length);
 
 			var html = "";
-			if(Object.keys(convs).length > 0) {
+			if(Object.keys(convs).length > 1) {
 				html = "<span class='alert'>"+Object.keys(convs).length+"</span>";
 
 			
@@ -232,6 +250,13 @@ $(document).ready(function() {
 	function updateTitle() {
 		// change le titre de la page
 		document.title = currentPage.title;
+	}
+
+	function send(e) {
+	    if (e.keyCode == 13) {
+	        // envoi message
+	        convs.send($("#sendMessage").parent().parent()[0].children[0].id);
+	    }
 	}
 
 	function initPage() {
@@ -331,6 +356,10 @@ $(document).ready(function() {
 	$(document).on("click", "#chat #convbar .convswitcher .lilconv i", function(event) {
 		event.stopImmediatePropagation();
 		convs.close($(this).parent()[0].id);
+	});
+	$(document).on("keypress", "#sendMessage", function(event) {
+
+		send(event);
 	});
 
 	function home() {

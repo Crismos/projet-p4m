@@ -85,6 +85,23 @@ var IO = function() {
 		var fct = callback || function() {};
 		soc.on("receive chat infos", function(o) {callback(o)});
 	}
+	this.send = function(o) {
+		soc.emit("client send message", o);
+	}
+	this.receiveMessage = function(callback) {
+		var fct = callback || function(){};
+
+		soc.on("receive message", function(o) {
+			fct(o);
+		})
+	}
+	this.valideMessage = function(callback) {
+		var fct = callback || function() {};
+
+		soc.on("valide message", function(o) {
+			fct(o);
+		});
+	}
 }
 
 var socket = new IO();
