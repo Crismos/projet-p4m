@@ -70,17 +70,32 @@ var IO = function() {
 		});
 	}
 
-	this.requestGameId = function(game, callback) {
-		var fct = callback || function(){};
 
-		soc.on("your game id", function(o) {callback(o)});
 
-		soc.emit("request game id", {game: game});
+
+	this.requestPuissanceQuatre = function(callback) {
+		var callback = callback;
+
+		soc.on("server accept request : create p4 game", function(link_id) {
+			console.log("request create p4 ok, mise a jour de linterface graphique");
+			callback(link_id);
+		});
+		soc.emit("client wants to create p4 game");
 	}
-	this.connectTo = function(idGame) {
 
-		soc.emit("user want to connect to a game", {id: idGame});
+	this.joinGame = function(link_id, callback) {
+		var callback = callback;
+
+		soc.on("server accept request : want to join game",function(o){
+			console.log("request join game ok, mise a jour de linterface graphique");
+			callback(o)
+		});
+		soc.emit("client wants to join game", link_id);
 	}
+
+
+
+
 	this.connectChat = function(callback) {
 		var fct = callback || function() {};
 		soc.on("receive chat infos", function(o) {callback(o)});
@@ -111,6 +126,10 @@ var IO = function() {
 			console.log(o);
 			fct(o);
 		});
+	}
+
+	this.getSocket = function(){
+		return soc;
 	}
 }
 
