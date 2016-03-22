@@ -29,13 +29,22 @@ function Grid(g){
 	var sizeCell = size/7;
 	var position = {x:0,y:0};
 	var tokens = [];
-
 	for(i = 0; i<7; i++){
 		tokens[i] = []
 		for(j = 0; j<7; j++){
 			tokens[i][j] = null;
 		}
 	}
+
+	this.reset = function(){
+		for(i = 0; i<7; i++){
+			tokens[i] = []
+			for(j = 0; j<7; j++){
+				tokens[i][j] = null;
+			}
+		}
+	}
+
 
 	this.draw = function(){
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -120,11 +129,11 @@ game = new Game();
 
 $(document).ready(function() {
 	$(document).on("click", "#pcanvas", function(e) {
-		console.log("yep1");
+
 		if(!game.yourTurn){
 			return;
 		}
-		console.log("yep2");
+
 		var column = game.getGrid().getMouseColumn(e);
 
 		socket.getSocket().emit("puissance quatre",column);
@@ -139,13 +148,16 @@ setInterval(function(){game.getGrid().draw();}, 1);
 
 
 socket.getSocket().on("puissance quatre", function(data){
-	console.log("le client recois des ordres du serveur pour jouer au ^p4");
 	game.yourTurn = data.yourTurn;
-	console.log("data = "+data.yourTurn+"/"+data.column+"/"+data);
-	console.log("your turn : "+game.yourTurn);
+	if(data.winner!=-1){
+		game.yourTurn = false;
+		console.log("le joueur "+data.winner+" gagne");
+	}
 	if(data.column!=-1){
 		game.getGrid().addToken(data.column);
 		game.getGrid().draw();
+	}else{
+		game.getGrid().reset();
 	}
 	
 })
