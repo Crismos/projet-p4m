@@ -18,6 +18,7 @@ function Game(){
 	};
 
 }
+Game.audio = new Audio('token.wav');
 
 function Grid(g){
 
@@ -111,6 +112,7 @@ function Token(column,line,size){
 		if(animation){
 			yTmp = yTmp + 10;
 			if(yTmp>=yFinal){
+				Game.audio.play();
 				yTmp = yFinal;
 				animation = false;
 			}
