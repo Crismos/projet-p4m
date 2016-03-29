@@ -1,5 +1,7 @@
 var express = require("express");
+var http = require('http');
 var app = express();
+var server = http.createServer(app);
 var config = {};
 
 fs = require('fs');
@@ -51,7 +53,8 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
 		});
 	});
 
-
-	console.log("Running > "+config.server.client.addr+":"+config.server.client.port);
-	app.listen(config.server.client.port);
+	server.listen(53000, '127.0.0.1');
+	server.on('listening', function() {
+	    console.log('Express server started on port %s at %s', server.address().port, server.address().address);
+	});
 });
