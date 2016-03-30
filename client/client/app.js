@@ -29,7 +29,9 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
 	app.get("/", function(req, res) {
 		//res.sendFile("main.html", {root: './public'});
 		res.render("main", {
-			id : 0
+			id : 0,
+			ip : config.server.socket.addr,
+			port : config.server.socket.port
 		});
 	});
 	// avec url
@@ -41,13 +43,17 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
 		} else {
 			//res.sendFile("main.html", {root: './public'});
 			res.render("main", {
-				id : 0
+				id : 0,
+				ip : config.server.socket.addr,
+				port : config.server.socket.port
 			});
 		}
 	});
 	app.get("/:id(\\d+)", function(req, res) {
 		res.render("main", {
-			id : req.params.id
+			id : req.params.id,
+			ip : config.server.socket.addr,
+			port : config.server.socket.port
 		});
 	});
 
