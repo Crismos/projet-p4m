@@ -5,24 +5,58 @@ function GameManager() {
 
 	var games = {};
 
-	this.addGame = function(gameName) {
-		var id = Math.floor(Math.random()*99999999999);
-		var game;
-
-		switch(gameName) {
-			case "p4": game = new _Puissance(id); break;
-			case "morpion": game = new _Morpion(id); break;
-			default: return null; break;
+	this.createPuissanceQuatre = function(user) {
+		if(!isAvailable(user)){
+			return false;
 		}
 
-		games[id] = game;
+		var id = generateId();
+		games[id] = new _Puissance(id, user);
+		user.setCurrentGame(games[id]);
 
-		return game;
+		return games[id];
 	}
+
+	this.createMorpion = function(user) {
+		if(!isAvailable(user)){
+			return false;
+		}
+
+		var id = generateId();
+		games[id] = new _Morpion(id, user);
+		user.setCurrentGame(games[id]);
+
+		return games[id];
+	}
+
+	this.createUltimateMorpion = function(user) {
+		if(!isAvailable(user)){
+			return false;
+		}
+
+		//a compléter pour linstant oosef
+	}
+
 	this.getGame = function(idGame) {
 		return games[idGame];
 	}
 
+	//fonctions privés utilisés uniquement dans cet objet
+	var generateId = function(){
+		var id = Math.floor(Math.random()*99999999999);
+		while(games[id]!=null){
+			id = Math.floor(Math.random()*99999999999);
+		}
+		return id;
+	}
+
+	var isAvailable = function(user){
+		if(user.getCurrentGame()!=null){
+			console.log("Impossible de créer la partie car le joueur appartient déjà à une partie.");
+			return false;
+		}
+		return true;
+	}
 }
 
 module.exports = GameManager;
