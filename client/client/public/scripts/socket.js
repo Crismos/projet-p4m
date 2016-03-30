@@ -12,6 +12,7 @@
 
 
 var IO = function() {
+
 	// connection au socket
 	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
 	// envoi d'une requete d'identification
@@ -128,9 +129,11 @@ var IO = function() {
 		});
 	}
 
+
 	this.getSocket = function(){
 		return soc;
 	}
+
 }
 
 var socket = new IO();
