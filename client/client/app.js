@@ -1,7 +1,5 @@
 var express = require("express");
-var http = require('http');
 var app = express();
-var server = http.createServer(app);
 var config = {};
 
 fs = require('fs');
@@ -31,7 +29,9 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
 	app.get("/", function(req, res) {
 		//res.sendFile("main.html", {root: './public'});
 		res.render("main", {
-			id : 0
+			id : 0,
+			ip : config.server.socket.addr,
+			port : config.server.socket.port
 		});
 	});
 	// avec url
@@ -43,18 +43,21 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
 		} else {
 			//res.sendFile("main.html", {root: './public'});
 			res.render("main", {
-				id : 0
+				id : 0,
+				ip : config.server.socket.addr,
+				port : config.server.socket.port
 			});
 		}
 	});
 	app.get("/:id(\\d+)", function(req, res) {
 		res.render("main", {
-			id : req.params.id
+			id : req.params.id,
+			ip : config.server.socket.addr,
+			port : config.server.socket.port
 		});
 	});
 
-	server.listen(53000, '127.0.0.1');
-	server.on('listening', function() {
-	    console.log('Express server started on port %s at %s', server.address().port, server.address().address);
-	});
+
+	console.log("Running > "+config.server.client.addr+":"+config.server.client.port);
+	app.listen(config.server.client.port);
 });
