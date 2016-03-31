@@ -79,20 +79,33 @@ $(document).ready(function() {
 				// si l'utilisateur n'a pas été invité
 				this.requestGame();
 			} else {
-				socket.connectTo(idGame);
+				$("#login").addClass("hide");
+				$("#game-selection").removeClass("hide");
+				$("#game-selection").addClass("hide");
+				console.log("On alerte le serveur que l'on veut rejoindre la partie "+idGame);
+				socket.joinGame(idGame, function(o){
+					console.log("la salle va se créer id:"+o.id+",game : "+o.typeGame);
+					idGame = o.id;
+					choice(o.typeGame);
+				});
 			}
 		}
 		this.requestGame = function() {
 			$("#login").addClass("hide");
 			$("#game-selection").removeClass("hide");
 		}
-		this.gameChosen = function(game) {
+		this.gameChosen = function(nameGame) {
 			$("#game-selection").addClass("hide");
+			if(nameGame = "p4"){
+				socket.requestPuissanceQuatre(function(link_id) {
+					console.log("La salle de jeux puissance 4 va se créer id:"+link_id+", game : "+nameGame);
+					idGame = link_id;
+					choice(nameGame);
+				});
+			}else if(nameGame = "morpion"){
 
-			socket.requestGameId(game, function(o) {
-				idGame = o.id;
-				choice(o.game);
-			});
+			}
+
 		}
 		this.isLogged = function() {
 			return logged;
