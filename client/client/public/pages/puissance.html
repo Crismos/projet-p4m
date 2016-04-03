@@ -3,8 +3,19 @@
 	<canvas id="pcanvas" width="750" height="750"></canvas>
 
 </div>
-
-<div class="button" id="home">Accueil</div>
+<div id="gameInfos">
+	<div class="section">
+		<div class="circle"></div>
+		<span class="player">Joueur 1</span>
+		<span class="player">Joueur 2</span>
+		<span class="versus">vs</span>
+	</div>
+	<div class="section">
+		<div class="whoplays">
+			<span>C'est à vous de jouer</span>
+		</div>
+	</div>
+</div>
 
 <script>
 
@@ -162,6 +173,6 @@ socket.getSocket().on("puissance quatre", function(data){
 		game.getGrid().reset();
 	}
 	
-})
+});
 	
 </script>
