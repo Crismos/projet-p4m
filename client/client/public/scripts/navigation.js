@@ -432,6 +432,4 @@ $(document).ready(function() {
 
 	$(document).on("click", "#home", home);
 
-	idGame = 9462598461;
-	choice("p4");
 });

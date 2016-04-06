@@ -16,7 +16,7 @@
     </div>
     <div class="section">
         <div class="whoplays">
-            <span>C'est à vous de jouer</span>
+            <span id="information">C'est à vous de jouer</span>
         </div>
         <hr>
     </div>
@@ -85,20 +85,24 @@ function draw(timestamp){
 };
 
 
-function play(e){
-	var rect = canvas.getBoundingClientRect();
-	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;		
-	var column = Math.floor(x/sizeCell);
-	if(column<0 || column >(NUMBER_CELL-1)){
-		return false
-	}
-
+function playToken(column){
 	for(i = 0; i<NUMBER_CELL; i++){
 		if(tokens[column][i]==null){
 			tokens[column][i] = new Token(column, i);
 			return;
 		}
 	}
+}
+
+function getColumn(e){
+	var rect = canvas.getBoundingClientRect();
+	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;		
+	var column = Math.floor(x/sizeCell);
+	if(column == null || column<0 || column >(NUMBER_CELL-1)){
+		return false
+	}
+
+	return column;
 }
 
 
@@ -153,15 +157,15 @@ Token.count = 0;
 
 $(document).ready(function() {
 	$(document).on("click", "#pcanvas", function(e) {
-		play(e);
-		/*if(!game.yourTurn){
+		//play(e);
+		if(!game.yourTurn){
 			return;
-		}*/
-
-
-		//socket.getSocket().emit("puissance quatre",column);
-	
-		
+		}
+		var column = getColumn(e);
+		if(column){
+			socket.getSocket().emit("puissance quatre",column);	
+		}
+			
 	});
 });
 
@@ -172,10 +176,10 @@ socket.getSocket().on("puissance quatre", function(data){
 	game.yourTurn = data.yourTurn;
 	if(data.winner!=-1){
 		game.yourTurn = false;
-		console.log("le joueur "+data.winner+" gagne");
+		$("#information").html("Un joueur gagne");
 	}
 	if(data.column!=-1){
-		play(data.column);
+		playToken(data.column);
 	}
 	
 })
