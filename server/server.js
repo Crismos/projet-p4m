@@ -47,15 +47,43 @@ function run() {
 			UserManager.removeUser(UserManager.getUserById(socket.id));
 		});
 
-		// code temporaire
-		socket.on("request game id", function(o) {
-			var game = GameManager.addGame(o.game);
+	
+
+
+		socket.on("client wants to create p4 game", function() {
+			var game = GameManager.createPuissanceQuatre(user);
 			if(game){
-				user.setGame(game);
-				game.addPlayer(user);
+				socket.emit("server accept request : create p4 game", game.getId());
+				console.log("Le serveur accepte la demande de créaction de partie de p4");
+			}else{
+				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
 			}
-			socket.emit("your game id", {game: o.game, id: game.getId()})
+
 		});
+		socket.on("client wants to join game", function(idGame) {
+			var game = GameManager.getGame(idGame);
+			if(!game) {
+				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
+				return;
+			}
+			if(!game.addPlayer(user)){
+				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
+				return;
+			}
+			
+			user.setCurrentGame(game);			
+			socket.emit("server accept request : want to join game", {typeGame: game.getTypeGame(), id: game.getId()});	
+			console.log("wait1");
+			setTimeout(function(){
+			    game.go();
+			}, 2000);
+			console.log("wait2");
+			
+			console.log("Le serveur accepte que le client puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
+		});
+
+
+
 
 		// messages
 		socket.on("client send message", function(o) {
@@ -74,19 +102,6 @@ function run() {
 				console.log("::red:: error when trying to send message");
 			}
 		});
-		socket.on("user want to connect to a game", function(o) {
-			var game = GameManager.getGame(o.id);
-			if(game) {
-				// la game existe
-				var valide = game.addPlayer(user);
-				if(valide) {
-					// il y a assez de place
-				} else {
-					// partie pleine
-				}
-			} else {
-				// retourner une erreur
-			}
-		});
+
 	});
 }

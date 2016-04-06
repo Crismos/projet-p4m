@@ -14,25 +14,24 @@
 */
 
 var User = function(socket, pseudo) {
-	var id = socket.id;
+
 	var pseudo = pseudo;
 	var socket = socket;
 	var currentGame = null;
 
-	console.log("::green::[User]::white:: > Create new user "+(id ||"undefined")+"("+(pseudo ||"undefined")+")");
+	console.log("::green::[User]::white:: > Create new user, socket id : "+ socket.id +", pseudo : "+pseudo);
 
 	this.getSocket = function() {
 		return socket;
 	}
-	this.getId = function() {
-		return id;
+	this.getId = function(){
+		return socket.id;
 	}
-	this.setPseudo = function(pseudo) {
-		pseudo = pseudo;
-	}
+
 	this.getPseudo = function() {
 		return pseudo;
 	}
+
 	this.getStatus = function() {
 		if(!currentGame) 
 			return 0;
@@ -42,8 +41,13 @@ var User = function(socket, pseudo) {
 			return 2;
 		return -1;
 	}
-	this.setGame = function(game) {
+
+	this.setCurrentGame = function(game) {
 		currentGame = game;
+	}
+
+	this.getCurrentGame = function(){
+		return currentGame;
 	}
 }
 module.exports = User;
