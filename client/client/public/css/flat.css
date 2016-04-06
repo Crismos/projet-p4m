@@ -242,3 +242,49 @@ button:hover::before {
 * end loader
 *
 */
+
+#gameInfos {
+    position: absolute;
+    top: 0;
+    background: #212121;
+    width: 250px;
+    left: 70%;
+    height: 100%;
+    color: rgba(255,255,255,0.7);
+}
+#gameInfos .title {
+    background: #039be5;
+    display: block;
+    padding: 7px 12px 6px 12px;
+    color: #212121;
+    font-size: 1.2em;
+}
+#gameInfos .section {
+    margin: 45px 5px 20px 5px;
+    padding: 5px;
+    text-align: center;
+}
+#gameInfos .section hr {
+    margin-top: 40px;
+    border-color: rgba(255,255,255,0.5);
+    width: 80%;
+}
+#gameInfos .player {
+    font-weight: bold;
+    display: block;
+    text-align: center;
+}
+#gameInfos .versus {
+    display: block;
+    text-align: center;
+}
+#gameInfos .circle {
+    display: block;
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    left: 75px;
+    margin-top: -15px;
+    background: rgba(255,255,255,0.3);
+}
