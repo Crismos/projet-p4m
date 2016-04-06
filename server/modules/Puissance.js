@@ -39,6 +39,7 @@ function Puissance(id, user) {
 
 	this.go = function(){
 		//randomisation du joueur qui commence
+		console.log("La partie commence avec "+players[0].getPseudo()+" et "+players[1].getPseudo()+".");
 		if(Math.random()<0.5){
 			playerWhoStarts = players[0];
 			player2 = players[1];
@@ -49,8 +50,8 @@ function Puissance(id, user) {
 			nextPlayerWhoPlays = players[1];
 		}
 
-		playerWhoStarts.getSocket().emit("puissance quatre",{yourTurn:1,column:-1,winner:-1});
-		player2.getSocket().emit("puissance quatre",{yourTurn:0,column:-1,winner:-1});
+		playerWhoStarts.getSocket().emit("puissance quatre",{yourTurn:1,column:-1,winner:-1,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+		player2.getSocket().emit("puissance quatre",{yourTurn:0,column:-1,winner:-1,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 
 		players[0].getSocket().on("puissance quatre", function(column){
 			if(!nextPlayerWhoPlays == players[0]){
@@ -59,8 +60,11 @@ function Puissance(id, user) {
 			}
 			addToken(column,0);
 			var winner = getWinner();
-			players[0].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner});
-			players[1].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner});
+			if(winner != -1){
+				winner = players[winner].getPseudo();
+			}
+			players[0].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+			players[1].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 		});
 
 		players[1].getSocket().on("puissance quatre", function(column){
@@ -71,8 +75,11 @@ function Puissance(id, user) {
 			addToken(column,1);
 
 			var winner = getWinner();
-			players[0].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner});
-			players[1].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner});
+			if(winner != -1){
+				winner = players[winner].getPseudo();
+			}
+			players[0].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+			players[1].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 		});
 	}
 	//player[0] jeton = 0
@@ -91,7 +98,7 @@ function Puissance(id, user) {
 	//0 joueur 0 qui win
 	//1 joueur 1 qui gagne
 	var getWinner = function(){
-				var i=0, j=0, w=0;
+		var i=0, j=0, w=0;
 		var pileColumn = [];
 		var pileLine = [];
 		var pileDiagonal = [];

@@ -9,9 +9,9 @@
     </span>
     <div class="section">
         <div class="circle"></div>
-        <span class="player">Joueur 1</span>
+        <span id="player1" class="player">Joueur 1</span>
         <span class="versus">vs</span>
-        <span class="player">Joueur 2</span>
+        <span id="player2" class="player">Joueur 2</span>
         <hr>
     </div>
     <div class="section">
@@ -36,11 +36,24 @@
 $(".selector").addClass("hide");
 
 //fin debug
-$("#gameInfos").css("margin-left", $("canvas").width());
-window.onresize = function() {
-	$("#gameInfos").css("margin-left", $("canvas").width());
-};
+function resize(){
+	var height = $(document).height();
+	var top = (height-$("canvas").height()) / 2;
+	var width = $(document).width();
+	var left = (width-($("canvas").width()+250))/2;
+	$(".loader").css("top", top);
 
+	$("#gameInfos").css("margin-left", $("canvas").width());
+	$("canvas").css("left", left);
+	$("#gameInfos").css("left", left);
+	console.log(top);
+}
+ 
+resize();
+window.onresize = function() {
+ 	resize();
+};
+$("#player1").html(localStorage.name);
 var NUMBER_CELL = 7;
 var canvas = document.getElementById("pcanvas");	
 var ctx = canvas.getContext("2d");
@@ -174,9 +187,11 @@ $(document).ready(function() {
 
 socket.getSocket().on("puissance quatre", function(data){	
 	game.yourTurn = data.yourTurn;
+	$("#player1").html(data.player1);
+	$("#player2").html(data.player2);
 	if(data.winner!=-1){
 		game.yourTurn = false;
-		$("#information").html("Un joueur gagne");
+		$("#information").html(data.winner+" gagne la partie.");
 	}
 	if(data.column!=-1){
 		playToken(data.column);

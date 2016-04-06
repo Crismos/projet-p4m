@@ -32,7 +32,7 @@ function run() {
 		// l'utilisateur envoi une requete pour s'identifier
 		socket.on('user connection', function(o){
 			user = new _User(socket, o.name);
-			UserManager.addUser(user);
+			UserManager.addUser(user);			
 			socket.emit("connection success", {id: socket.id});
 			socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)})
 			io.emit("new user connected", {id: socket.id, name:o.name, status:0});
@@ -66,20 +66,18 @@ function run() {
 				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
 				return;
 			}
-			if(!game.addPlayer(user)){
+			if(!game.addPlayer(UserManager.getUserById(socket.id))){
 				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
 				return;
 			}
 			
 			user.setCurrentGame(game);			
 			socket.emit("server accept request : want to join game", {typeGame: game.getTypeGame(), id: game.getId()});	
-			console.log("wait1");
+			
 			setTimeout(function(){
 			    game.go();
 			}, 2000);
-			console.log("wait2");
-			
-			console.log("Le serveur accepte que le client puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
+			console.log("Le serveur accepte que "+UserManager.getUserById(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
 		});
 
 
