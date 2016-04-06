@@ -86,7 +86,8 @@ html, body {
 	transition: all 300ms ease-in-out;
 }
 #nav .selector.hide {
-	top: -50%;
+	top: -20%;
+	margin-top: -400px;
 }
 
 #nav .selector div {
