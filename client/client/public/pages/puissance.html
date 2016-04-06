@@ -36,9 +36,22 @@
 $(".selector").addClass("hide");
 
 //fin debug
-$("#gameInfos").css("margin-left", $("canvas").width());
-window.onresize = function() {
+function resize() {
+	
+	var height = $(document).height();
+	var top = (height-$("canvas").height()) / 2;
+	var width = $(document).width();
+	var left = (width-($("canvas").width()+250))/2;
+	$(".loader").css("top", top);
 	$("#gameInfos").css("margin-left", $("canvas").width());
+	$("canvas").css("left", left);
+	$("#gameInfos").css("left", left);
+	console.log(top);
+}
+
+resize();
+window.onresize = function() {
+	resize();
 };
 
 var NUMBER_CELL = 7;
