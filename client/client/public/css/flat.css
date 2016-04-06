@@ -61,6 +61,10 @@ html, body {
 	top: 65%;
 }
 
+
+#chat.disabled {
+	display: none;
+}
 /*
 *
 * END BACKGROUND
@@ -231,6 +235,7 @@ button.red::before {
 */
 .loader {
 	position: relative;
+	margin-top: 5%;
 	height: 80%;
 }
 
