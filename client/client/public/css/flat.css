@@ -62,10 +62,6 @@ html, body {
 	top: 65%;
 }
 
-
-#chat.disabled {
-	display: none;
-}
 /*
 *
 * END BACKGROUND
@@ -302,4 +298,181 @@ button.red::before {
 }
 /*
 * end panel game infos
+*/
+
+/*
+* CHAT
+*/
+
+#chat {
+	position: fixed;
+	bottom: 0px;
+	left: 20px;
+	width: 300px;
+	height: 400px;
+	-webkit-transition: all 0.2s ease;
+	-moz-transition: all 0.2s ease;
+	-ms-transition: all 0.2s ease;
+	-o-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+}
+#chat.disabled {
+	bottom: -380px;
+}
+
+#chat #container {
+	background: #212121;
+	height: 100%;
+	color: rgba(255,255,255,0.8);
+	padding-top: 35px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 315px;
+}
+#chat #container::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+#chat #container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
+    border-radius: 10px;
+}
+ 
+#chat #container::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+#chat #header {
+	-webkit-border-radius: 5px 5px 0 0;
+	border-radius: 5px 5px 0 0;
+	background: #127db5;
+	height: 50px;
+	width: 100%;
+	cursor: pointer;
+}
+#chat #logo {
+	position: absolute;
+	left: 50%;
+	margin-left: -25px;
+	width: 50px;
+	height: 36px;
+	-webkit-border-radius: 100%;
+	border-radius: 100%;
+	background: #0a5881;
+	color: #fff;
+	border: 1px solid #3eace6;
+	text-align: center;
+	padding-top: 14px;
+	font-size: 20px;
+	top: 25px;
+	z-index: 500;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+	cursor: pointer;
+}
+#chat.disabled #logo {
+	-webkit-animation: logoUpNDown 1.7s linear infinite;
+    -moz-animation: logoUpNDown 1.7s linear infinite;
+    animation: logoUpNDown 1.7s linear infinite;
+}
+#chat .user {
+	position: relative;
+	height: 50px;
+	margin: 1px 0 1px 0;
+	cursor: pointer;
+}
+#chat .user div {
+	display: inline;
+}
+#chat .user:hover {
+	background: rgba(255,255,255,0.05);
+}
+#chat .user .status {
+	float: right;
+	height: 50px;
+	width: 5px;
+}
+#chat .user .notification {
+	display: none;
+}
+#chat .user .notification.new {
+	display: inline;
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	background: #282828;
+	color: rgba(255,255,255,0.5);
+	padding: 3px 5px 2px 5px;
+	border: 1px solid rgba(0,0,0,0.3);
+}
+#chat .user .status.online {
+	background: #1de9b6;
+}
+#chat .user .status.ongame {
+	background: #e9bb1d;
+}
+#chat .user {
+	overflow: hidden;
+}
+#chat .user .wrapper {
+	margin-left: -50px;	
+}
+#chat .user .wrapper .logo, #chat .user .wrapper {
+	-webkit-transition: all 0.2s ease;
+	-moz-transition: all 0.2s ease;
+	-ms-transition: all 0.2s ease;
+	-o-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+}
+#chat .user:hover .wrapper {
+	margin-left: 0px;
+}
+#chat .user .wrapper .logo {
+	margin-left: -40px;
+	margin-right: 50px;
+}
+#chat .user:hover .wrapper .logo {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+#chat .user .wrapper .logo {
+	background: #131313;
+	float: left;
+	width: 40px;
+	height: 27px;
+	-webkit-border-radius: 100%;
+	border-radius: 100%;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	text-align: center;
+	color: rgba(255,255,255,0.5);
+	padding-top: 13px;
+}
+#chat .user .name {
+	display: inline-block;
+	padding-left: 10px;
+	padding-top: 5px;
+}
+
+@-webkit-keyframes logoUpNDown {
+    0% {top: -50px;}
+    50% {top: -40px;}
+    100% {top: -50px}
+}
+@-moz-keyframes logoUpNDown {
+    0% {top: -50px;}
+    50% {top: -40px;}
+    100% {top: -50px}
+}
+@keyframes logoUpNDown {
+    0% {top: -50px;}
+    50% {top: -40px;}
+    100% {top: -50px}
+}
+
+/*
+* end chat
 */
