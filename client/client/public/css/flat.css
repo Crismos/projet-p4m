@@ -304,6 +304,10 @@ button.red::before {
 * CHAT
 */
 
+#chat.none {
+	display: none;
+}
+
 #chat {
 	position: fixed;
 	bottom: 0px;

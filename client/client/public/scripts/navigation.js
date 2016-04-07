@@ -72,7 +72,11 @@ $(document).ready(function() {
 			
 			socket.login(function(o) {
 				id = o.id;
+				socket.id = id;
 				// l'utilisateur se connecte
+				um.event(socket);
+				cm.event();
+				$("#chat").removeClass("none");
 			});
 
 			if(idGame == "0") {

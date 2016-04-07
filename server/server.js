@@ -34,8 +34,8 @@ function run() {
 			user = new _User(socket, o.name);
 			UserManager.addUser(user);			
 			socket.emit("connection success", {id: socket.id});
-			socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)});
-			io.emit("new user connected", {id: socket.id, name:o.name, status:0});
+			socket.emit("welcome", UserManager.getOnlines(socket.id));
+			io.emit("newUser", {id: socket.id, name:o.name, status:0});
 		});
 		// l'utilisateur met à jour son pseudo
 		socket.on('user update name', function(o) {
@@ -43,7 +43,7 @@ function run() {
 		});
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
-			io.emit("user disconnect", {id: socket.id});
+			io.emit("rmUser", {id: socket.id});
 			UserManager.removeUser(UserManager.getUserById(socket.id));
 		});
 

@@ -19,6 +19,8 @@ var User = function(socket, pseudo) {
 	var socket = socket;
 	var currentGame = null;
 
+	var u = this;
+
 	console.log("::green::[User]::white:: > Create new user, socket id : "+ socket.id +", pseudo : "+pseudo);
 
 	this.getSocket = function() {
@@ -48,6 +50,10 @@ var User = function(socket, pseudo) {
 
 	this.getCurrentGame = function(){
 		return currentGame;
+	}
+
+	this.toObj = function() {
+		return {id: socket.id, name: pseudo, status: u.getStatus()};
 	}
 }
 module.exports = User;

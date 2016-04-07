@@ -1,11 +1,12 @@
-function UserManager(socket) {
+function UserManager() {
 	
 	var users = {};
 	var callbacks = {newUser: {},
 					rmUser: {},
-					upUser: {}};
+					upUser: {},
+					welcome: {}};
 
-	function event(socket) {
+	this.event = function(socket) {
 		var socket = socket.getSocket();
 
 		socket.on("newUser", function(o) {
@@ -17,24 +18,42 @@ function UserManager(socket) {
 		socket.on("rmUser", function(o) {
 			modify("rmUser", o.id, null, null);
 		});
+		socket.on("welcome", function(o) {
+			welcome(o);
+		});
 	}
 
+	function welcome(o) {
+		// first connection getting all clients
+		// o = [{user, user, ...}]
+		for(var i=0 ;i<o.length; i++) {
+			users[o[i].id] = {};
+			users[o[i].id] = o[i];
+		}
+
+		for(var key in callbacks.welcome) {
+			callbacks.welcome[key](o);
+		}
+	}
 
 	function modify(type, id, nom, status) {
-		if(!users[id]) {
-			users[id] = {};
-		}
+		if(id != socket.id) {
+			if(!users[id]) {
+				users[id] = {};
+			}
 
-		users[id].id = id || users[id].id;
-		users[id].name = nom || users[id].name;
-		users[id].status = status || users[id].status || 0;
+			users[id].id = id || users[id].id;
+			users[id].name = nom || users[id].name;
+			users[id].status = status || users[id].status || 0;
 
-		for(var key in callbacks[type]) {
-			callbacks[type][key](users[id]);
-		}
+			var tmp = users[id];
+			if(type == "rmUser") {
+				delete users[id];
+			}
 
-		if(type == "rmUser") {
-			delete users[id];
+			for(var key in callbacks[type]) {
+				callbacks[type][key](tmp);
+			}
 		}
 	}
 
@@ -49,6 +68,12 @@ function UserManager(socket) {
 			tab.push(users[order[k]]);
 		}
 		return tab;
+	}
+
+	this.onWelcome = function(id, callback) {
+		var fct = callback || function() {};
+
+		callbacks.welcome[id] = fct;
 	}
 
 	this.onNewUser = function(id, callback) {
@@ -69,7 +94,8 @@ function UserManager(socket) {
 		callbacks.upUser[id] = fct;
 	}
 
-	event(socket);
+
+	this.modify = modify;
 
 }
-var um = new UserManager(socket);
+var um = new UserManager();
