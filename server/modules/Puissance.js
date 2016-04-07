@@ -2,6 +2,7 @@ function Puissance(id, user) {
 
 	var players = [];
 	players.push(user);
+	console.log("::green::[Puissance]::white::La partie "+id+" de p4 vient d'être créé par "+players[0].getPseudo()+".");
 	var maxPlayer = 2;
 	var id = id;
 
@@ -26,9 +27,11 @@ function Puissance(id, user) {
 	this.addPlayer = function(user) {
 		if(players.length < maxPlayer && user.getCurrentGame()==null){
 			players.push(user);
+			user.setCurrentGame(this);
+			console.log("::green::[Puissance]::white::"+players[1].getPseudo()+" viens de rejoindre la partie "+id+" de p4/");
 			return true;
 		}else{
-			console.log("Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie");
+			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
 			return false;
 		}		
 	}
@@ -39,7 +42,7 @@ function Puissance(id, user) {
 
 	this.go = function(){
 		//randomisation du joueur qui commence
-		console.log("La partie commence avec "+players[0].getPseudo()+" et "+players[1].getPseudo()+".");
+		console.log("::green::[Puissance]::white::La partie "+id+" de p4 commence avec "+players[0].getPseudo()+" et "+players[1].getPseudo()+".");
 		if(Math.random()<0.5){
 			playerWhoStarts = players[0];
 			player2 = players[1];
@@ -166,7 +169,7 @@ function Puissance(id, user) {
 				}
 				p4.push(pile[i]);
 				if(p4.length==4){
-					console.log("Puissance 4 diago pour joueur "+p4[p4.length-1]);
+					console.log("::green::[Puissance]::white::Puissance 4");
 					return p4[p4.length-1];
 				}
 

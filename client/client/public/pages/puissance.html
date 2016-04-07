@@ -16,7 +16,7 @@
     </div>
     <div class="section">
         <div class="whoplays">
-            <span id="information">C'est à vous de jouer</span>
+            <span id="information">Attente</span>
         </div>
         <hr>
     </div>
@@ -111,9 +111,11 @@ function getColumn(e){
 	var rect = canvas.getBoundingClientRect();
 	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;		
 	var column = Math.floor(x/sizeCell);
-	if(column == null || column<0 || column >(NUMBER_CELL-1)){
+	console.log("colonne : "+column);
+	if(column<0 || column >(NUMBER_CELL-1)){
 		return false
 	}
+	console.log("yep");
 
 	return column;
 }
@@ -171,14 +173,12 @@ Token.count = 0;
 $(document).ready(function() {
 	$(document).on("click", "#pcanvas", function(e) {
 		//play(e);
-		if(!game.yourTurn){
+		if(!yourTurn){
 			return;
 		}
 		var column = getColumn(e);
-		if(column){
-			socket.getSocket().emit("puissance quatre",column);	
-		}
-			
+		yourTurn = false;
+		socket.getSocket().emit("puissance quatre",column);	
 	});
 });
 
@@ -186,11 +186,16 @@ $(document).ready(function() {
 
 
 socket.getSocket().on("puissance quatre", function(data){	
-	game.yourTurn = data.yourTurn;
+	yourTurn = data.yourTurn;
+	if(yourTurn){
+		$("#information").html("A vous de joueur !");
+	}else{
+		$("#information").html("A votre adversaire !");
+	}
 	$("#player1").html(data.player1);
 	$("#player2").html(data.player2);
 	if(data.winner!=-1){
-		game.yourTurn = false;
+		yourTurn = false;
 		$("#information").html(data.winner+" gagne la partie.");
 	}
 	if(data.column!=-1){

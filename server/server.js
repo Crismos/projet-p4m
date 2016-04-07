@@ -20,7 +20,6 @@ function run() {
 	console.log("Listening port *: ::green::"+config.server.socket.port);
 
 	var _UserManager = require("./modules/UserManager.js");
-	var _User = require("./modules/User.js");
 	var _GameManager = require("./modules/GameManager.js");
 
 	var UserManager = new _UserManager();
@@ -28,23 +27,25 @@ function run() {
 
 	// connection d'un nouvel utilisateur
 	io.on('connection', function(socket){
-		var user;
-		// l'utilisateur envoi une requete pour s'identifier
-		socket.on('user connection', function(o){
-			user = new _User(socket, o.name);
-			UserManager.addUser(user);			
-			socket.emit("connection success", {id: socket.id});
-			socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)})
-			io.emit("new user connected", {id: socket.id, name:o.name, status:0});
+		
+		UserManager.addUser(socket);
+		var user = UserManager.getUser(socket.id)	
+				
+		socket.emit("server sends socket id to user", {id: socket.id});
+
+		
+		socket.on('user sends his pseudo to server', function(o){
+			UserManager.getUser(socket.id).setPseudo(o.name);
+
+			//Chat
+			//socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)})
+			//io.emit("new user connected", {id: socket.id, name:o.name, status:0});
 		});
-		// l'utilisateur met à jour son pseudo
-		socket.on('user update name', function(o) {
-			UserManager.getUserById(socket.id).setPseudo(o.name);
-		});
+
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
 			io.emit("user disconnect", {id: socket.id});
-			UserManager.removeUser(UserManager.getUserById(socket.id));
+			UserManager.removeUser(socket.id);
 		});
 
 	
@@ -66,7 +67,7 @@ function run() {
 				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
 				return;
 			}
-			if(!game.addPlayer(UserManager.getUserById(socket.id))){
+			if(!game.addPlayer(UserManager.getUser(socket.id))){
 				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
 				return;
 			}
@@ -77,7 +78,7 @@ function run() {
 			setTimeout(function(){
 			    game.go();
 			}, 2000);
-			console.log("Le serveur accepte que "+UserManager.getUserById(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
+			console.log("Le serveur accepte que "+UserManager.getUser(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
 		});
 
 
@@ -86,11 +87,11 @@ function run() {
 		// messages
 		socket.on("client send message", function(o) {
 			o.from = socket.id;
-			var u = UserManager.getUserById(o.to);
+			var u = UserManager.getUser(o.to);
 			if(u) {
 
 				o.toName = u.getPseudo();
-				o.fromName = UserManager.getUserById(socket.id).getPseudo();
+				o.fromName = UserManager.getUser(socket.id).getPseudo();
 				o.to = u.getSocket().id;
 
 				console.log("::red::>>::white:: ["+o.fromName+"] > ["+ o.toName+"] : "+o.content);
