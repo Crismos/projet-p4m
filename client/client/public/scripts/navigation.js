@@ -277,29 +277,22 @@ $(document).ready(function() {
 		$(".fa").toggleClass("fa-flip-horizontal");
 	});
 
-	$(document).on("click", "#conv .header", function() {
-		$($(this).parent()).toggleClass("minified");
+	$(document).on("click", "#chat #header, #chat #logo,#conversation .header", function(event) {
+		$("#chat").toggleClass("disabled");
 	});
-	$(document).on("click", "span.alert", function() {
-		$(".convhist").toggleClass("hide");
+	$(document).on("click", "#chat .user", function(event) {
+		$("#container").addClass("swap");
+		$("#conversation").removeClass("swap");
+		$("#chat #logo").addClass("minimize");
+		console.log($(this).attr("id"));
 	});
-	$(document).on("click", "#panel .user", function() {
-		convs.open($(this)[0].id);
+	$(document).on("click", "#conversationBack", function(event) {
+		$("#container").removeClass("swap");
+		$("#conversation").addClass("swap");
+		$("#chat #logo").removeClass("minimize");
+		event.stopPropagation();
 	});
-	$(document).on("click", ".lilconv", function() {
-		convs.open($(this)[0].id);
-		$(".convhist").toggleClass("hide");
-	});
-	$(document).on("click", "#chat #convbar #conv .header i", function() {
-		convs.close($(this).parent()[0].id);
-	});
-	$(document).on("click", "#chat #convbar .convswitcher .lilconv i", function(event) {
-		event.stopImmediatePropagation();
-		convs.close($(this).parent()[0].id);
-	});
-	$(document).on("keypress", "#sendMessage", function(event) {
-		send(event);
-	});
+
 
 	function home() {
 		currentPage = pages.home;

@@ -34,7 +34,7 @@ function run() {
 			user = new _User(socket, o.name);
 			UserManager.addUser(user);			
 			socket.emit("connection success", {id: socket.id});
-			socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)})
+			socket.emit("receive chat infos", {users: UserManager.getOnlines(socket.id)});
 			io.emit("new user connected", {id: socket.id, name:o.name, status:0});
 		});
 		// l'utilisateur met à jour son pseudo

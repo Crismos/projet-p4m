@@ -307,17 +307,35 @@ button.red::before {
 #chat {
 	position: fixed;
 	bottom: 0px;
-	left: 20px;
+	left: 0px;
 	width: 300px;
 	height: 400px;
+
 	-webkit-transition: all 0.2s ease;
 	-moz-transition: all 0.2s ease;
 	-ms-transition: all 0.2s ease;
 	-o-transition: all 0.2s ease;
 	transition: all 0.2s ease;
 }
+#chat .chatWrap {
+	width: 300px;
+	height: 100%;
+	overflow: hidden;
+}
 #chat.disabled {
-	bottom: -380px;
+	bottom: -350px;
+}
+#chat #fond {
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: #212121;
+	z-index: 0;
+	-webkit-border-radius: 5px 5px 0 0;
+border-radius: 5px 5px 0 0;
 }
 
 #chat #container {
@@ -328,19 +346,38 @@ button.red::before {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	height: 315px;
+	-webkit-transition: all 0.2s linear;
+	-moz-transition: all 0.2s linear;
+	-ms-transition: all 0.2s linear;
+	-o-transition: all 0.2s linear;
+	transition: all 0.2s linear;
 }
-#chat #container::-webkit-scrollbar {
-    width: 12px;
+#chat #container.swap {
+	margin-left: 300px;
+}
+#chat #logo.minimize {
+	left: 300px;
+	top: 50px;
+	width: 0px;
+	height: 0px;
+	margin: 0px;
+	padding: 0px;
+	border: none;
+	overflow: hidden;
+}
+#chat #container::-webkit-scrollbar, #chat #conversation .container::-webkit-scrollbar {
+    width: 6px;
 }
  
-#chat #container::-webkit-scrollbar-track {
+#chat #container::-webkit-scrollbar-track, #chat #conversation .container::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3); 
-    border-radius: 10px;
+    border-radius: 4px;
 }
  
-#chat #container::-webkit-scrollbar-thumb {
-    border-radius: 10px;
+#chat #container::-webkit-scrollbar-thumb, #chat #conversation .container::-webkit-scrollbar-thumb {
+    border-radius: 4px;
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    background: #127db5;
 }
 #chat #header {
 	-webkit-border-radius: 5px 5px 0 0;
@@ -366,12 +403,12 @@ button.red::before {
 	font-size: 20px;
 	top: 25px;
 	z-index: 500;
-	-webkit-transition: all 0.5s ease;
-	-moz-transition: all 0.5s ease;
-	-ms-transition: all 0.5s ease;
-	-o-transition: all 0.5s ease;
-	transition: all 0.5s ease;
 	cursor: pointer;
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-ms-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
 }
 #chat.disabled #logo {
 	-webkit-animation: logoUpNDown 1.7s linear infinite;
@@ -472,6 +509,113 @@ button.red::before {
     50% {top: -40px;}
     100% {top: -50px}
 }
+
+#conversation {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	color: rgba(255,255,255,0.8);
+	-webkit-transition: all 0.2s linear;
+	-moz-transition: all 0.2s linear;
+	-ms-transition: all 0.2s linear;
+	-o-transition: all 0.2s linear;
+	transition: all 0.2s linear;
+}
+#conversation.swap {
+	left: -400px;
+}
+#conversation .header {
+	height: 50px;
+	width: 100%;
+	cursor: pointer;
+}
+#conversation .header div {
+	display: inline-block;
+}
+#conversation .header #conversationBack {
+	background: #2c8bbd;
+	cursor: pointer;
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-ms-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+	width: 80px;
+	height: 36px;
+	font-size: 18px;
+	-webkit-border-radius: 5px 0 0 0;
+	border-radius: 5px 0 0 0;
+	padding-top: 14px;
+	text-align: center;
+}
+#chat.disabled #conversation .header #conversationBack {
+	width: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+#conversation .header #conversationBack:hover {
+	background: #38a0d7;
+	padding-right: 5px;
+	width: 75px;
+}
+#conversation .header .title {
+	margin-left: 5px;
+	font-weight: bold;
+}
+#conversation .header .status {
+	-webkit-border-radius: 100%;
+	border-radius: 100%;
+	display: block;
+	width: 5px;
+	height: 5px;
+	border: 2px solid rgba(0,0,0,0.2);
+	background: #1de9b6;
+	float: right;
+	margin-top: 20px;
+	margin-right: 20px;
+}
+
+#conversation .container {
+	background: #212121;
+	height: 100%;
+	color: rgba(255,255,255,0.8);
+	padding-top: 10px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	height: 300px;
+	-webkit-transition: all 0.2s ease;
+	-moz-transition: all 0.2s ease;
+	-ms-transition: all 0.2s ease;
+	-o-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+}
+#conversation input[type="text"] {
+	resize: none;
+	width: 100%;
+	height: 42px;
+	background: #0e0e0e;
+	color: rgba(255,255,255,0.7);
+	border: none;
+	font-size: 14px;
+}
+#conversation .messageSet {
+	display: block;
+	padding: 4px 3px 4px 5px;
+	background: rgba(255,255,255,0.2);
+	margin: 5px;
+	-webkit-border-radius: 5px 5px 5px 5px;
+	border-radius: 5px 5px 5px 5px;
+}
+#conversation .messageSet.me {
+	margin-left: 50px;
+	background: #2c8bbd;
+}
+#conversation .messageSet.other {
+	margin-right: 50px;
+	background: #044c71;
+}
+
+
 
 /*
 * end chat
