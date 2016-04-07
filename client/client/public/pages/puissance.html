@@ -1,125 +1,136 @@
 
 <div id="game">	
-	<canvas id="pcanvas" width="750" height="750"></canvas>
-
+	<canvas id="pcanvas" width="700" height="700"></canvas>	
 </div>
+
 <div id="gameInfos">
-	<span class="title">
-	Infos
-	</span>
-	<div class="section">
-		<div class="circle"></div>
-		<span class="player">Joueur 1</span>
-		<span class="versus">vs</span>
-		<span class="player">Joueur 2</span>
-		<hr>
-	</div>
-	<div class="section">
-		<div class="whoplays">
-			<span>C'est à vous de jouer</span>
-		</div>
-		<hr>
-	</div>
-	<div class="section">
-		<button class="red" id="ff">
-			<span>Abandonner</span>
-		</button>
-	</div>
+    <span class="title">
+    Infos
+    </span>
+    <div class="section">
+        <div class="circle"></div>
+        <span id="player1" class="player">Joueur 1</span>
+        <span class="versus">vs</span>
+        <span id="player2" class="player">Joueur 2</span>
+        <hr>
+    </div>
+    <div class="section">
+        <div class="whoplays">
+            <span id="information">C'est à vous de jouer</span>
+        </div>
+        <hr>
+    </div>
+    <div class="section">
+        <button class="red" id="ff">
+            <span>Abandonner</span>
+        </button>
+    </div>
 </div>
 
 <script>
 
-function Game(){
+/*
+* debug
+*/
+$(".selector").addClass("hide");
 
-	var grid = new Grid(this);
-	this.yourTurn = false;
+//fin debug
+function resize(){
+	var height = $(document).height();
+	var top = (height-$("canvas").height()) / 2;
+	var width = $(document).width();
+	var left = (width-($("canvas").width()+250))/2;
+	$(".loader").css("top", top);
 
-	this.getGrid = function(){
-		return grid;
-	};
-
+	$("#gameInfos").css("margin-left", $("canvas").width());
+	$("canvas").css("left", left);
+	$("#gameInfos").css("left", left);
+	console.log(top);
 }
-Game.audio = new Audio('token.wav');
+ 
+resize();
+window.onresize = function() {
+ 	resize();
+};
+$("#player1").html(localStorage.name);
+var NUMBER_CELL = 7;
+var canvas = document.getElementById("pcanvas");	
+var ctx = canvas.getContext("2d");
+var sizeCell = canvas.height/NUMBER_CELL;
+var yourTurn = false;
+var audio = new Audio('token.wav');
+var canvasPosition = {x:0,y:0};
+var tokens = [];
+var backgroundCell = new Image();
+backgroundCell.src = 'pcell.png';
 
-function Grid(g){
-
-	var i =0, j=0;
-	var game = g;
-	var canvas = document.getElementById("pcanvas");	
-	var ctx = canvas.getContext("2d");
-	var size = canvas.height;
-	var sizeCell = size/7;
-	var position = {x:0,y:0};
-	var tokens = [];
-	for(i = 0; i<7; i++){
+function initializeGame(){
+	for(i = 0; i<NUMBER_CELL; i++){
 		tokens[i] = []
-		for(j = 0; j<7; j++){
+		for(j = 0; j<NUMBER_CELL; j++){
 			tokens[i][j] = null;
 		}
 	}
-
-	this.reset = function(){
-		for(i = 0; i<7; i++){
-			tokens[i] = []
-			for(j = 0; j<7; j++){
-				tokens[i][j] = null;
-			}
-		}
-	}
-
-
-	this.draw = function(){
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		ctx.fillStyle = "#ecf0f1";
-		ctx.fillRect(0,0,canvas.width, canvas.height)
-		for(i = 0; i<7; i++){
-			for(j = 0; j<7; j++){
-				if(tokens[i][j] !=null){
-					tokens[i][j].draw(ctx, position);
-				}
-			}
-		}
-		for(i = 0; i<7; i++){
-			for(j = 0; j<7; j++){
-				ctx.drawImage(Grid.backgroundCell,i*sizeCell+position.x,j*sizeCell+position.y,sizeCell,sizeCell);
-			}
-		}
-	};
-
-	this.getMouseColumn = function(e){
-		var rect = canvas.getBoundingClientRect();
-		var x = e.clientX - rect.left - position.x;		
-		var column = Math.floor(x/sizeCell);
-		if(column<0 || column >6){
-			return false
-		}
-		return column;
-	}
-
-	this.addToken = function(column){
-		for(i = 0; i<7; i++){
-			if(tokens[column][i]==null){
-				tokens[column][i] = new Token(column, i, sizeCell);
-				return;
-			}
-		}
-	}
-
+	requestAnimationFrame(draw);
 }
-Grid.backgroundCell = new Image();
-Grid.backgroundCell.src = 'pcell.png';
 
-function Token(column,line,size){
+function draw(timestamp){	
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	ctx.fillStyle = "#ecf0f1";
+	ctx.fillRect(0,0,canvas.width, canvas.height)
+	
+	for(i = 0; i<NUMBER_CELL; i++){
+		for(j = 0; j<NUMBER_CELL; j++){
+			if(tokens[i][j] !=null){
+				tokens[i][j].draw(timestamp);
+			}
+		}
+	}
+
+	for(i = 0; i<NUMBER_CELL; i++){
+		for(j = 0; j<NUMBER_CELL; j++){
+			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
+		}
+	}
+
+	requestAnimationFrame(draw);
+};
+
+
+function playToken(column){
+	for(i = 0; i<NUMBER_CELL; i++){
+		if(tokens[column][i]==null){
+			tokens[column][i] = new Token(column, i);
+			return;
+		}
+	}
+}
+
+function getColumn(e){
+	var rect = canvas.getBoundingClientRect();
+	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;		
+	var column = Math.floor(x/sizeCell);
+	if(column == null || column<0 || column >(NUMBER_CELL-1)){
+		return false
+	}
+
+	return column;
+}
+
+
+function Token(column,line){
 
 	var column = column;
 	var line = line;
-	var size = size;
-	var x = column*size;
-	var yStart = -size;
-	var yFinal = size*7 - line*size - size;
+	var x = column*sizeCell;
+	var yStart = -sizeCell;
+	var yFinal = sizeCell*NUMBER_CELL - line*sizeCell - sizeCell;
 	var yTmp = yStart;
-	var animation = true;
+	var start = null;
+	var progress = null;
+	var duration = 800;
 	var token = null;
+
 
 	if(Token.count%2==0){
 		token = Token.redToken;
@@ -128,17 +139,23 @@ function Token(column,line,size){
 	}
 	Token.count++;
 
-	this.draw = function(ctx, position){
-		ctx.drawImage(token,x+position.x,yTmp+position.y,size,size);
-		if(animation){
-			yTmp = yTmp + 10;
-			if(yTmp>=yFinal){
-				Game.audio.play();
-				yTmp = yFinal;
-				animation = false;
-			}
+	this.draw = function(timestamp){
+		if(start === - 1){
+			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
+			return;
 		}
+		if(start===null) start = timestamp;
+		progress = timestamp - start;
+		ratio = progress / duration;
 
+		if(progress>duration){
+			start = -1;
+			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
+			audio.play();
+		}else{
+			ctx.drawImage(token,x+canvasPosition.x,yStart+(yFinal-yStart)*ratio+canvasPosition.y,sizeCell,sizeCell);
+		}
+		
 	}
 }
 Token.redToken = new Image();
@@ -148,41 +165,39 @@ Token.yellowToken.src = 'yellowToken.png';
 Token.count = 0;
 
 
-game = new Game();
+
 
 $(document).ready(function() {
 	$(document).on("click", "#pcanvas", function(e) {
-
+		//play(e);
 		if(!game.yourTurn){
 			return;
 		}
-
-		var column = game.getGrid().getMouseColumn(e);
-
-		socket.getSocket().emit("puissance quatre",column);
-		/*
-		game.getGrid().addToken(column);
-		game.getGrid().draw();
-		*/
+		var column = getColumn(e);
+		if(column){
+			socket.getSocket().emit("puissance quatre",column);	
+		}
+			
 	});
 });
 
-setInterval(function(){game.getGrid().draw();}, 1);
 
 
-socket.getSocket().on("puissance quatre", function(data){
+
+socket.getSocket().on("puissance quatre", function(data){	
 	game.yourTurn = data.yourTurn;
+	$("#player1").html(data.player1);
+	$("#player2").html(data.player2);
 	if(data.winner!=-1){
 		game.yourTurn = false;
-		console.log("le joueur "+data.winner+" gagne");
+		$("#information").html(data.winner+" gagne la partie.");
 	}
 	if(data.column!=-1){
-		game.getGrid().addToken(data.column);
-		game.getGrid().draw();
-	}else{
-		game.getGrid().reset();
+		playToken(data.column);
 	}
 	
 });
+
+initializeGame();
 	
 </script>

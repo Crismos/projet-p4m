@@ -72,7 +72,7 @@ $(document).ready(function() {
 			
 			socket.login(function(o) {
 				id = o.id;
-				$("#chat").removeClass("disabled");
+				//$("#chat").removeClass("disabled");
 			});
 
 			if(idGame == "0") {
@@ -431,4 +431,5 @@ $(document).ready(function() {
 	}
 
 	$(document).on("click", "#home", home);
+
 });
