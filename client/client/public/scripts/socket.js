@@ -94,42 +94,6 @@ var IO = function() {
 		soc.emit("client wants to join game", link_id);
 	}
 
-
-
-
-	this.connectChat = function(callback) {
-		var fct = callback || function() {};
-		soc.on("receive chat infos", function(o) {callback(o)});
-	}
-	this.send = function(o) {
-		soc.emit("client send message", o);
-	}
-	this.receiveMessage = function(callback) {
-
-		console.log("receive message binded");
-
-		var fct = callback || function(){};
-
-		soc.on("receive message", function(o) {
-			console.log(">> receive message");
-			console.log(o);
-			fct(o);
-		})
-	}
-	this.valideMessage = function(callback) {
-		console.log("valide message binded");
-		console.log(callback);
-
-		var fct = callback || function() {};
-
-		soc.on("message sended", function(o) {
-			console.log(">> message sended");
-			console.log(o);
-			fct(o);
-		});
-	}
-
-
 	this.getSocket = function(){
 		return soc;
 	}
