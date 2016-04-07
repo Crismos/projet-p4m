@@ -5,7 +5,7 @@ function Puissance(id, user) {
 	console.log("::green::[Puissance]::white::La partie "+id+" de p4 vient d'être créé par "+players[0].getPseudo()+".");
 	var maxPlayer = 2;
 	var id = id;
-
+	var active = true;
 	var tokens = [];
 	var playerWhoStarts;
 	var player2;
@@ -29,6 +29,7 @@ function Puissance(id, user) {
 			players.push(user);
 			user.setCurrentGame(this);
 			console.log("::green::[Puissance]::white::"+players[1].getPseudo()+" viens de rejoindre la partie "+id+" de p4/");
+			
 			return true;
 		}else{
 			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
@@ -38,6 +39,13 @@ function Puissance(id, user) {
 
 	this.getTypeGame = function(){
 		return "p4";
+	}
+	this.removeUser = function(user){
+		active = false;
+		var index = players.indexOf(user);
+		if(index > -1){
+			players.splice(index, 1);
+		}
 	}
 
 	this.go = function(){
@@ -57,6 +65,7 @@ function Puissance(id, user) {
 		player2.getSocket().emit("puissance quatre",{yourTurn:0,column:-1,winner:-1,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 
 		players[0].getSocket().on("puissance quatre", function(column){
+			if(!active) return;
 			if(!nextPlayerWhoPlays == players[0]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
@@ -71,6 +80,7 @@ function Puissance(id, user) {
 		});
 
 		players[1].getSocket().on("puissance quatre", function(column){
+			if(!active) return;
 			if(!nextPlayerWhoPlays == players[1]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
