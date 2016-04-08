@@ -107,6 +107,16 @@ function ConversationManager(um) {
 		return convs[id];
 	}
 
+	this.message = function(o) {
+		var msg = new Message(false, o.text);
+		console.log("reçu");
+		console.log(o);
+		if(convs[o.from]) {
+			convs[o.from].addMessage(msg);
+		}
+		call("newMsg", convs[o.from]);
+	}
+
 	function addConversation(user) {
 		convs[user.id] = new Conversation(user);
 
@@ -132,8 +142,6 @@ function ConversationManager(um) {
 	}
 
 	function call(event, object) {
-		console.log("call >> "+event);
-		console.log(object);
 		for(var key in callbacks[event]) {
 			callbacks[event][key](object);
 		}
@@ -142,6 +150,7 @@ function ConversationManager(um) {
 	this.send = function(id, text) {
 		var conv = this.getConv(id);
 		conv.addMessage(new Message(true, text));
+		socket.send(id, text);
 
 		call("newMsg", conv);
 	}

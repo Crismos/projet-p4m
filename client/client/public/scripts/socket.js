@@ -71,6 +71,15 @@ var IO = function() {
 		});
 	}
 
+	this.onMessage = function(callback) {
+		soc.on("message", function(o) {
+			callback(o);
+		});
+	}
+	this.send = function(to, text) {
+		soc.emit("message", {to:to, text:text});
+	}
+
 
 
 

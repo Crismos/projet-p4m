@@ -84,21 +84,14 @@ function run() {
 
 
 		// messages
-		socket.on("client send message", function(o) {
-			o.from = socket.id;
-			var u = UserManager.getUserById(o.to);
-			if(u) {
+		socket.on("message", function(o) {
+			var from = socket.id;
+			var to = o.to;
+			var text = o.text;
 
-				o.toName = u.getPseudo();
-				o.fromName = UserManager.getUserById(socket.id).getPseudo();
-				o.to = u.getSocket().id;
+			console.log("::red::[Chat]::red:: "+from+" > "+to+" : "+text);
 
-				console.log("::red::>>::white:: ["+o.fromName+"] > ["+ o.toName+"] : "+o.content);
-				socket.emit("message sended", o);
-				u.getSocket().emit("receive message", o);
-			} else {
-				console.log("::red:: error when trying to send message");
-			}
+			UserManager.getUserById(to).getSocket().emit("message", {from: from, text: text});
 		});
 
 	});

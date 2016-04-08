@@ -79,6 +79,9 @@ $(document).ready(function() {
 				um.event(socket);
 				cm.event();
 				cv.event(cm);
+
+				socket.onMessage(cm.message);
+
 				$("#chat").removeClass("none");
 				$("#pseudo").blur();
 			});
