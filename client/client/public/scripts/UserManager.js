@@ -94,6 +94,10 @@ function UserManager() {
 		callbacks.upUser[id] = fct;
 	}
 
+	this.getUser = function(id) {
+		return users[id];
+	}
+
 
 	this.modify = modify;
 

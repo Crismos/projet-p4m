@@ -76,6 +76,7 @@ $(document).ready(function() {
 				// l'utilisateur se connecte
 				um.event(socket);
 				cm.event();
+				cv.event(cm);
 				$("#chat").removeClass("none");
 			});
 
