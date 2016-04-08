@@ -66,13 +66,17 @@ var backgroundCell = new Image();
 backgroundCell.src = 'pcell.png';
 
 function initializeGame(){
+	resetGame();
+	requestAnimationFrame(draw);
+}
+function resetGame(){
 	for(i = 0; i<NUMBER_CELL; i++){
 		tokens[i] = []
 		for(j = 0; j<NUMBER_CELL; j++){
 			tokens[i][j] = null;
 		}
 	}
-	requestAnimationFrame(draw);
+	yourTurn = false;
 }
 
 function draw(timestamp){	
@@ -202,7 +206,13 @@ socket.getSocket().on("puissance quatre", function(data){
 		playToken(data.column);
 	}
 	
-})
+});
+socket.getSocket().on("votre adversaire de puissance 4 s'est barré", function(){
+	resetGame();
+	$("#player1").html(localStorage.name);
+	$("#player2").html("");
+	$("#information").html("Votre adversaire s'est barré.<br /> Vous pouvez re-partager votre lien.");
+});
 
 initializeGame();
 	

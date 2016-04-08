@@ -5,19 +5,13 @@ function Puissance(id, user) {
 	console.log("::green::[Puissance]::white::La partie "+id+" de p4 vient d'être créé par "+players[0].getPseudo()+".");
 	var maxPlayer = 2;
 	var id = id;
-	var active = true;
+
 	var tokens = [];
 	var playerWhoStarts;
 	var player2;
 	var nextPlayerWhoPlays;
 	var i = 0;
-	//initialisation de la grille du morpion
-	for(i = 0; i<7; i++){
-		tokens[i] = []
-		for(j = 0; j<7; j++){
-			tokens[i][j] = null;
-		}
-	}
+
 
 
 	this.getId = function() {
@@ -29,7 +23,12 @@ function Puissance(id, user) {
 			players.push(user);
 			user.setCurrentGame(this);
 			console.log("::green::[Puissance]::white::"+players[1].getPseudo()+" viens de rejoindre la partie "+id+" de p4/");
-			
+				if(players.length == 2){
+					var that=this;
+					setTimeout(function(){
+			    		that.go();
+					}, 2000);
+				}
 			return true;
 		}else{
 			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
@@ -41,14 +40,26 @@ function Puissance(id, user) {
 		return "p4";
 	}
 	this.removeUser = function(user){
-		active = false;
 		var index = players.indexOf(user);
 		if(index > -1){
 			players.splice(index, 1);
 		}
+		if(players.length == 1){
+			//on le préviens que son adversaire s'est barré
+			players[0].getSocket().emit("votre adversaire de puissance 4 s'est barré");
+		}
 	}
 
 	this.go = function(){
+		//initialisation de la grille du morpion
+		for(i = 0; i<7; i++){
+			tokens[i] = []
+			for(j = 0; j<7; j++){
+				tokens[i][j] = null;
+			}
+		}
+		players[0].getSocket().removeAllListeners('puissance quatre');
+		players[1].getSocket().removeAllListeners('puissance quatre');
 		//randomisation du joueur qui commence
 		console.log("::green::[Puissance]::white::La partie "+id+" de p4 commence avec "+players[0].getPseudo()+" et "+players[1].getPseudo()+".");
 		if(Math.random()<0.5){
@@ -65,7 +76,7 @@ function Puissance(id, user) {
 		player2.getSocket().emit("puissance quatre",{yourTurn:0,column:-1,winner:-1,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 
 		players[0].getSocket().on("puissance quatre", function(column){
-			if(!active) return;
+			if(!players[0]) return;
 			if(!nextPlayerWhoPlays == players[0]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
@@ -80,7 +91,7 @@ function Puissance(id, user) {
 		});
 
 		players[1].getSocket().on("puissance quatre", function(column){
-			if(!active) return;
+			if(!players[1]) return;
 			if(!nextPlayerWhoPlays == players[1]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;

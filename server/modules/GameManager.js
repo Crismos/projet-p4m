@@ -1,7 +1,7 @@
 var _Morpion = require("./Morpion.js");
 var _Puissance = require("./Puissance.js");
 
-function GameManager() {
+exports.gameManager = function() {
 
 	var games = {};
 
@@ -60,5 +60,3 @@ function GameManager() {
 		return true;
 	}
 }
-
-module.exports = GameManager;

@@ -76,7 +76,7 @@ var IO = function() {
 
 	this.requestPuissanceQuatre = function(callback) {
 		var callback = callback;
-
+		//création salle de jeu
 		soc.on("server accept request : create p4 game", function(link_id) {
 			console.log("request create p4 ok, mise a jour de linterface graphique");
 			callback(link_id);
@@ -86,7 +86,7 @@ var IO = function() {
 
 	this.joinGame = function(link_id, callback) {
 		var callback = callback;
-
+		//création salle de jeu
 		soc.on("server accept request : want to join game",function(o){
 			console.log("request join game ok, mise a jour de linterface graphique");
 			callback(o)

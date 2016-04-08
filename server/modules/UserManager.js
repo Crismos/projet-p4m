@@ -1,6 +1,6 @@
 var _User = require("./User.js");
 
-function UserManager() {	
+exports.userManager = function() {	
 
 	var users = {};
 
@@ -11,7 +11,10 @@ function UserManager() {
 	}
 
 	this.removeUser = function(id) {		
-		console.log("::green::[UserManager]::white:: > remove User, socket id : "+ users[id].getId() +", pseudo : "+users[id].getPseudo());	
+		console.log("::green::[UserManager]::white:: > remove User, socket id : "+ users[id].getId() +", pseudo : "+users[id].getPseudo());
+		if(users[id].getCurrentGame()){
+			users[id].getCurrentGame().removeUser(users[id]);
+		}	
 		delete users[id];		
 	}
 
@@ -56,4 +59,3 @@ function UserManager() {
 	*/
 }
 
-module.exports = UserManager;
