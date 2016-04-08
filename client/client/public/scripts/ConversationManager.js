@@ -1,6 +1,7 @@
 function Conversation(user) {
 	this.id = user.id;
 	this.user = user;
+	var conv = this;
 	this.conv = {
 		read: [],
 		new: [],
@@ -11,12 +12,21 @@ function Conversation(user) {
 
 	this.addMessage = function(message) {
 		this.conv.new.push(message);
+		$(document.getElementById(conv.id)).children(".notification").html(""+conv.conv.notif());
+		$(document.getElementById(conv.id)).children(".notification").addClass("new");
 	}
 	this.read = function() {
 		while(this.conv.new.length > 0) {
 			this.conv.read.push(this.conv.new.splice(0,1).pop());
 		}
+		$(document.getElementById(conv.id)).children(".notification").html("");
+		$(document.getElementById(conv.id)).children(".notification").removeClass("new");
 	}
+}
+
+function Message(me, text) {
+	this.me = me;
+	this.text = text;
 }
 
 function ConversationManager(um) {
@@ -26,7 +36,8 @@ function ConversationManager(um) {
 		rmConv: {},
 		newConv: {},
 		upConv: {},
-		welcome: {}
+		welcome: {},
+		newMsg: {}
 	};
 
 	var convs = {};
@@ -53,6 +64,15 @@ function ConversationManager(um) {
 	this.onWelcome = function(id, callback) {
 		var fct = callback || function() {};
 		callbacks.welcome[id] = fct;
+	}
+	this.onNewMsg = function(id, callback) {
+		var fct = callback || function() {};
+		callbacks.newMsg[id] = fct;
+	}
+
+	this.open = function(id) {
+		convs[id].read();
+		call("newMsg", convs[id]);
 	}
 
 	function removeConversation(user) {
@@ -84,7 +104,7 @@ function ConversationManager(um) {
 		var users = um.getUsersByStatus();
 
 		for(var key in users) {
-			convs[key] = new Conversation(users[key]);
+			convs[users[key].id] = new Conversation(users[key]);
 		}
 
 		call("welcome", convs);
@@ -97,5 +117,8 @@ function ConversationManager(um) {
 			callbacks[event][key](object);
 		}
 	}
+	this.call = call;
+	this.addConversation = addConversation;
+	this.convs = convs;
 }
 var cm = new ConversationManager(um);

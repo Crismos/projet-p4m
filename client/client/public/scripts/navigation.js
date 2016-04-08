@@ -289,7 +289,8 @@ $(document).ready(function() {
 		$("#container").addClass("swap");
 		$("#conversation").removeClass("swap");
 		$("#chat #logo").addClass("minimize");
-		console.log($(this).attr("id"));
+		
+		cm.open($(this).attr("id"));
 	});
 	$(document).on("click", "#conversationBack", function(event) {
 		$("#container").removeClass("swap");
