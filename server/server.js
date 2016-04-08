@@ -32,15 +32,11 @@ function run() {
 		
 		socket.on('user sends his pseudo to server', function(o){
 			userManager.getUser(socket.id).setPseudo(o.name);
-
-			//Chat
-			//socket.emit("receive chat infos", {users: userManager.getOnlines(socket.id)})
-			//io.emit("new user connected", {id: socket.id, name:o.name, status:0});
 		});
 
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
-			io.emit("user disconnect", {id: socket.id});
+			io.emit("rmUser", {id: socket.id});
 			userManager.removeUser(socket.id);
 		});
 
@@ -78,21 +74,14 @@ function run() {
 
 
 		// messages
-		socket.on("client send message", function(o) {
-			o.from = socket.id;
-			var u = userManager.getUser(o.to);
-			if(u) {
+		socket.on("message", function(o) {
+			var from = socket.id;
+			var to = o.to;
+			var text = o.text;
 
-				o.toName = u.getPseudo();
-				o.fromName = userManager.getUser(socket.id).getPseudo();
-				o.to = u.getSocket().id;
+			console.log("::red::[Chat]::red:: "+from+" > "+to+" : "+text);
 
-				console.log("::red::>>::white:: ["+o.fromName+"] > ["+ o.toName+"] : "+o.content);
-				socket.emit("message sended", o);
-				u.getSocket().emit("receive message", o);
-			} else {
-				console.log("::red:: error when trying to send message");
-			}
+			UserManager.getUserById(to).getSocket().emit("message", {from: from, text: text});
 		});
 
 	});

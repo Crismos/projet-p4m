@@ -5,6 +5,8 @@ var User = function(socket) {
 	var currentGame = null;
 	//var statut = afk / busy / available /.....
 
+	var u = this;
+
 	console.log("::green::[User]::white:: > Create new user, socket id : "+ socket.id +", pseudo : "+pseudo);
 
 	this.getId = function(){
@@ -39,5 +41,16 @@ var User = function(socket) {
 		return -1;
 	}
 
+	this.setCurrentGame = function(game) {
+		currentGame = game;
+	}
+
+	this.getCurrentGame = function(){
+		return currentGame;
+	}
+
+	this.toObj = function() {
+		return {id: socket.id, name: pseudo, status: u.getStatus()};
+	}
 }
 module.exports = User;

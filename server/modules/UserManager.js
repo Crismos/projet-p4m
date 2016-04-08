@@ -28,12 +28,10 @@ exports.userManager = function() {
 /*
 	this.getOnlines = function(id) {
 		var id = id || -1;
-		var tmp = {};
+		var tmp = [];
 		for(var key in users) {
 			if(id == -1 || key != id) {
-				tmp[key] = {};
-				tmp[key].name = users[key].getPseudo();
-				tmp[key].status = users[key].getStatus();
+				tmp.push(users[key].toObj());
 			}
 		}
 		return tmp;

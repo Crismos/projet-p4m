@@ -9,7 +9,11 @@
 		<script src="scripts/requestAnimation.js"></script>
 		
 		<script src="<%= ip %>:<%= port %>/socket.io/socket.io.js"></script>
+		<script src="scripts/Template.js"></script>
 		<script src="scripts/socket.js"></script>
+		<script src="scripts/UserManager.js"></script>
+		<script src="scripts/ConversationManager.js"></script>
+		<script src="scripts/ConversationView.js"></script>
 		<script src="scripts/navigation.js"></script>
 
 		
@@ -22,22 +26,28 @@
 			<div class="lightgreen top"></div>
 			<div class="lightgreen bot"></div>
 		</section>
-		<!--<section id="chat" class="disabled">
-			<div id="convbar">
-				<div id="conv">
+		<section id="chat" class="disabled none">
+			
+			<div id="logo"><i class="fa fa-weixin"></i></div>
+			<div class="chatWrap">
+				<div id="header"></div>
+				<div id="container">
 				</div>
-				<div class="convswitcher">
+				<div id="conversation" class="swap">
+					<div class="header">
+						
+					</div>
+					<div class="container">				
+						<div class="messages">
+						</div>
+
+					</div>
+					<div class="sender">
+							<input type="text" id="msg" placeholder="votre message ici..." />
+					</div>
 				</div>
 			</div>
-			<div id="panel">
-				<div class="header">
-					Discussion instantanée
-				</div>
-			</div>
-			<div id="opener">
-				<i class="fa fa-angle-double-right fa-2x"></i>
-			</div>
-		</section>-->
+		</section>
 		<section id="nav">
 			<div class="selector hide" id="login">
 				<h2>Identification</h2>
