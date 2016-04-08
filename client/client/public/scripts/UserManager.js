@@ -100,6 +100,7 @@ function UserManager() {
 
 
 	this.modify = modify;
+	this.users = users;
 
 }
 var um = new UserManager();

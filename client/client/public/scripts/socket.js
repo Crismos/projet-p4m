@@ -49,9 +49,10 @@ var IO = function() {
 	});
 
 	this.login = function(callback) {
+		console.log("login bind");
 		var fct = callback || function() {};
 
-		soc.on("server sends socket id to user", function(o){fct(o);});
+		soc.on("connection success", function(o){console.log("logged");fct(o);});
 
 		soc.emit("user sends his pseudo to server", {name: localStorage.name});
 	}

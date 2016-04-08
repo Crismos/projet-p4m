@@ -25,7 +25,7 @@ exports.userManager = function() {
 	}
 
 
-/*
+
 	this.getOnlines = function(id) {
 		var id = id || -1;
 		var tmp = [];
@@ -37,7 +37,7 @@ exports.userManager = function() {
 		return tmp;
 	}
 
-	this.getUsersByPseudo = function(pseudo) {
+	/*this.getUsersByPseudo = function(pseudo) {
 		var user = [];
 		for(var key in users) {
 			if(users[key].getPseudo() == pseudo)

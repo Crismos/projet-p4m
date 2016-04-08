@@ -32,6 +32,10 @@ function run() {
 		
 		socket.on('user sends his pseudo to server', function(o){
 			userManager.getUser(socket.id).setPseudo(o.name);
+
+			socket.emit("connection success", {id: socket.id});
+			socket.emit("welcome", userManager.getOnlines(socket.id));
+			io.emit("newUser", {id: socket.id, name:o.name, status:0});
 		});
 
 		// l'utilisateur se déconnecte
@@ -78,10 +82,7 @@ function run() {
 			var from = socket.id;
 			var to = o.to;
 			var text = o.text;
-
-			console.log("::red::[Chat]::red:: "+from+" > "+to+" : "+text);
-
-			UserManager.getUserById(to).getSocket().emit("message", {from: from, text: text});
+			userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
 		});
 
 	});
