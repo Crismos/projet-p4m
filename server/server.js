@@ -97,7 +97,7 @@ function run() {
 
 	});
 }
-
+/*
 exports.getGameManger = function() {
 	return gameManager;
 
@@ -106,3 +106,4 @@ exports.getGameManger = function() {
 exports.getUserManager = function(){
 	return userManager;
 }	
+*/

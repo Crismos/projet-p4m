@@ -51,6 +51,7 @@ function Puissance(id, user) {
 	}
 
 	this.go = function(){
+		if(players.length!=2) return;
 		//initialisation de la grille du morpion
 		for(i = 0; i<7; i++){
 			tokens[i] = []
