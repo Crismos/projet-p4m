@@ -12,8 +12,17 @@ function Conversation(user) {
 
 	this.addMessage = function(message) {
 		this.conv.new.push(message);
+		if(cm) {
+			if(cm.currentConv) {
+				if(cm.currentConv.id = this.id)
+					this.read();
+			}
+		}
 		$(document.getElementById(conv.id)).children(".notification").html(""+conv.conv.notif());
-		$(document.getElementById(conv.id)).children(".notification").addClass("new");
+		if(conv.conv.notif() > 0)
+			$(document.getElementById(conv.id)).children(".notification").addClass("new");
+		else
+			$(document.getElementById(conv.id)).children(".notification").removeClass("new");
 	}
 	this.read = function() {
 		while(this.conv.new.length > 0) {
@@ -30,6 +39,8 @@ function Message(me, text) {
 }
 
 function ConversationManager(um) {
+
+	this.currentConv = null;
 
 	var um = um;
 	var callbacks = {
@@ -71,8 +82,15 @@ function ConversationManager(um) {
 	}
 
 	this.open = function(id) {
+		this.currentConv = convs[id];
 		convs[id].read();
+		$("#conversation").attr("data-id", id);
 		call("newMsg", convs[id]);
+		$('#msg').focus();
+	}
+	this.close = function() {
+		this.currentConv = null;
+		$('#msg').focusout();
 	}
 
 	function removeConversation(user) {
@@ -84,6 +102,9 @@ function ConversationManager(um) {
 
 	this.getConvs= function() {
 		return convs;
+	}
+	this.getConv = function(id) {
+		return convs[id];
 	}
 
 	function addConversation(user) {
@@ -117,6 +138,14 @@ function ConversationManager(um) {
 			callbacks[event][key](object);
 		}
 	}
+
+	this.send = function(id, text) {
+		var conv = this.getConv(id);
+		conv.addMessage(new Message(true, text));
+
+		call("newMsg", conv);
+	}
+
 	this.call = call;
 	this.addConversation = addConversation;
 	this.convs = convs;

@@ -20,6 +20,8 @@
 
 $(document).ready(function() {
 
+
+
 	var push = true;
 
 	var currentPage;
@@ -78,6 +80,7 @@ $(document).ready(function() {
 				cm.event();
 				cv.event(cm);
 				$("#chat").removeClass("none");
+				$("#pseudo").blur();
 			});
 
 			if(idGame == "0") {
@@ -296,7 +299,38 @@ $(document).ready(function() {
 		$("#container").removeClass("swap");
 		$("#conversation").addClass("swap");
 		$("#chat #logo").removeClass("minimize");
+		cm.close();
 		event.stopPropagation();
+	});
+
+	var forceScroll = true;
+
+	$(".container").scroll(function() {
+		if(($(".container").prop("scrollHeight")-$(".container").height()-30) < $(".container").scrollTop()) {
+			forceScroll = true;
+		} else {
+			forceScroll = false;
+		}
+		console.log(forceScroll);
+	});
+
+	$('#msg').bind("enterKey",function(e){
+   		var id = $("#msg").parent().parent().attr("data-id");
+   		cm.send(id, $("#msg").val());
+   		$("#msg").val("");
+
+   		setTimeout(function() {
+   			if(forceScroll) {
+   				$(".container").scrollTop($(".container").prop("scrollHeight")+$(".container").height());
+   			}
+   		},100);
+   		
+	});
+	$('#msg').keyup(function(e){
+	    if(e.keyCode == 13)
+	    {
+	        $(this).trigger("enterKey");
+	    }
 	});
 
 
