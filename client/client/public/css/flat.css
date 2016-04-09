@@ -98,7 +98,8 @@ html, body {
 #nav .selector h2 {
 	display: block;
 	font-size: 1.2em;
-	color: #212121;
+	color: #fff;
+	font-weight: bold;
 	background: #039be6;
 	margin: 0px;
 	text-align: center;
@@ -264,7 +265,8 @@ button.red::before {
 	background: #039be5;
 	display: block;
 	padding: 7px 12px 6px 12px;
-	color: #212121;
+	color: #fff;
+	font-weight: bold;
 	font-size: 1.2em;
 }
 #gameInfos .section {

@@ -24,9 +24,16 @@ function run() {
 	// connection d'un nouvel utilisateur
 	io.on('connection', function(socket){
 		
-		userManager.addUser(socket);
+		console.log("::green:: >> new user incoming...");
+		userManager.addUser(socket, function(user) {
+			user.onStatus(function(status) {
+				socket.broadcast.emit("upUser", user.toObj());
+			});
+		});
 		
 		socket.on('user sends his pseudo to server', function(o){
+			console.log("::green::[user]::white:: "+o.name+" connected ("+socket.id+")");
+
 			userManager.getUser(socket.id).setPseudo(o.name);
 
 			socket.emit("connection success", {id: socket.id});

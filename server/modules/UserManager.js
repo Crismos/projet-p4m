@@ -3,9 +3,11 @@ var _User = require("./User.js");
 exports.userManager = function() {	
 	var users = {};
 
-	this.addUser = function(socket) {
+	this.addUser = function(socket, callback) {
+		var callback = callback || function(){};
 		user = new _User(socket);
 		users[user.getId()] = user;
+		callback(user);
 		console.log("::green::[UserManager]::white:: > new User added, socket id : "+ user.getId() +", pseudo : "+user.getPseudo());
 	}
 
@@ -27,7 +29,7 @@ exports.userManager = function() {
 		var id = id || -1;
 		var tmp = [];
 		for(var key in users) {
-			if(id == -1 || key != id) {
+			if((id == -1 || key != id) && (users[key].getPseudo() != "An unnamed monkey")) {
 				tmp.push(users[key].toObj());
 			}
 		}
