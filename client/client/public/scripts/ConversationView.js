@@ -37,7 +37,7 @@ function ConversationView(cm) {
 			var replace = {id: conv.user.id,name: conv.user.name, status: (conv.user.status == 0 ? "online" : "ongame")};
 			html += TEMPLATE.parse(data, replace);
 			$("#conversation .header").html(html);
-			$("#conversation").attr("data-id", id);
+			$("#conversation").attr("data-id", conv.user.id);
 			$('#msg').focus();
 		});
 	}
