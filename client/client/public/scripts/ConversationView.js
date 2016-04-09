@@ -8,13 +8,13 @@ function ConversationView(cm) {
 		cm.onNewConv("chat view draw", drawUsers);
 		cm.onUpConv("chat view draw", drawUsers);
 		cm.onWelcome("chat view draw", drawWelcome);
-
+		cm.onOpen("chat open conv view", open);
 		//event message
 		cm.onNewMsg("chat message", drawConv);
 	}
 
 	function drawWelcome(convs) {
-		
+	
 		TEMPLATE.get("chatUser", function(data) {
 			var html = "";
 			for(var key in convs) {
@@ -24,20 +24,22 @@ function ConversationView(cm) {
 			}
 			$("#chat #container").html(html);
 		});
-		TEMPLATE.get("convHeader", function(data) {
-			var html = "";
-			for(var key in convs) {
-				var replace = {id: key,name: convs[key].user.name, status: (convs[key].user.status == 0 ? "online" : "ongame")};
-
-				html += TEMPLATE.parse(data, replace);
-			}
-			$("#conversation .header").html(html);
-		});
 	}
 
 	function drawUsers() {
 		var convs = cm.getConvs();
 		drawWelcome(convs);
+	}
+
+	function open(conv) {
+		TEMPLATE.get("convHeader", function(data) {
+			var html = "";
+			var replace = {id: key,name: conv.user.name, status: (conv.user.status == 0 ? "online" : "ongame")};
+			html += TEMPLATE.parse(data, replace);
+			$("#conversation .header").html(html);
+			$("#conversation").attr("data-id", id);
+			$('#msg').focus();
+		});
 	}
 
 	function drawConv(conv) {

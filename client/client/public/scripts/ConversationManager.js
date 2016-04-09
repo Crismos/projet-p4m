@@ -48,7 +48,8 @@ function ConversationManager(um) {
 		newConv: {},
 		upConv: {},
 		welcome: {},
-		newMsg: {}
+		newMsg: {},
+		open: {}
 	};
 
 	var convs = {};
@@ -82,13 +83,17 @@ function ConversationManager(um) {
 		var fct = callback || function() {};
 		callbacks.newMsg[id] = fct;
 	}
+	this.onOpen = function(id, callback) {
+		var fct = callback || function() {};
+		callbacks.newMsg[id] = fct;
+	}
 
 	this.open = function(id) {
 		dis.currentConv = convs[id];
 		convs[id].read();
-		$("#conversation").attr("data-id", id);
+		
 		call("newMsg", convs[id]);
-		$('#msg').focus();
+		call("open", convs[id]);
 	}
 	this.close = function() {
 		dis.currentConv = null;
