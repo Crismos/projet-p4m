@@ -132,7 +132,11 @@ function ConversationManager(um) {
 		if(convs[o.from]) {
 			convs[o.from].addMessage(msg);
 		}
-		call("newMsg", convs[o.from]);
+		if(dis.currentConv) {
+			if(dis.currentConv.user.id == o.from)
+				call("newMsg", convs[o.from]);
+		}
+		call("newConv", convs[o.from]);
 	}
 
 	function addConversation(user) {
