@@ -25,9 +25,6 @@ function run() {
 	io.on('connection', function(socket){
 		
 		userManager.addUser(socket);
-				
-		socket.emit("server sends socket id to user", {id: socket.id});
-
 		
 		socket.on('user sends his pseudo to server', function(o){
 			userManager.getUser(socket.id).setPseudo(o.name);
