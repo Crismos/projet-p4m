@@ -1,7 +1,6 @@
 var _User = require("./User.js");
 
 exports.userManager = function() {	
-
 	var users = {};
 
 	this.addUser = function(socket) {
@@ -24,8 +23,6 @@ exports.userManager = function() {
 		return null;
 	}
 
-
-
 	this.getOnlines = function(id) {
 		var id = id || -1;
 		var tmp = [];
@@ -36,24 +33,5 @@ exports.userManager = function() {
 		}
 		return tmp;
 	}
-
-	/*this.getUsersByPseudo = function(pseudo) {
-		var user = [];
-		for(var key in users) {
-			if(users[key].getPseudo() == pseudo)
-				user.push(users[key]);
-		}
-		if(user.length > 0)
-			return user;
-		else
-			console.log("::red:: UserManager >> no user for pseudo '"+pseudo+"'");
-		return null;
-	}
-	this.getUserById = function(id) {
-		if(users[id])
-			return users[id];
-		return null;
-	}
-	*/
 }
 

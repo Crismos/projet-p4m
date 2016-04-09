@@ -25,7 +25,6 @@ function run() {
 	io.on('connection', function(socket){
 		
 		userManager.addUser(socket);
-		var user = userManager.getUser(socket.id)	
 				
 		socket.emit("server sends socket id to user", {id: socket.id});
 
@@ -48,7 +47,7 @@ function run() {
 
 
 		socket.on("client wants to create p4 game", function() {
-			var game = gameManager.createPuissanceQuatre(user);
+			var game = gameManager.createPuissanceQuatre(userManager.getUser(socket.id));
 			if(game){
 				socket.emit("server accept request : create p4 game", game.getId());
 				console.log("Le serveur accepte la demande de créaction de partie de p4");
