@@ -85,7 +85,7 @@ function ConversationManager(um) {
 	}
 	this.onOpen = function(id, callback) {
 		var fct = callback || function() {};
-		callbacks.newMsg[id] = fct;
+		callbacks.open[id] = fct;
 	}
 
 	this.open = function(id) {
