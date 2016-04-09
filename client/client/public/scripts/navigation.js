@@ -299,9 +299,7 @@ $(document).ready(function() {
 		cm.open($(this).attr("id"));
 	});
 	$(document).on("click", "#conversationBack", function(event) {
-		$("#container").removeClass("swap");
-		$("#conversation").addClass("swap");
-		$("#chat #logo").removeClass("minimize");
+		
 		cm.close();
 		event.stopPropagation();
 	});

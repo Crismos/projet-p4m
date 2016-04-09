@@ -53,6 +53,8 @@ function ConversationManager(um) {
 
 	var convs = {};
 
+	var dis = this;
+
 	this.event = function() {
 		um.onRmUser("chat manger rmConv", removeConversation);
 		um.onNewUser("chat manger newConv", addConversation);
@@ -82,19 +84,30 @@ function ConversationManager(um) {
 	}
 
 	this.open = function(id) {
-		this.currentConv = convs[id];
+		dis.currentConv = convs[id];
 		convs[id].read();
 		$("#conversation").attr("data-id", id);
 		call("newMsg", convs[id]);
 		$('#msg').focus();
 	}
 	this.close = function() {
-		this.currentConv = null;
-		$('#msg').focusout();
+		dis.currentConv = null;
+		$("#container").removeClass("swap");
+		$("#conversation").addClass("swap");
+		$("#chat #logo").removeClass("minimize");
+		$('#msg').blur();
 	}
 
 	function removeConversation(user) {
 		var conv = convs[user.id];
+		console.log(conv);
+		console.log(user);
+		console.log(dis.currentConv);
+		if(dis.currentConv) {
+			if(dis.currentConv.id == conv.id)
+				dis.close();
+		}
+		
 		delete convs[user.id];
 
 		call("rmConv", conv);

@@ -14,7 +14,6 @@ function ConversationView(cm) {
 	}
 
 	function drawWelcome(convs) {
-		console.log(convs);
 		
 		TEMPLATE.get("chatUser", function(data) {
 			var html = "";
