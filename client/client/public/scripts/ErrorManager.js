@@ -1,6 +1,6 @@
 function ErrorManager() {
 	var errors = {
-		"login": '<div class="error err-%id"><b>Erreur</b> : La <b>pseudalité</b> choisie (%name) est <b>invalide</b></div>'
+		"login": '<div class="error err-%id"><b>Erreur</b> : La <b>pseudalité</b> choisie (%name) est <b>invalide</b> (déjà utilisée ou de trop petit taille)</div>'
 	}
 	var ids = {};
 	var id = 0;

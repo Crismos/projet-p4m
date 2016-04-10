@@ -284,8 +284,7 @@ $(document).ready(function() {
 	});
 
 	$("#connect").click(function(event) {
-		if($("#pseudo").val().length > 0)
-			user.setName($("#pseudo").val());
+		user.setName($("#pseudo").val());
 		event.stopPropagation();
 	});
 

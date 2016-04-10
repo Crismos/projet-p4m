@@ -37,6 +37,8 @@ exports.userManager = function() {
 	}
 
 	this.isValidePseudo = function(name) {
+		if(name.length < 1)
+			return false;
 		for(var key in users) {
 			if(users[key].getPseudo() == name)
 				return false;
