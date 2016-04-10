@@ -62,7 +62,8 @@ $(document).ready(function() {
 
 	var User = function() {
 		var logged = false;
-		var id = -1
+		var id = -1;
+		var that = this;
 
 		this.requestName = function() {
 			$("#login").removeClass("hide");
@@ -73,6 +74,8 @@ $(document).ready(function() {
 			logged = true;
 			
 			socket.login(function(o) {
+				ERROR.killAll();
+				// success
 				id = o.id;
 				socket.id = id;
 				// l'utilisateur se connecte
@@ -84,22 +87,25 @@ $(document).ready(function() {
 
 				$("#chat").removeClass("none");
 				$("#pseudo").blur();
-			});
 
-			if(idGame == "0") {
-				// si l'utilisateur n'a pas été invité
-				this.requestGame();
-			} else {
-				$("#login").addClass("hide");
-				$("#game-selection").removeClass("hide");
-				$("#game-selection").addClass("hide");
-				console.log("On alerte le serveur que l'on veut rejoindre la partie "+idGame);
-				socket.joinGame(idGame, function(o){
-					console.log("Création de la salle de jeux puissance 4, id : "+o.id+", game : "+o.typeGame);
-					idGame = o.id;
-					choice(o.typeGame);
-				});
-			}
+				if(idGame == "0") {
+					// si l'utilisateur n'a pas été invité
+					that.requestGame();
+				} else {
+					$("#login").addClass("hide");
+					$("#game-selection").removeClass("hide");
+					$("#game-selection").addClass("hide");
+					console.log("On alerte le serveur que l'on veut rejoindre la partie "+idGame);
+					socket.joinGame(idGame, function(o){
+						console.log("Création de la salle de jeux puissance 4, id : "+o.id+", game : "+o.typeGame);
+						idGame = o.id;
+						choice(o.typeGame);
+					});
+				}
+			}, function(o) {
+				// fail
+				ERROR.login(o.name);
+			});
 		}
 		this.requestGame = function() {
 			$("#login").addClass("hide");
@@ -267,16 +273,20 @@ $(document).ready(function() {
 	// initialiser les pages
 	initPage();
 
-	$("#resetUser").click(function() {
+	$("#resetUser").click(function(event) {
 		initUser();
+		event.stopPropagation();
 	});
 	$("#pseudo").keypress(function(e) {
 		if(e.keyCode == 13)
 			$("#connect").click();
+		e.stopPropagation();
 	});
 
-	$("#connect").click(function() {
-		user.setName($("#pseudo").val());
+	$("#connect").click(function(event) {
+		if($("#pseudo").val().length > 0)
+			user.setName($("#pseudo").val());
+		event.stopPropagation();
 	});
 
 	$("#play").click(function() {
@@ -297,11 +307,23 @@ $(document).ready(function() {
 		$("#chat #logo").addClass("minimize");
 		
 		cm.open($(this).attr("id"));
+		setTimeout(function() {
+   			if(forceScroll) {
+   				$(".container").scrollTop($(".container").prop("scrollHeight")+$(".container").height());
+   			}
+   		},100);
 	});
 	$(document).on("click", "#conversationBack", function(event) {
 		
 		cm.close();
 		event.stopPropagation();
+	});
+	$(document).on("click", ".error", function() {
+		$(this).addClass("removed");
+		var that = $(this);
+		setTimeout(function() {
+			that.remove();
+		},300);
 	});
 
 	var forceScroll = true;
@@ -317,7 +339,8 @@ $(document).ready(function() {
 
 	$('#msg').bind("enterKey",function(e){
    		var id = $("#msg").parent().parent().attr("data-id");
-   		cm.send(id, $("#msg").val());
+   		if($("#msg").val().length > 0)
+   			cm.send(id, $("#msg").val());
    		$("#msg").val("");
 
    		setTimeout(function() {

@@ -35,5 +35,13 @@ exports.userManager = function() {
 		}
 		return tmp;
 	}
+
+	this.isValidePseudo = function(name) {
+		for(var key in users) {
+			if(users[key].getPseudo() == name)
+				return false;
+		}
+		return true;
+	}
 }
 
