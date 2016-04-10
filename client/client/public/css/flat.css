@@ -372,6 +372,21 @@ border-radius: 5px 5px 0 0;
 	border: none;
 	overflow: hidden;
 }
+#chat #logo div,#chat.disabled #logo div {
+	display: none;
+}
+#chat.disabled #logo div.view {
+	display: block;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	background: #c71e1e;
+	font-size: 0.6em;
+	width: 14px;
+	text-align: center;
+	margin-left: 30px;
+	margin-top: 5px;
+	padding: 2px;
+}
 #chat #container::-webkit-scrollbar, #chat #conversation .container::-webkit-scrollbar {
     width: 6px;
 }
@@ -628,3 +643,64 @@ border-radius: 5px 5px 0 0;
 /*
 * end chat
 */
+
+/*
+* error
+*/
+
+#error {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	width: 300px;
+}
+#error div {
+	margin: 5px;
+	padding: 10px;
+	animation: new-item-animation .3s linear forwards;
+	border: 2px solid;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+}
+#error div.removed {
+	animation: removed-item-animation .3s ease;
+}
+#error .error {
+	background: #c53232;
+	color: #fff;
+	border-color: #ee2222;
+	transfrom: scale(0.5,0.5);
+}
+#error .error.removed {
+	animation: removed-item-animation .2s ease;
+}
+
+@keyframes new-item-animation {
+    from {
+        opacity: 0; 
+	}
+    to {
+        opacity: 1;
+        transform : translateY(0);
+    }
+}
+@keyframes removed-item-animation {
+    from {
+        opacity: 1;
+    	-moz-transform: scale(1);
+		-webkit-transform: scale(1);
+		-o-transform: scale(1);
+		-ms-transform: scale(1);
+		transform: scale(1);
+	}
+    to {
+    	display: none;
+        opacity: 0;
+        -moz-transform: scale(0);
+		-webkit-transform: scale(0);
+		-o-transform: scale(0);
+		-ms-transform: scale(0);
+		transform: scale(0);
+    }
+}

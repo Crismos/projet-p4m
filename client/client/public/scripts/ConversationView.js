@@ -11,6 +11,8 @@ function ConversationView(cm) {
 		cm.onOpen("chat open conv view", open);
 		//event message
 		cm.onNewMsg("chat message", drawConv);
+
+		cm.onUpdateGlobalNotif("chat logo notif updater", updateLogoNotif);
 	}
 
 	function drawWelcome(convs) {
@@ -68,6 +70,16 @@ function ConversationView(cm) {
 			}
 			$("#conversation .container .messages").html(html);
 		});
+	}
+
+	function updateLogoNotif(nb) {
+		if(nb > 0) {
+			$("#logo div").addClass("view");
+			$("#logo div").html(nb);
+		} else {
+			$("#logo div").removeClass("view");
+			$("#logo div").html("");
+		}
 	}
 
 }

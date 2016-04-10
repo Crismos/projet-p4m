@@ -15,8 +15,11 @@ var IO = function() {
 
 	// connection au socket
 	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
+	soc.on("connect_error", function() {
+		ERROR.socket();
+	});
 	// envoi d'une requete d'identification
-	
+	var loginBinded = false;
 
 	var params = {
 		onlines: 0
@@ -48,15 +51,20 @@ var IO = function() {
 		call("onlines");
 	});
 
-	this.login = function(callback) {
+	this.login = function(success, fail) {
+		
 		console.log("login bind");
-		var fct = callback || function() {};
-
-		soc.on("connection success", function(o){
-			console.log("logged");
-			fct(o);
-		});
-
+		var fct = success || function() {};
+		var fail = fail || function() {};
+		if(!loginBinded) {
+			soc.on("connection success", function(o){
+				fct(o);
+			});
+			soc.on("wrong pseudo", function(o){
+				fail(o);
+			});
+		}
+		loginBinded = true;
 		soc.emit("user sends his pseudo to server", {name: localStorage.name});
 	}
 

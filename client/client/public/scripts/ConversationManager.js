@@ -11,10 +11,6 @@ function Conversation(user) {
 	}
 
 	this.addMessage = function(message) {
-		/*console.log("======= add message ======");
-		console.log("me: "+message.me);
-		console.log("text: "+message.text);
-		console.log(">> ");*/
 		this.conv.new.push(message);
 		if(cm) {
 			if(cm.currentConv) {
@@ -22,11 +18,7 @@ function Conversation(user) {
 					this.read();
 			}
 		}
-		//console.log(" - id: "+conv.conv.id);
-		//console.log(" - result.html()"+ $(document.getElementById(""+conv.user.id)).children(".notification").html());
-		//console.log(" - notif ? "+ conv.conv.notif());
-		$(document.getElementById(""+conv.user.id)).children(".notification").html(""+conv.conv.notif());
-		//console.log($(document.getElementById(""+conv.user.id)).children(".notification").html());
+		$(document.getElementById(""+conv.user.id)).children(".notification").html(""+(conv.conv.notif()<10 ? conv.conv.notif() : "9+"));
 		if(conv.conv.notif() > 0)
 			$(document.getElementById(""+conv.user.id)).children(".notification").addClass("new");
 		else
@@ -52,6 +44,8 @@ function Message(me, text) {
 	this.text = text;
 }
 
+
+
 function ConversationManager(um) {
 
 	this.currentConv = null;
@@ -63,7 +57,8 @@ function ConversationManager(um) {
 		upConv: {},
 		welcome: {},
 		newMsg: {},
-		open: {}
+		open: {},
+		updateGlobalNotif: {}
 	};
 
 	var convs = {};
@@ -101,6 +96,10 @@ function ConversationManager(um) {
 		var fct = callback || function() {};
 		callbacks.open[id] = fct;
 	}
+	this.onUpdateGlobalNotif = function(id, callback) {
+		var fct = callback || function() {};
+		callbacks.updateGlobalNotif[id] = fct;
+	}
 
 	this.open = function(id) {
 		console.log("====== open ["+id+"]=====");
@@ -111,6 +110,7 @@ function ConversationManager(um) {
 		
 		call("newMsg", convs[id]);
 		call("open", convs[id]);
+		call("updateGlobalNotif", getNotif());
 	}
 	this.close = function() {
 		dis.currentConv = null;
@@ -133,6 +133,7 @@ function ConversationManager(um) {
 		delete convs[user.id];
 
 		call("rmConv", conv);
+		call("updateGlobalNotif", getNotif());
 	}
 
 	this.getConvs= function() {
@@ -153,6 +154,7 @@ function ConversationManager(um) {
 			if(dis.currentConv.user.id == o.from)
 				call("newMsg", convs[o.from]);
 		}
+		call("updateGlobalNotif", getNotif());
 
 	}
 
@@ -160,6 +162,7 @@ function ConversationManager(um) {
 		convs[user.id] = new Conversation(user);
 
 		call("newConv", convs[user.id]);
+		call("updateGlobalNotif", getNotif());
 	}
 
 	function updateConversation(user) {
@@ -168,6 +171,7 @@ function ConversationManager(um) {
 		convs[user.id].conv = msgs;
 
 		call("upConv", convs[user.id]);
+		call("updateGlobalNotif", getNotif());
 	}
 
 	function welcome() {
@@ -179,6 +183,15 @@ function ConversationManager(um) {
 		}
 
 		call("welcome", convs);
+		call("updateGlobalNotif", getNotif());
+	}
+
+	function getNotif() {
+		var notif = 0;
+		for(var key in convs) {
+			notif += (convs[key].conv.notif() > 0 ? 1 : 0);
+		}
+		return (notif<10 ? notif : "9+");
 	}
 
 	function call(event, object) {

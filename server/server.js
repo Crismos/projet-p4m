@@ -32,13 +32,19 @@ function run() {
 		});
 		
 		socket.on('user sends his pseudo to server', function(o){
-			console.log("::green::[user]::white:: "+o.name+" connected ("+socket.id+")");
 
-			userManager.getUser(socket.id).setPseudo(o.name);
+			if(userManager.isValidePseudo(o.name)) {
+				console.log("::green::[user]::white:: "+o.name+" connected ("+socket.id+")");
 
-			socket.emit("connection success", {id: socket.id});
-			socket.emit("welcome", userManager.getOnlines(socket.id));
-			io.emit("newUser", {id: socket.id, name:o.name, status:0});
+				userManager.getUser(socket.id).setPseudo(o.name);
+
+				socket.emit("connection success", {id: socket.id});
+				socket.emit("welcome", userManager.getOnlines(socket.id));
+				io.emit("newUser", {id: socket.id, name:o.name, status:0});
+			} else {
+				console.log("::red::[user] error : ::white:: ("+socket.id+") wanted to use pseudo "+o.name);
+				socket.emit("wrong pseudo", {name: o.name});
+			}
 		});
 
 		// l'utilisateur se déconnecte
