@@ -11,20 +11,34 @@ function Conversation(user) {
 	}
 
 	this.addMessage = function(message) {
+		/*console.log("======= add message ======");
+		console.log("me: "+message.me);
+		console.log("text: "+message.text);
+		console.log(">> ");*/
 		this.conv.new.push(message);
 		if(cm) {
 			if(cm.currentConv) {
-				if(cm.currentConv.id = this.id)
+				if(cm.currentConv.id == this.id)
 					this.read();
 			}
 		}
-		$(document.getElementById(conv.id)).children(".notification").html(""+conv.conv.notif());
+		//console.log(" - id: "+conv.conv.id);
+		//console.log(" - result.html()"+ $(document.getElementById(""+conv.user.id)).children(".notification").html());
+		//console.log(" - notif ? "+ conv.conv.notif());
+		$(document.getElementById(""+conv.user.id)).children(".notification").html(""+conv.conv.notif());
+		//console.log($(document.getElementById(""+conv.user.id)).children(".notification").html());
 		if(conv.conv.notif() > 0)
-			$(document.getElementById(conv.id)).children(".notification").addClass("new");
+			$(document.getElementById(""+conv.user.id)).children(".notification").addClass("new");
 		else
-			$(document.getElementById(conv.id)).children(".notification").removeClass("new");
+			$(document.getElementById(""+conv.user.id)).children(".notification").removeClass("new");
+
+		
+		console.log(message);
 	}
 	this.read = function() {
+		console.log("== read() ==");
+		console.log(conv);
+
 		while(this.conv.new.length > 0) {
 			this.conv.read.push(this.conv.new.splice(0,1).pop());
 		}
@@ -48,10 +62,13 @@ function ConversationManager(um) {
 		newConv: {},
 		upConv: {},
 		welcome: {},
-		newMsg: {}
+		newMsg: {},
+		open: {}
 	};
 
 	var convs = {};
+
+	var dis = this;
 
 	this.event = function() {
 		um.onRmUser("chat manger rmConv", removeConversation);
@@ -80,21 +97,39 @@ function ConversationManager(um) {
 		var fct = callback || function() {};
 		callbacks.newMsg[id] = fct;
 	}
+	this.onOpen = function(id, callback) {
+		var fct = callback || function() {};
+		callbacks.open[id] = fct;
+	}
 
 	this.open = function(id) {
-		this.currentConv = convs[id];
+		console.log("====== open ["+id+"]=====");
+		console.log(convs[id]);
+
+		dis.currentConv = convs[id];
 		convs[id].read();
-		$("#conversation").attr("data-id", id);
+		
 		call("newMsg", convs[id]);
-		$('#msg').focus();
+		call("open", convs[id]);
 	}
 	this.close = function() {
-		this.currentConv = null;
-		$('#msg').focusout();
+		dis.currentConv = null;
+		$("#container").removeClass("swap");
+		$("#conversation").addClass("swap");
+		$("#chat #logo").removeClass("minimize");
+		$('#msg').blur();
 	}
 
 	function removeConversation(user) {
 		var conv = convs[user.id];
+		console.log(conv);
+		console.log(user);
+		console.log(dis.currentConv);
+		if(dis.currentConv) {
+			if(dis.currentConv.id == conv.id)
+				dis.close();
+		}
+		
 		delete convs[user.id];
 
 		call("rmConv", conv);
@@ -114,7 +149,11 @@ function ConversationManager(um) {
 		if(convs[o.from]) {
 			convs[o.from].addMessage(msg);
 		}
-		call("newMsg", convs[o.from]);
+		if(dis.currentConv) {
+			if(dis.currentConv.user.id == o.from)
+				call("newMsg", convs[o.from]);
+		}
+
 	}
 
 	function addConversation(user) {
@@ -133,9 +172,10 @@ function ConversationManager(um) {
 
 	function welcome() {
 		var users = um.getUsersByStatus();
-
+		console.log(users);
 		for(var key in users) {
 			convs[users[key].id] = new Conversation(users[key]);
+			console.log(convs[users[key].id]);
 		}
 
 		call("welcome", convs);

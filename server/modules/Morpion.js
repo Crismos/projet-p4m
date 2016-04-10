@@ -15,7 +15,7 @@ function Morpion(id, user) {
 			players.push(user);
 			return true;
 		}else{
-			console.log("Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie");
+			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie");
 			return false;
 		}
 	}	

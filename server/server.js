@@ -1,4 +1,6 @@
 var console = require("./modules/console.js");
+var module_userManager = require("./modules/UserManager.js");
+var module_gameManager = require("./modules/GameManager.js");
 var config = {};
 
 // chargement du fichier de configuration
@@ -13,45 +15,43 @@ fs.readFile('../config.cfg', 'utf8', function (err,data) {
 
   	run();
 });
+var userManager = new module_userManager.userManager();
+var gameManager = new module_gameManager.gameManager();
 
 function run() {
 	var io = require("socket.io")(config.server.socket.port);
-
 	console.log("Listening port *: ::green::"+config.server.socket.port);
-
-	var _UserManager = require("./modules/UserManager.js");
-	var _User = require("./modules/User.js");
-	var _GameManager = require("./modules/GameManager.js");
-
-	var UserManager = new _UserManager();
-	var GameManager = new _GameManager();
-
 	// connection d'un nouvel utilisateur
 	io.on('connection', function(socket){
-		var user;
-		// l'utilisateur envoi une requete pour s'identifier
-		socket.on('user connection', function(o){
-			user = new _User(socket, o.name);
-			UserManager.addUser(user);			
+		
+		console.log("::green:: >> new user incoming...");
+		userManager.addUser(socket, function(user) {
+			user.onStatus(function(status) {
+				socket.broadcast.emit("upUser", user.toObj());
+			});
+		});
+		
+		socket.on('user sends his pseudo to server', function(o){
+			console.log("::green::[user]::white:: "+o.name+" connected ("+socket.id+")");
+
+			userManager.getUser(socket.id).setPseudo(o.name);
+
 			socket.emit("connection success", {id: socket.id});
-			socket.emit("welcome", UserManager.getOnlines(socket.id));
+			socket.emit("welcome", userManager.getOnlines(socket.id));
 			io.emit("newUser", {id: socket.id, name:o.name, status:0});
 		});
-		// l'utilisateur met à jour son pseudo
-		socket.on('user update name', function(o) {
-			UserManager.getUserById(socket.id).setPseudo(o.name);
-		});
+
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
 			io.emit("rmUser", {id: socket.id});
-			UserManager.removeUser(UserManager.getUserById(socket.id));
+			userManager.removeUser(socket.id);
 		});
 
 	
 
 
 		socket.on("client wants to create p4 game", function() {
-			var game = GameManager.createPuissanceQuatre(user);
+			var game = gameManager.createPuissanceQuatre(userManager.getUser(socket.id));
 			if(game){
 				socket.emit("server accept request : create p4 game", game.getId());
 				console.log("Le serveur accepte la demande de créaction de partie de p4");
@@ -61,23 +61,20 @@ function run() {
 
 		});
 		socket.on("client wants to join game", function(idGame) {
-			var game = GameManager.getGame(idGame);
+			var game = gameManager.getGame(idGame);
 			if(!game) {
 				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
 				return;
 			}
-			if(!game.addPlayer(UserManager.getUserById(socket.id))){
+			if(!game.addPlayer(userManager.getUser(socket.id))){
 				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
 				return;
 			}
 			
-			user.setCurrentGame(game);			
+					
 			socket.emit("server accept request : want to join game", {typeGame: game.getTypeGame(), id: game.getId()});	
 			
-			setTimeout(function(){
-			    game.go();
-			}, 2000);
-			console.log("Le serveur accepte que "+UserManager.getUserById(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
+			console.log("Le serveur accepte que "+userManager.getUser(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
 		});
 
 
@@ -88,11 +85,17 @@ function run() {
 			var from = socket.id;
 			var to = o.to;
 			var text = o.text;
-
-			console.log("::red::[Chat]::red:: "+from+" > "+to+" : "+text);
-
-			UserManager.getUserById(to).getSocket().emit("message", {from: from, text: text});
+			userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
 		});
 
 	});
 }
+
+exports.getGameManger = function() {
+	return gameManager;
+
+}
+
+exports.getUserManager = function(){
+	return userManager;
+}	

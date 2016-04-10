@@ -46,7 +46,8 @@ function UserManager() {
 			users[id].name = nom || users[id].name;
 			users[id].status = status || users[id].status || 0;
 
-			var tmp = users[id];
+			var tmp = {id: id, name: nom, status: status};
+
 			if(type == "rmUser") {
 				delete users[id];
 			}
@@ -100,6 +101,7 @@ function UserManager() {
 
 
 	this.modify = modify;
+	this.users = users;
 
 }
 var um = new UserManager();

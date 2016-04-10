@@ -49,11 +49,15 @@ var IO = function() {
 	});
 
 	this.login = function(callback) {
+		console.log("login bind");
 		var fct = callback || function() {};
 
-		soc.on("connection success", function(o){fct(o);});
+		soc.on("connection success", function(o){
+			console.log("logged");
+			fct(o);
+		});
 
-		soc.emit('user connection', {id: localStorage.user, name: localStorage.name});
+		soc.emit("user sends his pseudo to server", {name: localStorage.name});
 	}
 
 	this.onUserConnection = function(callback) {
@@ -85,7 +89,7 @@ var IO = function() {
 
 	this.requestPuissanceQuatre = function(callback) {
 		var callback = callback;
-
+		//création salle de jeu
 		soc.on("server accept request : create p4 game", function(link_id) {
 			console.log("request create p4 ok, mise a jour de linterface graphique");
 			callback(link_id);
@@ -95,7 +99,7 @@ var IO = function() {
 
 	this.joinGame = function(link_id, callback) {
 		var callback = callback;
-
+		//création salle de jeu
 		soc.on("server accept request : want to join game",function(o){
 			console.log("request join game ok, mise a jour de linterface graphique");
 			callback(o)

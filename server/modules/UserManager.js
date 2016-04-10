@@ -1,56 +1,35 @@
-/*
-* Class UserManager
-*
-*	Manage all connected user
-*	
-*	Object users
-*
-*	getUserById(id):user 				get user from connected users by id
-* 	getUsersByPseudo(pseudo):user[] 	get users array from connected users by pseudo (useless atm)
-* 	addUser(user):void 					add user to the manager
-*	removeUser(user):void 				remove user from manager
-* 	getOnlines():user 				get how many users are connected
-*/
+var _User = require("./User.js");
 
-function UserManager() {
+exports.userManager = function() {	
 	var users = {};
 
-	this.getUsersByPseudo = function(pseudo) {
-		var user = [];
-		for(var key in users) {
-			if(users[key].getPseudo() == pseudo)
-				user.push(users[key]);
-		}
-		if(user.length > 0)
-			return user;
-		else
-			console.log("::red:: UserManager >> no user for pseudo '"+(pseudo ||"undefined")+"'");
-		return null;
+	this.addUser = function(socket, callback) {
+		var callback = callback || function(){};
+		user = new _User(socket);
+		users[user.getId()] = user;
+		callback(user);
+		console.log("::green::[UserManager]::white:: > new User added, socket id : "+ user.getId() +", pseudo : "+user.getPseudo());
 	}
-	this.getUserById = function(id) {
+
+	this.removeUser = function(id) {		
+		console.log("::green::[UserManager]::white:: > remove User, socket id : "+ users[id].getId() +", pseudo : "+users[id].getPseudo());
+		if(users[id].getCurrentGame()){
+			users[id].getCurrentGame().removeUser(users[id]);
+		}	
+		delete users[id];		
+	}
+
+	this.getUser = function(id) {
 		if(users[id])
 			return users[id];
 		return null;
-	}
-	this.addUser = function(user) {
-		console.log("::green::[UserManager]::white:: > new User added ("+((user) ? user.getPseudo() :"undefined")+")");
-		if(user)
-			users[user.getId()] = user;
-		else
-			console.log("::red:: UserManager >> can't add this user undefined");
-	}
-	this.removeUser = function(user) {
-		if(user) {
-			console.log("::green::[UserManager]::white:: > remove User ("+((user) ? user.getPseudo() :"undefined")+")");
-			delete users[user.getId()];
-		}
 	}
 
 	this.getOnlines = function(id) {
 		var id = id || -1;
 		var tmp = [];
 		for(var key in users) {
-			if(id == -1 || key != id) {
+			if((id == -1 || key != id) && (users[key].getPseudo() != "An unnamed monkey")) {
 				tmp.push(users[key].toObj());
 			}
 		}
@@ -58,4 +37,3 @@ function UserManager() {
 	}
 }
 
-module.exports = UserManager;

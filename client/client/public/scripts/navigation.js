@@ -95,7 +95,7 @@ $(document).ready(function() {
 				$("#game-selection").addClass("hide");
 				console.log("On alerte le serveur que l'on veut rejoindre la partie "+idGame);
 				socket.joinGame(idGame, function(o){
-					console.log("la salle va se créer id:"+o.id+",game : "+o.typeGame);
+					console.log("Création de la salle de jeux puissance 4, id : "+o.id+", game : "+o.typeGame);
 					idGame = o.id;
 					choice(o.typeGame);
 				});
@@ -109,7 +109,7 @@ $(document).ready(function() {
 			$("#game-selection").addClass("hide");
 			if(nameGame = "p4"){
 				socket.requestPuissanceQuatre(function(link_id) {
-					console.log("La salle de jeux puissance 4 va se créer id:"+link_id+", game : "+nameGame);
+					console.log("Création de la salle de jeux puissance 4, id : "+link_id+", game : "+nameGame);
 					idGame = link_id;
 					choice(nameGame);
 				});
@@ -299,9 +299,7 @@ $(document).ready(function() {
 		cm.open($(this).attr("id"));
 	});
 	$(document).on("click", "#conversationBack", function(event) {
-		$("#container").removeClass("swap");
-		$("#conversation").addClass("swap");
-		$("#chat #logo").removeClass("minimize");
+		
 		cm.close();
 		event.stopPropagation();
 	});
