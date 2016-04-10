@@ -15,6 +15,9 @@ var IO = function() {
 
 	// connection au socket
 	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
+	soc.on("connect_error", function() {
+		ERROR.socket();
+	});
 	// envoi d'une requete d'identification
 	var loginBinded = false;
 
