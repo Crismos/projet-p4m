@@ -48,7 +48,7 @@ function run() {
 
 				userManager.getUser(socket.id).setPseudo(o.name);
 
-				socket.emit("connection success", {id: socket.id});
+				socket.emit("connection success", {id: socket.id, name: o.name});
 				socket.emit("welcome", userManager.getOnlines(socket.id));
 				io.emit("newUser", {id: socket.id, name:o.name, status:0});
 			} else {
@@ -101,8 +101,15 @@ function run() {
 			var from = socket.id;
 			var to = o.to;
 			var text = parser.parse(o.text);
-			socket.emit("message", {from: to, to: true, text: text});
-			userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
+			
+			var idGame = parser.isInvitation(text, gameManager, config);
+			if(idGame) {
+				console.log("::cyan::Invitation "+idGame);
+			} else {
+				console.log("::cyan:: message");
+				socket.emit("message", {from: to, to: true, text: text});
+				userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
+			}
 		});
 
 	});

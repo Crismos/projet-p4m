@@ -76,6 +76,7 @@ $(document).ready(function() {
 			logged = true;
 			
 			socket.login(function(o) {
+				localStorage.name = o.name;
 				ERROR.killAll();
 				// success
 				id = o.id;
@@ -95,7 +96,6 @@ $(document).ready(function() {
 					that.requestGame();
 				} else {
 					$("#login").addClass("hide");
-					$("#game-selection").removeClass("hide");
 					$("#game-selection").addClass("hide");
 					console.log("On alerte le serveur que l'on veut rejoindre la partie "+idGame);
 					socket.joinGame(idGame, function(o){
@@ -296,8 +296,6 @@ $(document).ready(function() {
 		$(document).mousemove(function() {
 			doInterval();
 		});
-
-		
 	}
 	var afk = new AFK();
 
@@ -362,6 +360,17 @@ $(document).ready(function() {
 		setTimeout(function() {
 			that.remove();
 		},300);
+	});
+	$(document).on("click", "#chat .invitation", function(event) {
+		var id = $(this).attr("data-id");
+		$("#login").addClass("hide");
+		$("#game-selection").addClass("hide");
+		console.log("On alerte le serveur que l'on veut rejoindre la partie "+id);
+		socket.joinGame(id, function(o){
+			console.log("Création de la salle de jeux puissance 4, id : "+o.id+", game : "+o.typeGame);
+			idGame = o.id;
+			choice(o.typeGame);
+		});
 	});
 
 	var forceScroll = true;
