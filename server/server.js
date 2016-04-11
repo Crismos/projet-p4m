@@ -1,6 +1,7 @@
 var console = require("./modules/console.js");
 var module_userManager = require("./modules/UserManager.js");
 var module_gameManager = require("./modules/GameManager.js");
+var parser = require("./modules/Parser.js");
 var config = {};
 
 // chargement du fichier de configuration
@@ -17,6 +18,8 @@ fs.readFile('../config.cfg', 'utf8', function (err,data) {
 });
 var userManager = new module_userManager.userManager();
 var gameManager = new module_gameManager.gameManager();
+
+
 
 function run() {
 	var io = require("socket.io")(config.server.socket.port);
@@ -39,7 +42,7 @@ function run() {
 		});
 		
 		socket.on('user sends his pseudo to server', function(o){
-
+			o.name = parser.parse(o.name);
 			if(userManager.isValidePseudo(o.name)) {
 				console.log("::green::[user]::white:: "+o.name+" connected ("+socket.id+")");
 
@@ -97,7 +100,8 @@ function run() {
 		socket.on("message", function(o) {
 			var from = socket.id;
 			var to = o.to;
-			var text = o.text;
+			var text = parser.parse(o.text);
+			socket.emit("message", {from: to, to: true, text: text});
 			userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
 		});
 
