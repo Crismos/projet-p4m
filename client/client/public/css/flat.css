@@ -628,6 +628,7 @@ border-radius: 5px 5px 0 0;
 	margin: 5px;
 	-webkit-border-radius: 5px 5px 5px 5px;
 	border-radius: 5px 5px 5px 5px;
+	font-size: 1em;
 }
 #conversation .messageSet.me {
 	margin-left: 50px;
@@ -636,6 +637,38 @@ border-radius: 5px 5px 0 0;
 #conversation .messageSet.other {
 	margin-right: 50px;
 	background: #044c71;
+}
+
+button.chatButton {
+	background: #3cd934;
+	background-image: -webkit-linear-gradient(top, #3cd934, #3dab2c);
+	background-image: -moz-linear-gradient(top, #3cd934, #3dab2c);
+	background-image: -ms-linear-gradient(top, #3cd934, #3dab2c);
+	background-image: -o-linear-gradient(top, #3cd934, #3dab2c);
+ 	background-image: linear-gradient(to bottom, #3cd934, #3dab2c);
+ 	-webkit-border-radius: 7;
+  	-moz-border-radius: 7;
+  	border-radius: 7px;
+  	text-shadow: 1px 1px 1px #474747;
+  	color: #ffffff;
+  	padding: 3px 8px 3px 8px;
+  	border: solid #a1f78f 1px;
+  	text-decoration: none;
+}
+button.chatButton::after {
+	display: none;
+}
+button.chatButton::before {
+	display: none;
+}
+button.chatButton:hover {
+background: #19b811;
+  background-image: -webkit-linear-gradient(top, #19b811, #289911);
+  background-image: -moz-linear-gradient(top, #19b811, #289911);
+  background-image: -ms-linear-gradient(top, #19b811, #289911);
+  background-image: -o-linear-gradient(top, #19b811, #289911);
+  background-image: linear-gradient(to bottom, #19b811, #289911);
+  text-decoration: none;
 }
 
 /*

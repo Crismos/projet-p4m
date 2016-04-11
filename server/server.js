@@ -105,6 +105,8 @@ function run() {
 			var idGame = parser.isInvitation(text, gameManager, config);
 			if(idGame) {
 				console.log("::cyan::Invitation "+idGame);
+				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
+				userManager.getUser(to).getSocket().emit("invitation", {from: from, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
 			} else {
 				console.log("::cyan:: message");
 				socket.emit("message", {from: to, to: true, text: text});

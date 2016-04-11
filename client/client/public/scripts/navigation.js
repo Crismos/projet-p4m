@@ -87,6 +87,7 @@ $(document).ready(function() {
 				cv.event(cm);
 
 				socket.onMessage(cm.message);
+				socket.onInvitation(cm.invitation);
 
 				$("#chat").removeClass("none");
 				$("#pseudo").blur();
@@ -361,7 +362,7 @@ $(document).ready(function() {
 			that.remove();
 		},300);
 	});
-	$(document).on("click", "#chat .invitation", function(event) {
+	$(document).on("click", "#chat .chatButton", function(event) {
 		var id = $(this).attr("data-id");
 		$("#login").addClass("hide");
 		$("#game-selection").addClass("hide");

@@ -144,6 +144,8 @@ function ConversationManager(um) {
 	}
 
 	this.message = function(o) {
+		console.log("===========cm.message=========");
+		console.log(o);
 		var me = (o.to ? true : false);
 		var msg = new Message(me, o.text);
 		if(convs[o.from]) {
@@ -154,7 +156,24 @@ function ConversationManager(um) {
 				call("newMsg", convs[o.from]);
 		}
 		call("updateGlobalNotif", getNotif());
-
+	}
+	this.invitation = function(o) {
+		console.log("===========cm.invitation=========");
+		console.log(o);
+		var me = (o.to ? true : false);
+		if(!me) {
+			var html = TEMPLATE.get("invitationReceived", function(data) {
+				data = TEMPLATE.parse(data, o);
+				var msg = {from: o.from, to: false, text: data};
+				dis.message(msg);
+			});
+		} else {
+			var html = TEMPLATE.get("invitationSended", function(data) {
+				data = TEMPLATE.parse(data, o);
+				var msg = {from: o.from,to: true, text: data};
+				dis.message(msg);
+			});
+		}
 	}
 
 	function addConversation(user) {

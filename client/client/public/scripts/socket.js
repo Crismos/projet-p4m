@@ -88,6 +88,11 @@ var IO = function() {
 			callback(o);
 		});
 	}
+	this.onInvitation = function(callback) {
+		soc.on("invitation", function(o) {
+			callback(o);
+		});
+	}
 	this.send = function(to, text) {
 		soc.emit("message", {to:to, text:text});
 	}
