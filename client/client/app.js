@@ -40,6 +40,7 @@ fs.readFile('../../config.cfg', 'utf8', function (err,data) {
 		if(req.params.var == "config.js") {
 			//envoi du fichier de configuration au client
 			res.send("var config = "+JSON.stringify(config));
+			console.log(JSON.stringify(config));
 		} else {
 			//res.sendFile("main.html", {root: './public'});
 			res.render("main", {

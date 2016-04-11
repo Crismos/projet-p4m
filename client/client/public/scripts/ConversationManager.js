@@ -144,9 +144,8 @@ function ConversationManager(um) {
 	}
 
 	this.message = function(o) {
-		var msg = new Message(false, o.text);
-		console.log("reçu");
-		console.log(o);
+		var me = (o.to ? true : false);
+		var msg = new Message(me, o.text);
 		if(convs[o.from]) {
 			convs[o.from].addMessage(msg);
 		}
@@ -202,10 +201,9 @@ function ConversationManager(um) {
 
 	this.send = function(id, text) {
 		var conv = this.getConv(id);
-		conv.addMessage(new Message(true, text));
+		//conv.addMessage(new Message(true, text));
 		socket.send(id, text);
-
-		call("newMsg", conv);
+		//call("newMsg", conv);
 	}
 
 	this.call = call;

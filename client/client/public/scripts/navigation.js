@@ -18,6 +18,8 @@
 ** setInfos() > met à jours les informations de l'utilisateur (pseudi/id) de manière visuelle
 */
 
+
+
 $(document).ready(function() {
 
 
@@ -261,6 +263,43 @@ $(document).ready(function() {
 				break;
 		}		
 	}
+
+	function AFK() {
+		var wasAfk = false;
+		var afk = false;
+		var interval = null;
+		
+		function doInterval() {
+			check();
+			afk = false;
+			if(interval)
+				clearTimeout(interval);
+			interval = setTimeout(function() {
+				afk = true;
+				check();
+			}, parseInt(config.settings.afkTime)*1000);
+		}
+
+		function check() {
+			if(afk && wasAfk == false) {
+				socket.getSocket().emit("I'am away bro", {});
+				wasAfk = true;
+			} else if (!afk && wasAfk) {
+				socket.getSocket().emit("I'am back bro", {});
+				wasAfk = false;
+			}
+		}
+
+		$(document).click(function() {
+			doInterval();
+		});
+		$(document).mousemove(function() {
+			doInterval();
+		});
+
+		
+	}
+	var afk = new AFK();
 
 	
 	// récuperer l'id de l'utilisateur dans le localStorage
