@@ -36,9 +36,11 @@ function run() {
 
 		socket.on("I'am away bro", function() {
 			console.log("::yellow:: user "+userManager.getUser(socket.id).getPseudo()+" is afk");
+			userManager.getUser(socket.id).afk();
 		});
 		socket.on("I'am back bro", function() {
 			console.log("::green:: user "+userManager.getUser(socket.id).getPseudo()+" is no longer afk");
+			userManager.getUser(socket.id).back();
 		});
 		
 		socket.on('user sends his pseudo to server', function(o){

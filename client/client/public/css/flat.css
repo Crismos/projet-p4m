@@ -480,6 +480,9 @@ button.red::before {
 #chat .user .status.ongame {
 	background: #e9bb1d;
 }
+#chat .user .status.afk {
+	background: #d62121;
+}
 #chat .user {
 	overflow: hidden;
 }
@@ -614,6 +617,9 @@ button.red::before {
 }
 #conversation .header .status.ongame {
 	background: #e9bb1d;
+}
+#conversation .header .status.afk {
+	background: #d62121;
 }
 #conversation .container {
 	background: #212121;

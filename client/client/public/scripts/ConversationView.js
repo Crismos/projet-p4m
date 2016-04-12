@@ -17,15 +17,18 @@ function ConversationView(cm) {
 
 	function updateConv(conv) {
 
-		console.log("view test : "+(conv.user.status == 0 ? "online" : "ongame"));
+		var status = {
+			0: "online",
+			1: "ongame",
+			2: "afk"
+		}
 
-		$(document.getElementById(conv.user.id)).children(".status").removeClass((conv.user.status == 0 ? "ongame" : "online"));
-		$(document.getElementById(conv.user.id)).children(".status").addClass((conv.user.status == 0 ? "online" : "ongame"));
-
-		console.log("#conversation[data-id='"+conv.user.id+"' .status");
-
-		$("#conversation[data-id='"+conv.user.id+"'] .status").removeClass((conv.user.status == 0 ? "ongame" : "online"));
-		$("#conversation[data-id='"+conv.user.id+"'] .status").addClass((conv.user.status == 0 ? "online" : "ongame"));
+		for(var key in status) {
+			$(document.getElementById(conv.user.id)).children(".status").removeClass(status[key]);
+			$("#conversation[data-id='"+conv.user.id+"'] .status").removeClass(status[key]);
+		}
+		$(document.getElementById(conv.user.id)).children(".status").addClass(status[conv.user.status]);		
+		$("#conversation[data-id='"+conv.user.id+"'] .status").addClass(status[conv.user.status]);
 	}
 	function drawWelcome(convs) {
 		var tab = [];

@@ -56,6 +56,14 @@ var User = function(socket) {
 		else
 			changeStatus(0);
 	}
+	this.afk = function() {
+		if(!currentGame)
+			changeStatus(2);
+	}
+	this.back = function() {
+		if(!currentGame)
+			changeStatus(0);
+	}
 
 	this.getCurrentGame = function(){
 		return currentGame;
