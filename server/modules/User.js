@@ -30,10 +30,10 @@ var User = function(socket) {
 		pseudo = nv_pseudo;
 		console.log("::green::[User]::white:: > Update pseudo : user socket id : "+ socket.id +", pseudo : "+pseudo);
 	}
-	this.setCurrentGame = function(game) {
+	/*this.setCurrentGame = function(game) {
 		currentGame = game;
 		callbackStatus(that.getStatus());
-	}
+	}*/
 
 	/*get statut regarde dabord la game actuelle, si le gars est pas en game ca check le statut a modier*/
 	this.getStatus = function() {

@@ -78,6 +78,13 @@ function run() {
 			}
 
 		});
+		socket.on("surrend game", function(o) {
+			var user = userManager.getUser(socket.id);
+			var game = user.getCurrentGame();
+			if(game)
+				game.removeUser(user);
+			user.setCurrentGame(null);
+		});
 		socket.on("client wants to join game", function(idGame) {
 			var game = gameManager.getGame(idGame);
 			if(!game) {

@@ -18,20 +18,21 @@ function Conversation(user) {
 					this.read();
 			}
 		}
+		/*
 		$(document.getElementById(""+conv.user.id)).children(".notification").html(""+(conv.conv.notif()<10 ? conv.conv.notif() : "9+"));
 		if(conv.conv.notif() > 0)
 			$(document.getElementById(""+conv.user.id)).children(".notification").addClass("new");
 		else
 			$(document.getElementById(""+conv.user.id)).children(".notification").removeClass("new");
-
+*/
 	}
 	this.read = function() {
 
 		while(this.conv.new.length > 0) {
 			this.conv.read.push(this.conv.new.splice(0,1).pop());
 		}
-		$(document.getElementById(conv.id)).children(".notification").html("");
-		$(document.getElementById(conv.id)).children(".notification").removeClass("new");
+		/*$(document.getElementById(conv.id)).children(".notification").html("");
+		$(document.getElementById(conv.id)).children(".notification").removeClass("new");*/
 	}
 }
 
@@ -101,6 +102,7 @@ function ConversationManager(um) {
 
 		dis.currentConv = convs[id];
 		convs[id].read();
+		call("welcome", convs);
 		
 		call("newMsg", convs[id]);
 		call("open", convs[id]);
@@ -139,6 +141,7 @@ function ConversationManager(um) {
 		var msg = new Message(me, o.text);
 		if(convs[o.from]) {
 			convs[o.from].addMessage(msg);
+			call("welcome", convs);
 		}
 		if(dis.currentConv) {
 			if(dis.currentConv.user.id == o.from)
