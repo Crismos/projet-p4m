@@ -53,10 +53,12 @@ function ConversationView(cm) {
 		TEMPLATE.get("chatUser", function(data) {
 			var html = "";
 			for(var key in tab) {
+				var sts = ["online", "ongame", "afk"];
+				var status = sts[tab[key].user.status]
 				var replace = {
 					id: tab[key].user.id,
 					name: tab[key].user.name, 
-					status: (tab[key].user.status == 0 ? "online" : "ongame"),
+					status: status,
 					notif: (tab[key].conv.notif() > "0" ? tab[key].conv.notif() : " ")
 				};
 
