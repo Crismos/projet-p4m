@@ -4,6 +4,8 @@ var User = function(socket) {
 	var socket = socket;
 	var currentGame = null;
 
+	var status = 0;
+
 	var callbackStatus = function(){};
 	//var statut = afk / busy / available /.....
 
@@ -35,22 +37,32 @@ var User = function(socket) {
 
 	/*get statut regarde dabord la game actuelle, si le gars est pas en game ca check le statut a modier*/
 	this.getStatus = function() {
-		if(!currentGame) 
-			return 0;
-		if(currentGame.name == "morpion")
-			return 1;
-		if(currentGame.name == "p4")
-			return 2;
-		return -1;
+		return status;
 	}
 
 	this.onStatus = function(callback) {
 		var fct = callback || function(){};
 		callbackStatus = fct;
 	}
+	var changeStatus = function(s) {
+		status = s;
+		callbackStatus(that);
+	}
 
 	this.setCurrentGame = function(game) {
 		currentGame = game;
+		if(game)
+			changeStatus(1)
+		else
+			changeStatus(0);
+	}
+	this.afk = function() {
+		if(!currentGame)
+			changeStatus(2);
+	}
+	this.back = function() {
+		if(!currentGame)
+			changeStatus(0);
 	}
 
 	this.getCurrentGame = function(){

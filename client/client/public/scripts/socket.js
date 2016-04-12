@@ -15,6 +15,7 @@ var IO = function() {
 
 	// connection au socket
 	var soc = io.connect(config.server.socket.addr+":"+config.server.socket.port);
+	
 	soc.on("connect_error", function() {
 		ERROR.socket();
 	});
@@ -51,7 +52,7 @@ var IO = function() {
 		call("onlines");
 	});
 
-	this.login = function(success, fail) {
+	this.login = function(pseudo, success, fail) {
 		
 		console.log("login bind");
 		var fct = success || function() {};
@@ -65,7 +66,7 @@ var IO = function() {
 			});
 		}
 		loginBinded = true;
-		soc.emit("user sends his pseudo to server", {name: localStorage.name});
+		soc.emit("user sends his pseudo to server", {name: pseudo});
 	}
 
 	this.onUserConnection = function(callback) {
@@ -88,6 +89,11 @@ var IO = function() {
 			callback(o);
 		});
 	}
+	this.onInvitation = function(callback) {
+		soc.on("invitation", function(o) {
+			callback(o);
+		});
+	}
 	this.send = function(to, text) {
 		soc.emit("message", {to:to, text:text});
 	}
@@ -105,12 +111,16 @@ var IO = function() {
 		soc.emit("client wants to create p4 game");
 	}
 
-	this.joinGame = function(link_id, callback) {
-		var callback = callback;
+	this.joinGame = function(link_id, success, fail) {
+		var callback = success;
+		var fail = fail;
 		//création salle de jeu
 		soc.on("server accept request : want to join game",function(o){
 			console.log("request join game ok, mise a jour de linterface graphique");
 			callback(o)
+		});
+		soc.on("server request want to join : fail", function(o) {
+			fail(o);
 		});
 		soc.emit("client wants to join game", link_id);
 	}

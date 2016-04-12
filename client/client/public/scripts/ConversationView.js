@@ -6,7 +6,7 @@ function ConversationView(cm) {
 		// event user
 		cm.onRmConv("chat view draw", drawUsers);
 		cm.onNewConv("chat view draw", drawUsers);
-		cm.onUpConv("chat view draw", drawUsers);
+		cm.onUpConv("chat view draw", updateConv);
 		cm.onWelcome("chat view draw", drawWelcome);
 		cm.onOpen("chat open conv view", open);
 		//event message
@@ -15,8 +15,22 @@ function ConversationView(cm) {
 		cm.onUpdateGlobalNotif("chat logo notif updater", updateLogoNotif);
 	}
 
+	function updateConv(conv) {
+
+		var status = {
+			0: "online",
+			1: "ongame",
+			2: "afk"
+		}
+
+		for(var key in status) {
+			$(document.getElementById(conv.user.id)).children(".status").removeClass(status[key]);
+			$("#conversation[data-id='"+conv.user.id+"'] .status").removeClass(status[key]);
+		}
+		$(document.getElementById(conv.user.id)).children(".status").addClass(status[conv.user.status]);		
+		$("#conversation[data-id='"+conv.user.id+"'] .status").addClass(status[conv.user.status]);
+	}
 	function drawWelcome(convs) {
-		console.log("VIEW :: Conversation.welcome");
 		var tab = [];
 		var order = Object.keys(convs).sort(
 				function(a,b){
@@ -39,13 +53,11 @@ function ConversationView(cm) {
 	}
 
 	function drawUsers() {
-		console.log("VIEW :: Conversation.user");
 		var convs = cm.getConvs();
 		drawWelcome(convs);
 	}
 
 	function open(conv) {
-		console.log("VIEW :: Conversation.open");
 
 		TEMPLATE.get("convHeader", function(data) {
 			var html = "";
@@ -58,7 +70,6 @@ function ConversationView(cm) {
 	}
 
 	function drawConv(conv) {
-		console.log("VIEW :: Conversation.conv");
 		var messages = conv.conv.read;
 		TEMPLATE.get("message", function(data) {
 			var html = "";

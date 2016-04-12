@@ -1,7 +1,9 @@
 function ErrorManager() {
 	var errors = {
 		"login": '<div class="error err-%id"><b>Erreur</b> : La <b>pseudalité</b> choisie (%name) est <b>invalide</b> (déjà utilisée ou de trop petit taille)</div>',
-		"socket": '<div class="error err-%id"><b>Erreur</b> : <b>connexion</b> au serveur de socket <b>perdue</b>...</div>'
+		"socket": '<div class="error err-%id"><b>Erreur</b> : <b>connexion</b> au serveur de socket <b>perdue</b>...</div>',
+		"noGame": '<div class="error err-%id"><b>Erreur</b> : La partie que vous avez essayé de rejoindre n\'existe pas</div>',
+		"gameFull": '<div class="error err-%id"><b>Erreur</b> : La partie que vous avez essayé de rejoindre est pleine</div>'
 	}
 	var ids = {};
 	var id = 0;
@@ -11,6 +13,12 @@ function ErrorManager() {
 	}
 	this.socket = function() {
 		addError("socket", {});
+	}
+	this.noGame = function() {
+		addError("noGame", {});
+	};
+	this.gameFull = function() {
+		addError("gameFull", {});
 	}
 
 	function addError(type, o) {

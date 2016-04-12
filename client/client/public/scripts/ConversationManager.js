@@ -24,12 +24,8 @@ function Conversation(user) {
 		else
 			$(document.getElementById(""+conv.user.id)).children(".notification").removeClass("new");
 
-		
-		console.log(message);
 	}
 	this.read = function() {
-		console.log("== read() ==");
-		console.log(conv);
 
 		while(this.conv.new.length > 0) {
 			this.conv.read.push(this.conv.new.splice(0,1).pop());
@@ -102,8 +98,6 @@ function ConversationManager(um) {
 	}
 
 	this.open = function(id) {
-		console.log("====== open ["+id+"]=====");
-		console.log(convs[id]);
 
 		dis.currentConv = convs[id];
 		convs[id].read();
@@ -122,9 +116,6 @@ function ConversationManager(um) {
 
 	function removeConversation(user) {
 		var conv = convs[user.id];
-		console.log(conv);
-		console.log(user);
-		console.log(dis.currentConv);
 		if(dis.currentConv) {
 			if(dis.currentConv.id == conv.id)
 				dis.close();
@@ -154,7 +145,22 @@ function ConversationManager(um) {
 				call("newMsg", convs[o.from]);
 		}
 		call("updateGlobalNotif", getNotif());
-
+	}
+	this.invitation = function(o) {
+		var me = (o.to ? true : false);
+		if(!me) {
+			var html = TEMPLATE.get("invitationReceived", function(data) {
+				data = TEMPLATE.parse(data, o);
+				var msg = {from: o.from, to: false, text: data};
+				dis.message(msg);
+			});
+		} else {
+			var html = TEMPLATE.get("invitationSended", function(data) {
+				data = TEMPLATE.parse(data, o);
+				var msg = {from: o.from,to: true, text: data};
+				dis.message(msg);
+			});
+		}
 	}
 
 	function addConversation(user) {
@@ -165,9 +171,15 @@ function ConversationManager(um) {
 	}
 
 	function updateConversation(user) {
+
+		console.log(user);
+
 		var msgs = convs[user.id].conv;
 		convs[user.id] = new Conversation(user);
 		convs[user.id].conv = msgs;
+		convs[user.id].user = user;
+
+		console.log(convs[user.id]);
 
 		call("upConv", convs[user.id]);
 		call("updateGlobalNotif", getNotif());
@@ -175,10 +187,8 @@ function ConversationManager(um) {
 
 	function welcome() {
 		var users = um.getUsersByStatus();
-		console.log(users);
 		for(var key in users) {
 			convs[users[key].id] = new Conversation(users[key]);
-			console.log(convs[users[key].id]);
 		}
 
 		call("welcome", convs);

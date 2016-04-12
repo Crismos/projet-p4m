@@ -19,5 +19,17 @@ var Parser = function() {
 
 		return html;
 	}
+
+	this.isInvitation = function(data, gameManager, config) {
+
+		if(data.indexOf(config.server.client.addr+":"+config.server.client.port+"/") == 0) {
+			// c'est une invitation
+			var tmpId = data.replace(config.server.client.addr+":"+config.server.client.port+"/", "");
+			if(gameManager.getGame(tmpId))
+				return tmpId;
+			return false;
+		}
+		return false;
+	}
 }
 module.exports = new Parser();

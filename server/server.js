@@ -29,16 +29,18 @@ function run() {
 		
 		console.log("::green:: >> new user incoming...");
 		userManager.addUser(socket, function(user) {
-			user.onStatus(function(status) {
+			user.onStatus(function(user) {
 				socket.broadcast.emit("upUser", user.toObj());
 			});
 		});
 
 		socket.on("I'am away bro", function() {
 			console.log("::yellow:: user "+userManager.getUser(socket.id).getPseudo()+" is afk");
+			userManager.getUser(socket.id).afk();
 		});
 		socket.on("I'am back bro", function() {
 			console.log("::green:: user "+userManager.getUser(socket.id).getPseudo()+" is no longer afk");
+			userManager.getUser(socket.id).back();
 		});
 		
 		socket.on('user sends his pseudo to server', function(o){
@@ -48,7 +50,7 @@ function run() {
 
 				userManager.getUser(socket.id).setPseudo(o.name);
 
-				socket.emit("connection success", {id: socket.id});
+				socket.emit("connection success", {id: socket.id, name: o.name});
 				socket.emit("welcome", userManager.getOnlines(socket.id));
 				io.emit("newUser", {id: socket.id, name:o.name, status:0});
 			} else {
@@ -79,11 +81,13 @@ function run() {
 		socket.on("client wants to join game", function(idGame) {
 			var game = gameManager.getGame(idGame);
 			if(!game) {
+				socket.emit("server request want to join : fail", {noGame: true});
 				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
 				return;
 			}
 			if(!game.addPlayer(userManager.getUser(socket.id))){
 				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
+				socket.emit("server request want to join : fail", {full: true});
 				return;
 			}
 			
@@ -101,8 +105,17 @@ function run() {
 			var from = socket.id;
 			var to = o.to;
 			var text = parser.parse(o.text);
-			socket.emit("message", {from: to, to: true, text: text});
-			userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
+			
+			var idGame = parser.isInvitation(text, gameManager, config);
+			if(idGame) {
+				console.log("::cyan::Invitation "+idGame);
+				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
+				userManager.getUser(to).getSocket().emit("invitation", {from: from, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
+			} else {
+				console.log("::cyan:: message");
+				socket.emit("message", {from: to, to: true, text: text});
+				userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
+			}
 		});
 
 	});
