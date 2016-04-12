@@ -29,7 +29,7 @@ function run() {
 		
 		console.log("::green:: >> new user incoming...");
 		userManager.addUser(socket, function(user) {
-			user.onStatus(function(status) {
+			user.onStatus(function(user) {
 				socket.broadcast.emit("upUser", user.toObj());
 			});
 		});
