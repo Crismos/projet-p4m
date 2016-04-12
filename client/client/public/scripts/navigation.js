@@ -43,7 +43,7 @@ $(document).ready(function() {
 			console.log(currentPage);
 
 			if(push) {
-				var state = {"page_id": currentPage.id, "user": user.getName()};
+				var state = {"page_id": currentPage.id, "user": localStorage.name};
 				history.pushState(state, currentPage.title, (idGame != "0" ? idGame : "home"));
 			}
 
@@ -71,12 +71,11 @@ $(document).ready(function() {
 			$("#login").removeClass("hide");
 			$("#game-selection").addClass("hide");
 		}
-		this.setName = function(pseudo) {
-			localStorage.name = pseudo;
-			logged = true;
+		this.setName = function(pseudo) {		
 			
-			socket.login(function(o) {
+			socket.login(pseudo, function(o) {
 				localStorage.name = o.name;
+				logged = true;
 				ERROR.killAll();
 				// success
 				id = o.id;
@@ -100,9 +99,23 @@ $(document).ready(function() {
 					$("#game-selection").addClass("hide");
 					console.log("On alerte le serveur que l'on veut rejoindre la partie "+idGame);
 					socket.joinGame(idGame, function(o){
+						console.log("user peut rejoindre une game");
+						// l'utilisateur peut rejoindre
 						console.log("Création de la salle de jeux puissance 4, id : "+o.id+", game : "+o.typeGame);
 						idGame = o.id;
 						choice(o.typeGame);
+					}, function(o) {
+						console.log("non non non");
+						// ne peut pas rejoindre la partie
+						if(o.full) {
+							console.log("la partie est pleine");
+							ERROR.gameFull();
+						}
+						if(o.noGame) {
+							console.log("la partie n'existe pas");
+							ERROR.noGame();
+						}
+						home(true);
 					});
 				}
 			}, function(o) {
@@ -406,10 +419,12 @@ $(document).ready(function() {
 	});
 
 
-	function home() {
+	function home(bool) {
+		idGame = 0;
 		currentPage = pages.home;
 		currentPage.go();
-		if(logged) {
+		console.log(">>>>> HOME : "+logged);
+		if(logged || bool) {
 			$("#login").addClass("hide");
 			$("#game-selection").removeClass("hide");
 		} else {

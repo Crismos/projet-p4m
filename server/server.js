@@ -81,11 +81,13 @@ function run() {
 		socket.on("client wants to join game", function(idGame) {
 			var game = gameManager.getGame(idGame);
 			if(!game) {
+				socket.emit("server request want to join : fail", {noGame: true});
 				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
 				return;
 			}
 			if(!game.addPlayer(userManager.getUser(socket.id))){
 				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
+				socket.emit("server request want to join : fail", {full: true});
 				return;
 			}
 			
