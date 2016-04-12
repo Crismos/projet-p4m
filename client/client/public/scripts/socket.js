@@ -21,6 +21,7 @@ var IO = function() {
 	});
 	// envoi d'une requete d'identification
 	var loginBinded = false;
+	var gameBinded = false;
 
 	var params = {
 		onlines: 0
@@ -104,11 +105,13 @@ var IO = function() {
 	this.requestPuissanceQuatre = function(callback) {
 		var callback = callback;
 		//création salle de jeu
-		soc.on("server accept request : create p4 game", function(link_id) {
-			console.log("request create p4 ok, mise a jour de linterface graphique");
-			callback(link_id);
-		});
+		if(!gameBinded)
+			soc.on("server accept request : create p4 game", function(link_id) {
+				console.log("request create p4 ok, mise a jour de linterface graphique");
+				callback(link_id);
+			});
 		soc.emit("client wants to create p4 game");
+		gameBinded = true;
 	}
 
 	this.joinGame = function(link_id, success, fail) {

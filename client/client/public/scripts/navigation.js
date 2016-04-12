@@ -418,6 +418,12 @@ $(document).ready(function() {
 	    }
 	});
 
+	$(document).on("click", "#ff", function() {
+		// abandonner une partie
+		socket.getSocket().emit("surrend game", {id: idGame});
+		home(true);
+	});
+
 
 	function home(bool) {
 		idGame = 0;
