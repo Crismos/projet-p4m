@@ -462,17 +462,12 @@ button.red::before {
 	width: 5px;
 }
 #chat .user .notification {
-	display: none;
-}
-#chat .user .notification.new {
 	display: inline;
 	position: absolute;
 	right: 20px;
 	top: 10px;
-	background: #282828;
 	color: rgba(255,255,255,0.5);
 	padding: 3px 5px 2px 5px;
-	border: 1px solid rgba(0,0,0,0.3);
 }
 #chat .user .status.online {
 	background: #1de9b6;

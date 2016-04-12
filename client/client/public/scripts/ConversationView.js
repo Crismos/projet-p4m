@@ -16,8 +16,9 @@ function ConversationView(cm) {
 	}
 
 	function updateConv(conv) {
-
-		var status = {
+		var convs = cm.getConvs();
+		drawWelcome(convs);
+		/*var status = {
 			0: "online",
 			1: "ongame",
 			2: "afk"
@@ -28,14 +29,22 @@ function ConversationView(cm) {
 			$("#conversation[data-id='"+conv.user.id+"'] .status").removeClass(status[key]);
 		}
 		$(document.getElementById(conv.user.id)).children(".status").addClass(status[conv.user.status]);		
-		$("#conversation[data-id='"+conv.user.id+"'] .status").addClass(status[conv.user.status]);
+		$("#conversation[data-id='"+conv.user.id+"'] .status").addClass(status[conv.user.status]);*/
 	}
 	function drawWelcome(convs) {
 		var tab = [];
 		var order = Object.keys(convs).sort(
 				function(a,b){
-					// tri par status et par nom
-					return (convs[a].conv.notif() - convs[b].conv.notif())*2+(convs[b].user.status - convs[a].user.status)+(convs[a].user.name > convs[b].user.name)*0.25;
+					// tri par notif status et par nom
+					var testNotif = convs[a].conv.notif() == convs[b].conv.notif();
+					var testStatus = convs[a].user.status == convs[b].user.status;
+					if(testNotif && testStatus) {
+						return (convs[a].user.name < convs[b].user.name ? -1 : 1);
+					} else if(testNotif) {
+						return (convs[a].user.status < convs[b].user.status ? -1 : 1);
+					} else {
+						return (convs[a].conv.notif() > convs[b].conv.notif() ? -1 : 1);
+					}
 				});
 		for(var k in order) {
 			tab.push(convs[order[k]]);
@@ -44,7 +53,12 @@ function ConversationView(cm) {
 		TEMPLATE.get("chatUser", function(data) {
 			var html = "";
 			for(var key in tab) {
-				var replace = {id: tab[key].user.id,name: tab[key].user.name, status: (tab[key].user.status == 0 ? "online" : "ongame")};
+				var replace = {
+					id: tab[key].user.id,
+					name: tab[key].user.name, 
+					status: (tab[key].user.status == 0 ? "online" : "ongame"),
+					notif: (tab[key].conv.notif() > "0" ? tab[key].conv.notif() : " ")
+				};
 
 				html += TEMPLATE.parse(data, replace);
 			}
@@ -61,7 +75,10 @@ function ConversationView(cm) {
 
 		TEMPLATE.get("convHeader", function(data) {
 			var html = "";
-			var replace = {id: conv.user.id,name: conv.user.name, status: (conv.user.status == 0 ? "online" : "ongame")};
+			var replace = {
+				id: conv.user.id,name: conv.user.name, 
+				status: (conv.user.status == 0 ? "online" : "ongame")
+			};
 			html += TEMPLATE.parse(data, replace);
 			$("#conversation .header").html(html);
 			$("#conversation").attr("data-id", conv.user.id);
