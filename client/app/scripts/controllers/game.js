@@ -8,7 +8,7 @@
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('PuissanceCtrl', function ($scope, $routeParams, $location) {
+  .controller('GameCtrl', function ($scope, $routeParams, $location) {
   	// if user is not connected then redirect him to login
   	if(!socket.isLogged()) {
   		$location.path('/');
@@ -20,8 +20,8 @@ angular.module('clientApp')
 
   	$scope.surrender = function() {
   		idGame = 0;
+      currentGame = 'null';
   		socket.bind().emit('surrend game');
   		$location.path('/choice');
-  		$scope.$apply();
   	}
   });

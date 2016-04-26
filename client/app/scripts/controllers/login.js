@@ -14,6 +14,7 @@ angular.module('clientApp')
   			$location.path('/choice');
   		} else {
   			socket.bind().on('server accept request : want to join game', function(o) {
+          currentGame = o.typeGame;
   				$location.path('/'+o.id);
   				$scope.$apply();
   			});

@@ -27,7 +27,7 @@ function Puissance(id, user) {
 					var that=this;
 					setTimeout(function(){
 			    		that.go();
-					}, 0);
+					}, 100);
 				}
 			return true;
 		}else{

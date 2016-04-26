@@ -30,9 +30,16 @@ angular
         controllerAs: 'choice'
       })
       .when('/:id', {
-        templateUrl: '../app/views/puissance.html',
-        controller: 'PuissanceCtrl',
-        controllerAs: 'puissance'
+        templateUrl: function() {
+          if(currentGame === 'puissance') {
+            return '../app/views/puissance.html';
+          }
+          if(currentGame === 'morpion') {
+            return '../app/views/morpion.html';
+          }
+          return '../app/views/puissance.html';
+        },
+        controller: 'GameCtrl'
       })
       .when('/login', {
         templateUrl: 'app/views/login.html',

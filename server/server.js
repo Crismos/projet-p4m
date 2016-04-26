@@ -78,6 +78,16 @@ function run() {
 			}
 
 		});
+		socket.on("client wants to create morpion game", function() {
+			var game = gameManager.createMorpion(userManager.getUser(socket.id));
+			if(game){
+				socket.emit("server accept request : create morpion game", game.getId());
+				console.log("Le serveur accepte la demande de créaction de partie de morpion");
+			}else{
+				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
+			}
+
+		});
 		socket.on("surrend game", function(o) {
 			var user = userManager.getUser(socket.id);
 			var game = user.getCurrentGame();

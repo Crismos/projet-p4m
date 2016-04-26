@@ -21,10 +21,13 @@ exports.gameManager = function() {
 
 	this.createMorpion = function(user) {
 		if(user.getCurrentGame()!=null){
+			console.log("::red::[GameManger]::white::Impossible de créer une partie car l'utilisateur est déjà dans une partie."+id);
 			return false;
 		}
 
+
 		var id = generateId();		
+		console.log("::green::[GameManger]::white::création d'une partie de morpion, id généré : "+id+".");
 		games[id] = new _Morpion(id, user);
 		user.setCurrentGame(games[id]);
 
