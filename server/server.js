@@ -52,7 +52,7 @@ function run() {
 
 				socket.emit("connection success", {id: socket.id, name: o.name});
 				socket.emit("welcome", userManager.getOnlines(socket.id));
-				io.emit("newUser", {id: socket.id, name:o.name, status:0});
+				socket.broadcast.emit("newUser", {id: socket.id, name:o.name, status:0});
 			} else {
 				console.log("::red::[user] error : ::white:: ("+socket.id+") wanted to use pseudo "+o.name);
 				socket.emit("wrong pseudo", {name: o.name});
@@ -61,7 +61,7 @@ function run() {
 
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
-			io.emit("rmUser", {id: socket.id});
+			io.emit('rmUser', {id: socket.id});
 			userManager.removeUser(socket.id);
 		});
 
@@ -117,11 +117,11 @@ function run() {
 			if(idGame) {
 				console.log("::cyan::Invitation "+idGame);
 				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
-				userManager.getUser(to).getSocket().emit("invitation", {from: from, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
+				userManager.getUser(to).getSocket().emit("invitation", {from: from, to: false, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
 			} else {
 				console.log("::cyan:: message");
 				socket.emit("message", {from: to, to: true, text: text});
-				userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
+				userManager.getUser(to).getSocket().emit("message", {from: from, to: false, text: text});
 			}
 		});
 
