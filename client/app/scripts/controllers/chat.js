@@ -36,13 +36,24 @@ angular.module('clientApp')
   		this.messages = {};
   		this.messages.new = [];
   		this.messages.old = [];
+
+      var invitation = '';
+      var idGame = 0;
+      this.setInvitation = function(type, id) {
+        invitation = type;
+        idGame = id;
+      }
+      this.goInvitation = function() {
+        return idGame;
+      }
+
   		this.read = function() {
   			while(that.messages.new.length > 0) {
-				that.messages.old.push(that.messages.new.splice(0,1).pop());
-			}
+				  that.messages.old.push(that.messages.new.splice(0,1).pop());
+        }
   		}
   		this.messages.notif = function() {
-  			return that.messages.new.length > 0 ? that.messages.new.length : '';
+  			return that.messages.new.length > 0 ? (that.messages.new.length + (idGame != 0 ? 1 : 0)) : '';
   		}
 
   		this.open = function() {
@@ -53,6 +64,9 @@ angular.module('clientApp')
   		this.close = function() {
   			$scope.currentConversation = null;
   		}
+      this.getInvitation = function() {
+        return [(invitation == "" ? false : true), that.user.name, invitation];
+      }
   	}
 
     // update when user choose a conversation
@@ -71,6 +85,16 @@ angular.module('clientApp')
   		$scope.active = true;
   	});
 
+    $scope.invitation = function() {
+      socket.bind().on('server accept request : want to join game', function(o) {
+        currentGame = o.typeGame;
+        $location.path('/'+o.id);
+        $scope.$apply();
+      });
+      socket.bind().emit('client wants to join game', $scope.currentConversation.goInvitation());
+      $scope.currentConversation.setInvitation('', 0);
+    }
+
   	$scope.toggle = function() {
   		if($scope.open) {
   			$scope.open = false;
@@ -85,7 +109,17 @@ angular.module('clientApp')
   		socket.bind().emit('message', {text: $scope.message, to: $scope.currentConversation.user.id});
   		$scope.message = '';
   	}
-
+    socket.bind().on('invitation', function(o) {
+      if(!o.to) {
+        var idConv = o.from;
+        for(var key in $scope.conversations) {
+          if($scope.conversations[key].user.id == idConv) {
+            $scope.conversations[key].setInvitation(o.type, o.igGame);
+          }
+        }
+      }
+      
+    });
   	socket.bind().on('welcome', function(o) {
   		if(socket.isLogged()) {
 	  		for(var key in o) {

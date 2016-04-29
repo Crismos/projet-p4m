@@ -6,7 +6,7 @@ var config = {};
 
 // chargement du fichier de configuration
 fs = require('fs');
-fs.readFile('../config.cfg', 'utf8', function (err,data) {
+fs.readFile('D:/DEV/projet/config.cfg', 'utf8', function (err,data) {
 	console.log("Chargement de la config...");
   	if (err) {
     	return console.log(err);
@@ -18,7 +18,6 @@ fs.readFile('../config.cfg', 'utf8', function (err,data) {
 });
 var userManager = new module_userManager.userManager();
 var gameManager = new module_gameManager.gameManager();
-
 
 
 function run() {
@@ -123,7 +122,7 @@ function run() {
 			var to = o.to;
 			var text = parser.parse(o.text);
 			
-			var idGame = parser.isInvitation(text, gameManager, config);
+			var idGame = parser.isInvitation(text, gameManager, config, userManager, socket);
 			if(idGame) {
 				console.log("::cyan::Invitation "+idGame);
 				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});

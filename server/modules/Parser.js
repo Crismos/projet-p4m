@@ -20,7 +20,7 @@ var Parser = function() {
 		return html;
 	}
 
-	this.isInvitation = function(data, gameManager, config) {
+	this.isInvitation = function(data, gameManager, config, userManager, socket) {
 
 		if(data.indexOf(config.server.client.addr+":"+config.server.client.port+"/") == 0) {
 			// c'est une invitation
@@ -28,6 +28,14 @@ var Parser = function() {
 			if(gameManager.getGame(tmpId))
 				return tmpId;
 			return false;
+		}
+		if(data.indexOf('/invitation') == 0) {
+			var user = userManager.getUser(socket.id);
+			if(user.getCurrentGame()) {
+				if(gameManager.getGame(user.getCurrentGame().getId())) {
+					return user.getCurrentGame().getId();
+				}
+			}
 		}
 		return false;
 	}

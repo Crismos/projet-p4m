@@ -65,7 +65,14 @@
             </div>
             <div class="status" ng-class="currentConversation.user.getStatus()"></div>
           </div>
-          <div class="container">       
+          <div class="container">
+            <div class="invitation" ng-class="{show: currentConversation.getInvitation()[0]}" ng-click="invitation()">
+            <b>{{currentConversation.getInvitation()[1]}}</b>
+             vous invite pour une partie de 
+             <b>{{currentConversation.getInvitation()[2]}}</b>
+             <br>
+             <small>Cliquez ici pour rejoindre</small>
+            </div>
             <div class="messages" ng-repeat="msg in currentConversation.messages.old">
               <div class="messageSet" ng-class="{me: msg.me, other: !msg.me}">
               {{msg.text}}

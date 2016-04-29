@@ -555,6 +555,37 @@ button.red::before {
   padding-left: 10px;
   padding-top: 5px;
 }
+#chat .invitation {
+  font-size: 11px;
+  position: absolute;
+  color: #fff;
+  background: #09926C;
+  margin-top: -10px;
+  width: 280px;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  -moz-transition: all 0.3s ease;
+  -ms-transition: all 0.3s ease;
+  -o-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  -moz-transform: scale(0);
+  -webkit-transform: scale(0);
+  -o-transform: scale(0);
+  -ms-transform: scale(0);
+  transform: scale(0);
+}
+#chat .invitation.show {
+  -moz-transform: scale(1);
+  -webkit-transform: scale(1);
+  -o-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+}
+#chat .invitation small {
+  color: #aeaeae;
+}
 
 @-webkit-keyframes logoUpNDown {
     0% {top: 50px;}
