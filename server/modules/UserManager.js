@@ -15,7 +15,13 @@ exports.userManager = function() {
 		console.log("::green::[UserManager]::white:: > remove User, socket id : "+ users[id].getId() +", pseudo : "+users[id].getPseudo());
 		if(users[id].getCurrentGame()){
 			users[id].getCurrentGame().removeUser(users[id]);
-		}	
+		}
+		if(user[id]) {
+			if(user[id].getPseudo() != 'An unnamed monkey') {
+				io.emit("rmUser", {id: socket.id});
+			}
+		}
+		
 		delete users[id];		
 	}
 

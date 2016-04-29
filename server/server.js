@@ -6,7 +6,7 @@ var config = {};
 
 // chargement du fichier de configuration
 fs = require('fs');
-fs.readFile('../config.cfg', 'utf8', function (err,data) {
+fs.readFile('D:/DEV/projet/config.cfg', 'utf8', function (err,data) {
 	console.log("Chargement de la config...");
   	if (err) {
     	return console.log(err);
@@ -18,7 +18,6 @@ fs.readFile('../config.cfg', 'utf8', function (err,data) {
 });
 var userManager = new module_userManager.userManager();
 var gameManager = new module_gameManager.gameManager();
-
 
 
 function run() {
@@ -52,7 +51,7 @@ function run() {
 
 				socket.emit("connection success", {id: socket.id, name: o.name});
 				socket.emit("welcome", userManager.getOnlines(socket.id));
-				io.emit("newUser", {id: socket.id, name:o.name, status:0});
+				socket.broadcast.emit("newUser", {id: socket.id, name:o.name, status:0});
 			} else {
 				console.log("::red::[user] error : ::white:: ("+socket.id+") wanted to use pseudo "+o.name);
 				socket.emit("wrong pseudo", {name: o.name});
@@ -61,7 +60,7 @@ function run() {
 
 		// l'utilisateur se déconnecte
 		socket.on('disconnect', function(){
-			io.emit("rmUser", {id: socket.id});
+			io.emit('rmUser', {id: socket.id});
 			userManager.removeUser(socket.id);
 		});
 
@@ -73,6 +72,16 @@ function run() {
 			if(game){
 				socket.emit("server accept request : create p4 game", game.getId());
 				console.log("Le serveur accepte la demande de créaction de partie de p4");
+			}else{
+				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
+			}
+
+		});
+		socket.on("client wants to create morpion game", function() {
+			var game = gameManager.createMorpion(userManager.getUser(socket.id));
+			if(game){
+				socket.emit("server accept request : create morpion game", game.getId());
+				console.log("Le serveur accepte la demande de créaction de partie de morpion");
 			}else{
 				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
 			}
@@ -113,15 +122,15 @@ function run() {
 			var to = o.to;
 			var text = parser.parse(o.text);
 			
-			var idGame = parser.isInvitation(text, gameManager, config);
+			var idGame = parser.isInvitation(text, gameManager, config, userManager, socket);
 			if(idGame) {
 				console.log("::cyan::Invitation "+idGame);
 				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
-				userManager.getUser(to).getSocket().emit("invitation", {from: from, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
+				userManager.getUser(to).getSocket().emit("invitation", {from: from, to: false, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
 			} else {
 				console.log("::cyan:: message");
 				socket.emit("message", {from: to, to: true, text: text});
-				userManager.getUser(to).getSocket().emit("message", {from: from, text: text});
+				userManager.getUser(to).getSocket().emit("message", {from: from, to: false, text: text});
 			}
 		});
 

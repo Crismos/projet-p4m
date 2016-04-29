@@ -27,7 +27,7 @@ function Puissance(id, user) {
 					var that=this;
 					setTimeout(function(){
 			    		that.go();
-					}, 2000);
+					}, 100);
 				}
 			return true;
 		}else{
@@ -37,7 +37,7 @@ function Puissance(id, user) {
 	}
 
 	this.getTypeGame = function(){
-		return "p4";
+		return "puissance";
 	}
 	this.removeUser = function(user){
 		var index = players.indexOf(user);

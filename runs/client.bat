@@ -1,4 +1,4 @@
 @echo off
 
-cd ../client/client
-node app.js
+cd ../client
+node client.js

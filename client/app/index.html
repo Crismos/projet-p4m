@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/png" sizes="32x32" href="app/favicon-32x32.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <script src="config.js"></script>
+    <script src="<%= ip %>:<%= port %>/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="app/scripts/socket.js"></script>
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <!-- build:css(.) styles/vendor.css -->
+    <!-- bower:css -->
+    <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css(.tmp) styles/main.css -->
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="app/styles/animate.css">
+    <link rel="stylesheet" href="app/styles/main.css">
+
+    <!-- endbuild -->
+  </head>
+  <body ng-app="clientApp">
+<section id="background">
+      <div class="darkgreen top"></div>
+      <div class="darkgreen bot"></div>
+      <div class="lightgreen top"></div>
+      <div class="lightgreen bot"></div>
+    </section>
+    <section id="error">
+      
+    </section>
+    <section ng-controller="ChatCtrl" id="chat" ng-class="{disabled: !open, none: !active}">
+      <div id="logo" ng-class="{minimize: currentConversation}" ng-click="toggle()">
+        <i class="fa fa-weixin"></i>
+        <div></div>
+      </div>
+      <div class="chatWrap">
+        <div id="header" ng-click="toggle()">
+
+        </div>
+        <div id="container" ng-class="{swap: currentConversation}">
+
+        <div ng-repeat="conv in conversations" class="user" id="{{conv.user.id}}" ng-click="conv.open()">
+          <div class="wrapper">
+            <div class="logo"><i class="fa fa-paper-plane"></i></div>
+            <div class="name">{{conv.user.name}}</div>
+          </div>
+          <div class="notification">{{conv.messages.notif()}}</div>
+          <div class="status" ng-class="conv.user.getStatus()"></div>
+        </div>
+
+
+        </div>
+        <div id="conversation" ng-class="{swap: !currentConversation}">
+          <div class="header">
+            <div id="conversationBack" ng-click="currentConversation.close()">
+              <i class="fa fa-arrow-left"></i>
+            </div>
+            <div class="title">
+              {{currentConversation.user.name}}
+            </div>
+            <div class="status" ng-class="currentConversation.user.getStatus()"></div>
+          </div>
+          <div class="container">
+            <div class="invitation" ng-class="{show: currentConversation.getInvitation()[0]}" ng-click="invitation()">
+            <b>{{currentConversation.getInvitation()[1]}}</b>
+             vous invite pour une partie de 
+             <b>{{currentConversation.getInvitation()[2]}}</b>
+             <br>
+             <small>Cliquez ici pour rejoindre</small>
+            </div>
+            <div class="messages" ng-repeat="msg in currentConversation.messages.old">
+              <div class="messageSet" ng-class="{me: msg.me, other: !msg.me}">
+              {{msg.text}}
+              </div>
+            </div>
+          </div>
+          <div class="sender">
+              <input ng-keyup="$event.keyCode == 13 && send()" type="text" id="msg" placeholder="votre message ici..." ng-model="message" />
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="nav">
+      
+      <div class="view" ng-view></div>
+    </section>
+    <script>
+      var idGame = '<%= id %>';
+      var currentGame = 'null';
+    </script>
+
+
+    <!-- build:js(.) scripts/vendor.js -->
+    <!-- bower:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <!-- endbower -->
+    <!-- endbuild -->
+
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="app/scripts/app.js"></script>
+    <script src="app/scripts/controllers/login.js"></script>
+    <script src="app/scripts/controllers/choice.js"></script>
+    <script src="app/scripts/controllers/chat.js"></script>
+    <script src="app/scripts/controllers/game.js"></script>
+    <!-- endbuild -->
+    
+</body>
+</html>
