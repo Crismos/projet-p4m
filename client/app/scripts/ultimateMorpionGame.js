@@ -18,14 +18,16 @@ window.onresize = function() {
  	resize();
 };
 
-
-var NUMBER_CELL = 3;
-var canvas = document.getElementById("mcanvas");	
+//$("#player1").html(localStorage.name);
+var i,j;
+var NUMBER_CELL = 9;
+var canvas = document.getElementById("umcanvas");	
 var ctx = canvas.getContext("2d");
 var sizeCell = canvas.height/NUMBER_CELL;
 var yourTurn = false;
+//var audio = new Audio('token.wav');
 var canvasPosition = {x:0,y:0};
-var tokens = [];
+var matrix = null;
 var backgroundCell = new Image();
 backgroundCell.src = 'app/images/mcell.png';
 var crossToken = new Image();
@@ -33,21 +35,22 @@ crossToken.src = 'app/images/crossToken.png';
 var circleToken = new Image();
 circleToken.src = 'app/images/circleToken.png';
 
-function initializeGame(){
-	resetGame();
-	requestAnimationFrame(draw);
+function initializeUltimate(){
+	resetUltimate();
+	requestAnimationFrame(drawUltimate);
 }
-function resetGame(){
+function resetUltimate(){
+	matrix = [];
 	for(i = 0; i<NUMBER_CELL; i++){
-		tokens[i] = []
+		matrix[i] = []
 		for(j = 0; j<NUMBER_CELL; j++){
-			tokens[i][j] = -1;
+			matrix[i][j] = -1;
 		}
 	}
 	yourTurn = false;
 }
 
-function draw(timestamp){	
+function drawUltimate(timestamp){	
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "#ecf0f1";
 	ctx.fillRect(0,0,canvas.width, canvas.height);
@@ -57,31 +60,36 @@ function draw(timestamp){
 			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 		}
 	}
-	
+
 	for(i = 0; i<NUMBER_CELL; i++){
 		for(j = 0; j<NUMBER_CELL; j++){
-			if(tokens[i][j] === 0){
+			if(matrix[i][j] === 0){
 				ctx.drawImage(crossToken,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
-			} else if(tokens[i][j] === 1) {
+			} else if(matrix[i][j] === 1) {
 				ctx.drawImage(circleToken,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 			}
 		}
 	}
-
-	requestAnimationFrame(draw);
+	ctx.lineWidth = 3;
+	for(j = 1; j<NUMBER_CELL; j++){
+		ctx.beginPath();
+		ctx.moveTo(j*3*sizeCell+canvasPosition.x,canvasPosition.y);
+		ctx.lineTo(j*3*sizeCell+canvasPosition.x,9*sizeCell+canvasPosition.y);
+		ctx.stroke();
+	}
+	for(j = 1; j<NUMBER_CELL; j++){
+		ctx.beginPath();
+		ctx.moveTo(canvasPosition.x,j*3*sizeCell+canvasPosition.y);
+		ctx.lineTo(9*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y);
+		ctx.stroke();
+	}
+	requestAnimationFrame(drawUltimate);
 };
 
 
-/*function playToken(column){
-	for(i = 0; i<NUMBER_CELL; i++){
-		if(tokens[column][i]==null){
-			tokens[column][i] = new Token(column, i);
-			return;
-		}
-	}
-}
-*/
-function getPos(e){
+
+
+function getPosUltimate(e){
 	var rect = canvas.getBoundingClientRect();
 	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;	
 	var y = ((e.clientY - rect.top)/(rect.bottom - rect.top)*canvas.height) - canvasPosition.y;		
@@ -95,84 +103,36 @@ function getPos(e){
 		return false
 	}
 	console.log("yep");
-
-	return [column, line];
+	var pos = {x:column, y:line};
+	return pos;
 }
-/*
-
-function Token(column,line){
-
-	var column = column;
-	var line = line;
-	var x = column*sizeCell;
-	var yStart = -sizeCell;
-	var yFinal = sizeCell*NUMBER_CELL - line*sizeCell - sizeCell;
-	var yTmp = yStart;
-	var start = null;
-	var progress = null;
-	var duration = 800;
-	var token = null;
-
-
-	if(Token.count%2==0){
-		token = Token.redToken;
-	}else{
-		token = Token.yellowToken;
-	}
-	Token.count++;
-
-	this.draw = function(timestamp){
-		if(start === - 1){
-			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
-			return;
-		}
-		if(start===null) start = timestamp;
-		progress = timestamp - start;
-		ratio = progress / duration;
-
-		if(progress>duration){
-			start = -1;
-			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
-			//audio.play();
-		}else{
-			ctx.drawImage(token,x+canvasPosition.x,yStart+(yFinal-yStart)*ratio+canvasPosition.y,sizeCell,sizeCell);
-		}
-		
-	}
-}
-Token.redToken = new Image();
-Token.redToken.src = 'app/images/redToken.png';
-Token.yellowToken = new Image();
-Token.yellowToken.src = 'app/images/yellowToken.png';
-Token.count = 0;
-
-
-*/
+initializeUltimate();
 
 $(document).ready(function() {
-	$(document).off("click", "#mcanvas");
-	$(document).on("click", "#mcanvas", function(e) {
+	$(document).off("click", "#umcanvas");
+	$(document).on("click", "#umcanvas", function(e) {
 		console.log("click");
 		//play(e);
 		if(!yourTurn){
 			return;
 		}
-		var pos = getPos(e);
-		if(tokens[pos[0]][pos[1]] != -1) {
+		var pos = getPosUltimate(e);
+		if(matrix[pos.x][pos.y] != null) {
 			console.log('cette case est déjà jouée');
 			return;
 		}
 		yourTurn = false;
-		console.log(pos);
-		socket.getSocket().emit("morpion",pos);	
+		console.log("buonk,lm;ù"+pos);
+		socket.getSocket().emit("ultimateMorpion",pos);	
 	});
 });
 
 
 
 if(!binded) {
-	socket.getSocket().removeAllListeners("morpion");
-	socket.getSocket().on("morpion", function(data){	
+	socket.getSocket().removeAllListeners("ultimateMorpion");
+	socket.getSocket().on("ultimateMorpion", function(data){	
+		console.log("reception cote client");
 		yourTurn = data.yourTurn;
 		if(yourTurn){
 			$("#information").html("A vous de joueur !");
@@ -191,17 +151,17 @@ if(!binded) {
 			}
 			
 		}
-		tokens = data.tokens;		
+		matrix = data.matrix;		
 	});
 
 	socket.getSocket().on("votre adversaire de morpion s'est barré", function(){
-		resetGame();
+		resetUltimate();
 		$("#player2").html("");
 		$("#information").html("Votre adversaire s'est barré.<br /> Vous pouvez re-partager votre lien.");
 	});
 }
 
 
-initializeGame();
+
 
 binded = true;

@@ -27,7 +27,7 @@ function Morpion(id, user) {
 					var that=this;
 					setTimeout(function(){
 			    		that.go();
-					}, 100);
+					}, 200);
 				}
 			return true;
 		}else{

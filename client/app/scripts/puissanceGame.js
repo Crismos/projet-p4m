@@ -1,13 +1,5 @@
-
 var binded = false;
 
-/*
-* debug
-*
-$(".selector").addClass("hide");
-$($('button[data-id="'+idGame+'"]').get(0)).parent().parent().parent().remove();
-*/
-//fin debug
 function resize(){
 	var height = $(document).height();
 	var top = (height-$("canvas").height()) / 2;
@@ -25,7 +17,7 @@ resize();
 window.onresize = function() {
  	resize();
 };
-//$("#player1").html(localStorage.name);
+
 var NUMBER_CELL = 7;
 var canvas = document.getElementById("pcanvas");	
 var ctx = canvas.getContext("2d");
