@@ -27,7 +27,7 @@ function Morpion(id, user) {
 					var that=this;
 					setTimeout(function(){
 			    		that.go();
-					}, 100);
+					}, 200);
 				}
 			return true;
 		}else{
@@ -72,7 +72,7 @@ function Morpion(id, user) {
 
 		players[0].getSocket().on("morpion", function(pos){
 			if(!players[0]) return;
-			if(!nextPlayerWhoPlays == players[0]){
+			if(nextPlayerWhoPlays != players[0]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
 			}
@@ -85,11 +85,12 @@ function Morpion(id, user) {
 			}
 			players[0].getSocket().emit("morpion",{yourTurn:0,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("morpion",{yourTurn:1,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+			nextPlayerWhoPlays = players[1];
 		});
 
 		players[1].getSocket().on("morpion", function(pos){
 			if(!players[1]) return;
-			if(!nextPlayerWhoPlays == players[1]){
+			if(nextPlayerWhoPlays != players[1]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
 			}
@@ -103,6 +104,7 @@ function Morpion(id, user) {
 			}
 			players[0].getSocket().emit("morpion",{yourTurn:1,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("morpion",{yourTurn:0,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+			nextPlayerWhoPlays = players[0];
 		});
 
 	}
@@ -139,6 +141,7 @@ function Morpion(id, user) {
 	this.getTypeGame = function(){
 		return "morpion";
 	}
+	
 
 
 }

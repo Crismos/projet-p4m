@@ -37,6 +37,9 @@ angular
           if(currentGame === 'morpion') {
             return '../app/views/morpion.html';
           }
+          if(currentGame === 'ultimateMorpion') {
+            return '../app/views/ultimateMorpion.html';
+          }
           return '../app/views/puissance.html';
         },
         controller: 'GameCtrl'

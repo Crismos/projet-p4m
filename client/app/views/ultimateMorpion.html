@@ -1,0 +1,30 @@
+<div class="loader">
+<div id="game">	
+	<canvas id="umcanvas" width="700" height="700"></canvas>	
+</div>
+
+<div id="gameInfos">
+    <span class="title">
+    Infos
+    </span>
+    <div class="section">
+        <div class="circle"></div>
+        <span id="player1" class="player">{{players[0]}}</span>
+        <span class="versus">vs</span>
+        <span id="player2" class="player">{{players[1]}}</span>
+        <hr>
+    </div>
+    <div class="section">
+        <div class="whoplays">
+            <span id="information">{{gameStatus}}</span>
+        </div>
+        <hr>
+    </div>
+    <div class="section">
+        <button class="red" id="ff" ng-click="surrender()">
+            <span>Abandonner</span>
+        </button>
+    </div>
+</div>
+</div>
+<script src="app/scripts/ultimateMorpionGame.js"></script>

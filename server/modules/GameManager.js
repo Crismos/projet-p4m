@@ -1,5 +1,6 @@
 var _Morpion = require("./Morpion.js");
 var _Puissance = require("./Puissance.js");
+var _UltimateMorpion = require("./UltimateMorpion.js");
 
 exports.gameManager = function() {
 
@@ -36,10 +37,16 @@ exports.gameManager = function() {
 
 	this.createUltimateMorpion = function(user) {
 		if(user.getCurrentGame()!=null){
+			console.log("::red::[GameManger]::white::Impossible de créer une partie car l'utilisateur est déjà dans une partie."+id);
 			return false;
 		}
 
-		//a compléter pour linstant oosef
+		var id = generateId();
+		console.log("::green::[GameManger]::white::création d'une partie de p4, id généré : "+id+".");
+		games[id] = new _UltimateMorpion(id, user);
+		user.setCurrentGame(games[id]);
+
+		return games[id];
 	}
 
 	this.getGame = function(idGame) {

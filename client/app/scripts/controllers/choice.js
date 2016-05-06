@@ -16,7 +16,8 @@ angular.module('clientApp')
 
   	$scope.games = [
   		{name:'Puissance', value:'puissance'},
-  		{name:'Morpion', value:'morpion'}
+  		{name:'Morpion', value:'morpion'},
+      {name:'UltimateMorpion', value:'ultimateMorpion'}
   	];
   	// remove blnk option
   	$scope.select = $scope.games[0].value;
@@ -39,6 +40,17 @@ angular.module('clientApp')
           $scope.$apply();
         });
         socket.bind().emit('client wants to create morpion game');
+      }
+      else if($scope.select === 'ultimateMorpion') {
+        currentGame = $scope.select;
+        socket.bind().on('server accept request : create ultimate morpion game', function(id) {
+          console.log("yep");
+          idGame = id;
+          $location.path('/'+id);
+          $scope.$apply();
+        });
+
+        socket.bind().emit('client wants to create ultimate morpion game');
       }
   	}
   });

@@ -27,7 +27,7 @@ function Puissance(id, user) {
 					var that=this;
 					setTimeout(function(){
 			    		that.go();
-					}, 100);
+					}, 200);
 				}
 			return true;
 		}else{
@@ -77,7 +77,7 @@ function Puissance(id, user) {
 
 		players[0].getSocket().on("puissance quatre", function(column){
 			if(!players[0]) return;
-			if(!nextPlayerWhoPlays == players[0]){
+			if(nextPlayerWhoPlays != players[0]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
 			}
@@ -88,11 +88,12 @@ function Puissance(id, user) {
 			}
 			players[0].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+			nextPlayerWhoPlays = players[1];
 		});
 
 		players[1].getSocket().on("puissance quatre", function(column){
 			if(!players[1]) return;
-			if(!nextPlayerWhoPlays == players[1]){
+			if(nextPlayerWhoPlays != players[1]){
 				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
 			}
@@ -104,6 +105,7 @@ function Puissance(id, user) {
 			}
 			players[0].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
+			nextPlayerWhoPlays = players[0];
 		});
 	}
 	//player[0] jeton = 0
