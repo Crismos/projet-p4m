@@ -18,12 +18,13 @@ window.onresize = function() {
  	resize();
 };
 
-
+//$("#player1").html(localStorage.name);
 var NUMBER_CELL = 3;
 var canvas = document.getElementById("mcanvas");	
 var ctx = canvas.getContext("2d");
 var sizeCell = canvas.height/NUMBER_CELL;
 var yourTurn = false;
+//var audio = new Audio('token.wav');
 var canvasPosition = {x:0,y:0};
 var tokens = [];
 var backgroundCell = new Image();

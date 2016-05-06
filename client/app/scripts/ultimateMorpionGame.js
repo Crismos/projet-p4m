@@ -27,7 +27,9 @@ var sizeCell = canvas.height/NUMBER_CELL;
 var yourTurn = false;
 //var audio = new Audio('token.wav');
 var canvasPosition = {x:0,y:0};
-var matrix = null;
+var matrix = [];
+var matrixGlobal = [];
+var previous = {x:-1,y:-1};
 var backgroundCell = new Image();
 backgroundCell.src = 'app/images/mcell.png';
 var crossToken = new Image();
@@ -40,11 +42,16 @@ function initializeUltimate(){
 	requestAnimationFrame(drawUltimate);
 }
 function resetUltimate(){
-	matrix = [];
 	for(i = 0; i<NUMBER_CELL; i++){
 		matrix[i] = []
 		for(j = 0; j<NUMBER_CELL; j++){
-			matrix[i][j] = -1;
+			matrix[i][j] = null;
+		}
+	}
+	for(i = 0; i<3; i++){
+		matrixGlobal[i] = []
+		for(j = 0; j<3; j++){
+			matrixGlobal[i][j] = 2;
 		}
 	}
 	yourTurn = false;
@@ -60,6 +67,19 @@ function drawUltimate(timestamp){
 			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 		}
 	}
+	
+
+	for(i = 0; i<NUMBER_CELL; i++){
+		if(previous.x != -1 && matrixGlobal[previous.x][previous.y] != 2){
+			break;
+		}
+		for(j = 0; j<NUMBER_CELL; j++){
+			if((previous.x != -1 && (Math.floor(i/3) != previous.x || Math.floor(j/3) != previous.y)) && yourTurn){
+				ctx.fillStyle = "rgba(0,0,0,0.3)";
+				ctx.fillRect(i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
+			}	
+		}
+	}
 
 	for(i = 0; i<NUMBER_CELL; i++){
 		for(j = 0; j<NUMBER_CELL; j++){
@@ -68,6 +88,24 @@ function drawUltimate(timestamp){
 			} else if(matrix[i][j] === 1) {
 				ctx.drawImage(circleToken,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 			}
+		}
+	}
+	for(i = 0; i<3; i++){
+		for(j = 0; j<3; j++){
+			if(matrixGlobal[i][j]==1){
+				ctx.fillStyle = "rgba(0,0,0,0.6)";
+				ctx.fillRect(i*3*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y,sizeCell*3,sizeCell*3);
+				ctx.drawImage(circleToken,i*3*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y,sizeCell*3,sizeCell*3);
+			}	
+			if(matrixGlobal[i][j]==0){
+				ctx.fillStyle = "rgba(0,0,0,0.6)";
+				ctx.fillRect(i*3*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y,sizeCell*3,sizeCell*3);
+				ctx.drawImage(crossToken,i*3*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y,sizeCell*3,sizeCell*3);
+			}	
+			if(matrixGlobal[i][j]==-1){
+				ctx.fillStyle = "rgba(0,0,0,0.6)";
+				ctx.fillRect(i*3*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y,sizeCell*3,sizeCell*3);
+			}	
 		}
 	}
 	ctx.lineWidth = 3;
@@ -111,18 +149,16 @@ initializeUltimate();
 $(document).ready(function() {
 	$(document).off("click", "#umcanvas");
 	$(document).on("click", "#umcanvas", function(e) {
-		console.log("click");
+		/*console.log("click");
 		//play(e);
 		if(!yourTurn){
 			return;
-		}
-		var pos = getPosUltimate(e);
+		}*/
+		var pos = getPosUltimate(e);/*
 		if(matrix[pos.x][pos.y] != null) {
 			console.log('cette case est déjà jouée');
 			return;
-		}
-		yourTurn = false;
-		console.log("buonk,lm;ù"+pos);
+		}*/
 		socket.getSocket().emit("ultimateMorpion",pos);	
 	});
 });
@@ -144,14 +180,11 @@ if(!binded) {
 		console.log("winner ? "+data.winner);
 		if(data.winner!=-1){
 			yourTurn = false;
-			if(data.winner != 2) {
-				$("#information").html(data.winner+" gagne la partie.");
-			} else {
-				$("#information").html("Match nul!");
-			}
-			
+			$("#information").html(data.winner);
 		}
-		matrix = data.matrix;		
+		matrix = data.matrix;
+		matrixGlobal = data.matrixGlobal;	
+		previous = data.previous;	
 	});
 
 	socket.getSocket().on("votre adversaire de morpion s'est barré", function(){
