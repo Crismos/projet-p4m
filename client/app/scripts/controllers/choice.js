@@ -44,7 +44,6 @@ angular.module('clientApp')
       else if($scope.select === 'ultimateMorpion') {
         currentGame = $scope.select;
         socket.bind().on('server accept request : create ultimate morpion game', function(id) {
-          console.log("yep");
           idGame = id;
           $location.path('/'+id);
           $scope.$apply();

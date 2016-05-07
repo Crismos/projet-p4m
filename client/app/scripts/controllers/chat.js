@@ -105,7 +105,6 @@ angular.module('clientApp')
   	}
 
   	$scope.send = function() {
-  		console.log({text: $scope.message, to: $scope.currentConversation.user.id});
   		socket.bind().emit('message', {text: $scope.message, to: $scope.currentConversation.user.id});
   		$scope.message = '';
   	}

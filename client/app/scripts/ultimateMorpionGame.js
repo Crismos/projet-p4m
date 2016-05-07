@@ -1,5 +1,6 @@
 var binded = false;
 
+
 function resize(){
 	var height = $(document).height();
 	var top = (height-$("canvas").height()) / 2;
@@ -10,22 +11,19 @@ function resize(){
 	$("#gameInfos").css("margin-left", $("canvas").width());
 	$("canvas").css("left", left);
 	$("#gameInfos").css("left", left);
-	console.log(top);
-}
- 
+} 
 resize();
 window.onresize = function() {
  	resize();
 };
 
-//$("#player1").html(localStorage.name);
+
 var i,j;
 var NUMBER_CELL = 9;
 var canvas = document.getElementById("umcanvas");	
 var ctx = canvas.getContext("2d");
 var sizeCell = canvas.height/NUMBER_CELL;
 var yourTurn = false;
-//var audio = new Audio('token.wav');
 var canvasPosition = {x:0,y:0};
 var matrix = [];
 var matrixGlobal = [];
@@ -37,11 +35,13 @@ crossToken.src = 'app/images/crossToken.png';
 var circleToken = new Image();
 circleToken.src = 'app/images/circleToken.png';
 
+
 function initializeUltimate(){
-	running = true;
 	resetUltimate();
 	requestAnimationFrame(drawUltimate);	
 }
+
+
 function resetUltimate(){
 	for(i = 0; i<NUMBER_CELL; i++){
 		matrix[i] = []
@@ -58,7 +58,8 @@ function resetUltimate(){
 	yourTurn = false;
 }
 
-function drawUltimate(timestamp){	
+
+function drawUltimate(timestamp){		
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "#ecf0f1";
 	ctx.fillRect(0,0,canvas.width, canvas.height);
@@ -68,8 +69,6 @@ function drawUltimate(timestamp){
 			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 		}
 	}
-	
-
 	for(i = 0; i<NUMBER_CELL; i++){
 		if(previous.x != -1 && matrixGlobal[previous.x][previous.y] != 2){
 			break;
@@ -81,7 +80,6 @@ function drawUltimate(timestamp){
 			}	
 		}
 	}
-
 	for(i = 0; i<NUMBER_CELL; i++){
 		for(j = 0; j<NUMBER_CELL; j++){
 			if(matrix[i][j] === 0){
@@ -121,13 +119,9 @@ function drawUltimate(timestamp){
 		ctx.moveTo(canvasPosition.x,j*3*sizeCell+canvasPosition.y);
 		ctx.lineTo(9*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y);
 		ctx.stroke();
-	}
-	
-	requestAnimationFrame(draw);
-	
+	}	
+	requestAnimationFrame(drawUltimate);	
 };
-
-
 
 
 function getPosUltimate(e){
@@ -136,56 +130,46 @@ function getPosUltimate(e){
 	var y = ((e.clientY - rect.top)/(rect.bottom - rect.top)*canvas.height) - canvasPosition.y;		
 	var column = Math.floor(x/sizeCell);
 	var line = Math.floor(y/sizeCell);
-	console.log("position : {x:"+column+", y: "+line+"}");
+
 	if(column<0 || column >(NUMBER_CELL-1)){
 		return false
 	}
 	if(line<0 || line >(NUMBER_CELL-1)){
 		return false
 	}
-	console.log("yep");
 	var pos = {x:column, y:line};
 	return pos;
 }
-initializeUltimate();
+
 
 $(document).ready(function() {
 	$(document).off("click", "#umcanvas");
 	$(document).on("click", "#umcanvas", function(e) {
-		/*console.log("click");
-		//play(e);
-		if(!yourTurn){
-			return;
-		}*/
-		var pos = getPosUltimate(e);/*
-		if(matrix[pos.x][pos.y] != null) {
-			console.log('cette case est déjà jouée');
-			return;
-		}*/
+		var pos = getPosUltimate(e);
 		socket.getSocket().emit("ultimateMorpion",pos);	
 	});
 
 });
 
-
-
 if(!binded) {
 	socket.getSocket().removeAllListeners("ultimateMorpion");
 	socket.getSocket().on("ultimateMorpion", function(data){	
-		console.log("reception cote client");
+
 		yourTurn = data.yourTurn;
 		if(yourTurn){
 			$("#information").html("A vous de joueur !");
 		}else{
 			$("#information").html("A votre adversaire !");
 		}
+
 		$("#player1").html(data.player1);
 		$("#player2").html(data.player2);
-		console.log("winner ? "+data.winner);
+
 		if(data.winner!=-1){
 			yourTurn = false;
 			$("#information").html(data.winner);
 		}
+
 		matrix = data.matrix;
 		matrixGlobal = data.matrixGlobal;	
 		previous = data.previous;	
@@ -194,11 +178,9 @@ if(!binded) {
 	socket.getSocket().on("votre adversaire de morpion s'est barré", function(){
 		resetUltimate();
 		$("#player2").html("");
-		$("#information").html("Votre adversaire s'est barré.<br /> Vous pouvez re-partager votre lien.");
+		$("#information").html("Votre adversaire a quitté la partie<br /> Vous pouvez re-partager votre lien");
 	});
 }
 
-
-
-
+initializeUltimate();
 binded = true;
