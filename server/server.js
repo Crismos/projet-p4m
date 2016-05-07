@@ -45,7 +45,7 @@ function run() {
 		socket.on('user sends his pseudo to server', function(o){
 			o.name = parser.parse(o.name);
 			if(userManager.isValidePseudo(o.name)) {
-				console.log("::green::[user]::white:: "+o.name+" connected ("+socket.id+")");
+				console.log("::green::[user]::white:: "+o.name+" est maintenant connecté, socketId = "+socket.id);
 
 				userManager.getUser(socket.id).setPseudo(o.name);
 
@@ -71,9 +71,8 @@ function run() {
 			var game = gameManager.createPuissanceQuatre(userManager.getUser(socket.id));
 			if(game){
 				socket.emit("server accept request : create p4 game", game.getId());
-				console.log("Le serveur accepte la demande de créaction de partie de p4");
 			}else{
-				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
+				console.log("::red::[puissance]::white::Impossible de créer la partie le client appartient surement à une autre partie.");
 			}
 
 		});
@@ -81,9 +80,8 @@ function run() {
 			var game = gameManager.createMorpion(userManager.getUser(socket.id));
 			if(game){
 				socket.emit("server accept request : create morpion game", game.getId());
-				console.log("Le serveur accepte la demande de créaction de partie de morpion");
 			}else{
-				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
+				console.log("::red::[morpion]::white::Impossible de créer la partie le client appartient surement à une autre partie.");
 			}
 
 		});
@@ -91,9 +89,8 @@ function run() {
 			var game = gameManager.createUltimateMorpion(userManager.getUser(socket.id));
 			if(game){
 				socket.emit('server accept request : create ultimate morpion game', game.getId());
-				console.log("Le serveur accepte la demande de créaction de partie d'ultimate morpion");
 			}else{
-				console.log("Impossible de créer la partie le client appartient surement à une autre partie.");
+				console.log("::red::[ultimateMorpion]::white::Impossible de créer la partie le client appartient surement à une autre partie.");
 			}
 		})
 		socket.on("surrend game", function(o) {
@@ -108,11 +105,11 @@ function run() {
 			var game = gameManager.getGame(idGame);
 			if(!game) {
 				socket.emit("server request want to join : fail", {noGame: true});
-				console.log("Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
+				console.log("::red::[server]::white::Le client ne peut pas rejoindre la game "+idGame+" car elle n'existe pas ou plus.");
 				return;
 			}
 			if(!game.addPlayer(userManager.getUser(socket.id))){
-				console.log("Le client ne peut pas rejoindre la game car il n'y a plus de place.");
+				console.log("::red::[server]::white::Le client ne peut pas rejoindre la game car il n'y a plus de place.");
 				socket.emit("server request want to join : fail", {full: true});
 				return;
 			}
@@ -120,7 +117,7 @@ function run() {
 					
 			socket.emit("server accept request : want to join game", {typeGame: game.getTypeGame(), id: game.getId()});	
 			
-			console.log("Le serveur accepte que "+userManager.getUser(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
+			console.log("::green::[server]::white::Le serveur accepte que "+userManager.getUser(socket.id).getPseudo()+ ", puisse rejoindre la game de "+game.getTypeGame()+" num :"+idGame+", envois de la game au client.");
 		});
 
 

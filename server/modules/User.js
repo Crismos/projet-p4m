@@ -28,7 +28,6 @@ var User = function(socket) {
 
 	this.setPseudo = function(nv_pseudo){
 		pseudo = nv_pseudo;
-		console.log("::green::[User]::white:: > Update pseudo : user socket id : "+ socket.id +", pseudo : "+pseudo);
 	}
 	/*this.setCurrentGame = function(game) {
 		currentGame = game;

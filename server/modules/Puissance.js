@@ -2,7 +2,7 @@ function Puissance(id, user) {
 
 	var players = [];
 	players.push(user);
-	console.log("::green::[Puissance]::white::La partie "+id+" de p4 vient d'être créé par "+players[0].getPseudo()+".");
+	console.log("::green::[Puissance]::white::La partie "+id+" de p4 vient d'être créé par "+user.getPseudo()+".");
 	var maxPlayer = 2;
 	var id = id;
 
@@ -22,7 +22,7 @@ function Puissance(id, user) {
 		if(players.length < maxPlayer && user.getCurrentGame()==null){
 			players.push(user);
 			user.setCurrentGame(this);
-			console.log("::green::[Puissance]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" de p4/");
+			console.log("::green::[Puissance]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" de p4.");
 				if(players.length == 2){
 					var that=this;
 					setTimeout(function(){
@@ -31,7 +31,7 @@ function Puissance(id, user) {
 				}
 			return true;
 		}else{
-			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
+			console.log("::red::[Puissance]::white::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
 			return false;
 		}		
 	}
@@ -45,8 +45,7 @@ function Puissance(id, user) {
 			players.splice(index, 1);
 		}
 		if(players.length == 1){
-			//on le préviens que son adversaire s'est barré
-			players[0].getSocket().emit("votre adversaire de puissance 4 s'est barré");
+			players[0].getSocket().emit("votre adversaire de puissance 4 a quitte la partie");
 		}
 	}
 
@@ -60,6 +59,7 @@ function Puissance(id, user) {
 		}
 		players[0].getSocket().removeAllListeners('puissance quatre');
 		players[1].getSocket().removeAllListeners('puissance quatre');
+
 		//randomisation du joueur qui commence
 		console.log("::green::[Puissance]::white::La partie "+id+" de p4 commence avec "+players[0].getPseudo()+" et "+players[1].getPseudo()+".");
 		if(Math.random()<0.5){
@@ -78,13 +78,14 @@ function Puissance(id, user) {
 		players[0].getSocket().on("puissance quatre", function(column){
 			if(!players[0]) return;
 			if(nextPlayerWhoPlays != players[0]){
-				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
+				console.log("::red::[Puissance]::white::Un joueur tente de jouer mais ce n'est pas à son tour.");	
 				return;
 			}
 			addToken(column,0);
 			var winner = getWinner();
 			if(winner != -1){
 				winner = players[winner].getPseudo();
+				console.log("::green::[Puissance]::white::Puissance 4 ! "+players[winner].getPseudo()+"gagne la partie de p4.");
 			}
 			players[0].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -94,7 +95,7 @@ function Puissance(id, user) {
 		players[1].getSocket().on("puissance quatre", function(column){
 			if(!players[1]) return;
 			if(nextPlayerWhoPlays != players[1]){
-				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
+				console.log("::red::[Puissance]::white::Un joueur tente de jouer mais ce n'est pas à son tour.");			
 				return;
 			}
 			addToken(column,1);
@@ -102,6 +103,7 @@ function Puissance(id, user) {
 			var winner = getWinner();
 			if(winner != -1){
 				winner = players[winner].getPseudo();
+				console.log("::green::[Puissance]::white::Puissance 4 ! "+players[winner].getPseudo()+"gagne la partie de p4.");
 			}
 			players[0].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -192,7 +194,6 @@ function Puissance(id, user) {
 				}
 				p4.push(pile[i]);
 				if(p4.length==4){
-					console.log("::green::[Puissance]::white::Puissance 4");
 					return p4[p4.length-1];
 				}
 

@@ -22,7 +22,7 @@ function Morpion(id, user) {
 		if(players.length < maxPlayer && user.getCurrentGame()==null){
 			players.push(user);
 			user.setCurrentGame(this);
-			console.log("::green::[Puissance]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" de morpion/");
+			console.log("::green::[Morpion]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" de morpion.");
 				if(players.length == 2){
 					var that=this;
 					setTimeout(function(){
@@ -31,7 +31,7 @@ function Morpion(id, user) {
 				}
 			return true;
 		}else{
-			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
+			console.log("::red::[Morpion]::white::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
 			return false;
 		}		
 	}
@@ -42,7 +42,7 @@ function Morpion(id, user) {
 		}
 		if(players.length == 1){
 			//on le préviens que son adversaire s'est barré
-			players[0].getSocket().emit("votre adversaire de morpion s'est barré");
+			players[0].getSocket().emit("votre adversaire de morpion a quitte la partie");
 		}
 	}
 	this.go = function() {
@@ -73,7 +73,7 @@ function Morpion(id, user) {
 		players[0].getSocket().on("morpion", function(pos){
 			if(!players[0]) return;
 			if(nextPlayerWhoPlays != players[0]){
-				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
+				console.log("::red::[Morpion]::white::Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
 			}
 			addToken(pos,0);
@@ -81,6 +81,7 @@ function Morpion(id, user) {
 			if(winner != -1){
 				if(winner != 2) {
 					winner = players[winner].getPseudo();
+					console.log("::green::[Morpion]::white::"+players[winner].getPseudo()+" gagne la partie de morpion!");
 				}
 			}
 			players[0].getSocket().emit("morpion",{yourTurn:0,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -91,7 +92,7 @@ function Morpion(id, user) {
 		players[1].getSocket().on("morpion", function(pos){
 			if(!players[1]) return;
 			if(nextPlayerWhoPlays != players[1]){
-				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
+				console.log("::red::[Morpion]::white::Un joueur essaie de jouer mais ce n'est pas à son tour.");
 				return;
 			}
 			addToken(pos,1);
@@ -100,6 +101,7 @@ function Morpion(id, user) {
 			if(winner != -1){
 				if(winner != 2) {
 					winner = players[winner].getPseudo();
+					console.log("::green::[Morpion]::white::"+players[winner].getPseudo()+" gagne la partie de morpion!");
 				}
 			}
 			players[0].getSocket().emit("morpion",{yourTurn:1,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});

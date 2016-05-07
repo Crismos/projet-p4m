@@ -30,12 +30,12 @@ backgroundCell.src = 'app/images/pcell.png';
 
 
 function initializeGame(){
-	resetGame();	
+	resetPuissance();	
 	requestAnimationFrame(drawPuissance);
 }
 
 
-function resetGame(){
+function resetPuissance(){
 	for(i = 0; i<NUMBER_COLUMN; i++){
 		tokens[i] = []
 		for(j = 0; j<NUMBER_COLUMN; j++){
@@ -158,17 +158,17 @@ if(!binded) {
 		$("#player2").html(data.player2);
 		if(data.winner!=-1){
 			yourTurn = false;
-			$("#information").html(data.winner+" gagne la partie.");
+			$("#information").html(data.winner+" gagne la partie!");
 		}
 		if(data.column!=-1){
 			playToken(data.column);
 		}		
 	});
 
-	socket.getSocket().on("votre adversaire de puissance 4 s'est barré", function(){
-		resetGame();
+	socket.getSocket().on("votre adversaire de puissance 4 a quitte la partie", function(){
+		resetPuissance();
 		$("#player2").html("");
-		$("#information").html("Votre adversaire s'est barré.<br /> Vous pouvez re-partager votre lien.");
+		$("#information").html("Votre adversaire a quitté la partie<br /> Vous pouvez re-partager votre lien");
 	});
 }
 

@@ -34,12 +34,12 @@ circleToken.src = 'app/images/circleToken.png';
 
 
 function initializeGame(){
-	resetGame();
+	resetMorpion();
 	requestAnimationFrame(drawMorpion);
 }
 
 
-function resetGame(){
+function resetMorpion(){
 	for(i = 0; i<DIM; i++){
 		m_tokens[i] = []
 		for(j = 0; j<DIM; j++){
@@ -119,7 +119,7 @@ if(!binded) {
 		if(data.winner!=-1){
 			yourTurn = false;
 			if(data.winner != 2) {
-				$("#information").html(data.winner+" gagne la partie.");
+				$("#information").html(data.winner+" gagne la partie!");
 			} else {
 				$("#information").html("Match nul!");
 			}			
@@ -127,10 +127,10 @@ if(!binded) {
 		m_tokens = data.tokens;		
 	});
 
-	socket.getSocket().on("votre adversaire de morpion s'est barré", function(){
-		resetGame();
+	socket.getSocket().on("votre adversaire de morpion a quitte la partie", function(){
+		resetMorpion();
 		$("#player2").html("");
-		$("#information").html("Votre adversaire s'est barré.<br /> Vous pouvez re-partager votre lien.");
+		$("#information").html("Votre adversaire a quitté la partie<br /> Vous pouvez re-partager votre lien");
 	});
 }
 
