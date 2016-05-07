@@ -2,7 +2,7 @@ function Puissance(id, user) {
 
 	var players = [];
 	players.push(user);
-	console.log("::green::[Puissance]::white::La partie "+id+" d'ultimate morpion vient d'être créé par "+players[0].getPseudo()+".");
+	console.log("::green::[UltimateMorpion]::white::La partie "+id+" d'ultimate morpion vient d'être créé par "+players[0].getPseudo()+".");
 	var maxPlayer = 2;
 	var id = id;
 
@@ -24,7 +24,7 @@ function Puissance(id, user) {
 		if(players.length < maxPlayer && user.getCurrentGame()==null){
 			players.push(user);
 			user.setCurrentGame(this);
-			console.log("::green::[Puissance]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" d'ultimateMorpion");
+			console.log("::green::[UltimateMorpion]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" d'ultimateMorpion");
 				if(players.length == 2){
 					var that=this;
 					setTimeout(function(){
@@ -34,7 +34,7 @@ function Puissance(id, user) {
 				}
 			return true;
 		}else{
-			console.log("::red::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
+			console.log("::red::[UltimateMorpion]::white::Impossible de greffer ce joueur à la partie car la partie est pleine ou le joueur qui veut rejoindre appartient déjà à une partie.");
 			return false;
 		}		
 	}
@@ -49,7 +49,7 @@ function Puissance(id, user) {
 		}
 		if(players.length == 1){
 			//on le préviens que son adversaire s'est barré
-			players[0].getSocket().emit("votre adversaire de puissance 4 s'est barré");
+			players[0].getSocket().emit("votre adversaire d'ultimate morpion a quitté la partie");
 		}
 	}
 
@@ -89,15 +89,15 @@ function Puissance(id, user) {
 		players[0].getSocket().on("ultimateMorpion", function(pos){
 			if(!players[0]) return;
 			if(nextPlayerWhoPlays != players[0]){
-				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
+				console.log("::red::[UltimateMorpion]::white::Un joueur tente de jouer mais ce n'est pas à son tour.");	
 				return;
 			}
 			if(matrixGlobal[Math.floor(pos.x/3)][Math.floor(pos.y/3)]!=2){
-				console.log("Le joueur ne peut pas jouer à cet endroit (x="+Math.floor(pos.x/3)+",y="+Math.floor(pos.y/3)+"), code erreur : "+matrixGlobal[Math.floor(pos.x/3)][Math.floor(pos.y/3)]);
+				console.log("::red::[UltimateMorpion]::white::Le joueur ne peut pas jouer à cet endroit (x="+Math.floor(pos.x/3)+",y="+Math.floor(pos.y/3)+"), code erreur : "+matrixGlobal[Math.floor(pos.x/3)][Math.floor(pos.y/3)]);
 				return
 			}
 			if(matrix[pos.x][pos.y]!=null){
-				console.log("::red::La case à déjà été joué");
+				console.log("::red::[UltimateMorpion]::white::La case à déjà été joué");
 				return
 			}
 			play(pos.x, pos.y, 0);
@@ -106,15 +106,15 @@ function Puissance(id, user) {
 		players[1].getSocket().on("ultimateMorpion", function(pos){
 			if(!players[1]) return;
 			if(nextPlayerWhoPlays != players[1]){
-				console.log("Un joueur essaie de jouer mais ce n'est pas à son tour.");
+				console.log("::red::[UltimateMorpion]::white::Un joueur tente de jouer mais ce n'est pas à son tour.");	
 				return;
 			}
 			if(matrixGlobal[Math.floor(pos.x/3)][Math.floor(pos.y/3)]!=2){
-				console.log("Le joueur ne peut pas jouer à cet endroit (x="+Math.floor(pos.x/3)+",y="+Math.floor(pos.y/3)+"), code erreur : "+matrixGlobal[Math.floor(pos.x/3)][Math.floor(pos.y/3)]);
+				console.log("::red::[UltimateMorpion]::white::Le joueur ne peut pas jouer à cet endroit (x="+Math.floor(pos.x/3)+",y="+Math.floor(pos.y/3)+"), code erreur : "+matrixGlobal[Math.floor(pos.x/3)][Math.floor(pos.y/3)]);
 				return
 			}	
 			if(matrix[pos.x][pos.y]!=null){
-				console.log("::red::La case à déjà été joué");
+				console.log("::red::[UltimateMorpion]::white::La case à déjà été joué");
 				return
 			}	
 			play(pos.x, pos.y,1)
@@ -142,10 +142,12 @@ function Puissance(id, user) {
 				updateMatrixGlobal(xgrill,ygrill);	
 				var winner = getWinner();
 				if(winner != -1 && winner != 444){
-					winner = players[winner].getPseudo()+" gagne la partie";	
+					winner = players[winner].getPseudo()+" gagne la partie!";	
+					console.log("::green::[UltimateMorpion]::white::"+players[winner].getPseudo()+"gagne la partie d'ultimateMorpion.");
 				}
 				if(winner == 444){
-					winner = "Match nul";
+					winner = "Match nul!";
+					console.log("::green::[UltimateMorpion]::white::Match Nul!");
 				}
 				players[0].getSocket().emit("ultimateMorpion",{yourTurn:1,matrix:matrix,matrixGlobal:matrixGlobal,previous:previous,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 				players[1].getSocket().emit("ultimateMorpion",{yourTurn:0,matrix:matrix,matrixGlobal:matrixGlobal,previous:previous,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -156,9 +158,11 @@ function Puissance(id, user) {
 				var winner = getWinner();
 				if(winner != -1 && winner != 444){
 					winner = players[winner].getPseudo()+" gagne la partie";	
+					console.log("::green::[UltimateMorpion]::white::"+players[winner].getPseudo()+"gagne la partie d'ultimateMorpion.");
 				}
 				if(winner == 444){
 					winner = "Match nul";
+					console.log("::green::[UltimateMorpion]::white::Match Nul!");
 				}
 
 				players[0].getSocket().emit("ultimateMorpion",{yourTurn:0,matrix:matrix,matrixGlobal:matrixGlobal,previous:previous,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -169,7 +173,7 @@ function Puissance(id, user) {
 
 
 		}else{
-			console.log("::red::UltimateMorpion, le joueur ne peut pas jouer à cet endroit");
+			console.log("::red::[UltimateMorpion]::white::Le joueur ne peut pas jouer à cet endroit");
 		}
 	}
 

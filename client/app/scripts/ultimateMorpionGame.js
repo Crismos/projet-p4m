@@ -175,7 +175,7 @@ if(!binded) {
 		previous = data.previous;	
 	});
 
-	socket.getSocket().on("votre adversaire de morpion s'est barré", function(){
+	socket.getSocket().on("votre adversaire d'ultimate morpion a quitté la partie", function(){
 		resetUltimate();
 		$("#player2").html("");
 		$("#information").html("Votre adversaire a quitté la partie<br /> Vous pouvez re-partager votre lien");
