@@ -50,7 +50,12 @@ exports.gameManager = function() {
 	}
 
 	this.getGame = function(idGame) {
-		return games[idGame];
+		if(games[idGame]!=null){
+			return games[idGame];
+		}else{
+			return 0;
+		}
+		
 	}
 
 	//fonctions privés utilisés uniquement dans cet objet

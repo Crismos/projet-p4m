@@ -22,7 +22,7 @@ function Puissance(id, user) {
 		if(players.length < maxPlayer && user.getCurrentGame()==null){
 			players.push(user);
 			user.setCurrentGame(this);
-			console.log("::green::[Puissance]::white::"+players[1].getPseudo()+" viens de rejoindre la partie "+id+" de p4/");
+			console.log("::green::[Puissance]::white::"+user.getPseudo()+" viens de rejoindre la partie "+id+" de p4/");
 				if(players.length == 2){
 					var that=this;
 					setTimeout(function(){

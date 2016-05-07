@@ -99,8 +99,9 @@ function run() {
 		socket.on("surrend game", function(o) {
 			var user = userManager.getUser(socket.id);
 			var game = user.getCurrentGame();
-			if(game)
+			if(game!=null){
 				game.removeUser(user);
+			}
 			user.setCurrentGame(null);
 		});
 		socket.on("client wants to join game", function(idGame) {
@@ -132,9 +133,10 @@ function run() {
 			var text = parser.parse(o.text);
 			
 			var idGame = parser.isInvitation(text, gameManager, config, userManager, socket);
-			if(idGame) {
+			var game = gameManager.getGame(idGame);
+			if(game) {
 				console.log("::cyan::Invitation "+idGame);
-				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
+				socket.emit("invitation",  {from: to, to : true, igGame: idGame, type: game.getTypeGame()});
 				userManager.getUser(to).getSocket().emit("invitation", {from: from, to: false, idGame: idGame, pseudo: userManager.getUser(to).getPseudo(), igGame: idGame, type: gameManager.getGame(idGame).getTypeGame()});
 			} else {
 				console.log("::cyan:: message");
