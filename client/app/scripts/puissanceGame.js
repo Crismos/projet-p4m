@@ -23,14 +23,16 @@ var canvas = document.getElementById("pcanvas");
 var ctx = canvas.getContext("2d");
 var sizeCell = canvas.height/NUMBER_CELL;
 var yourTurn = false;
-//var audio = new Audio('token.wav');
+var audio = new Audio('app/images/token.wav');
 var canvasPosition = {x:0,y:0};
 var tokens = [];
 var backgroundCell = new Image();
+var running = false;
 backgroundCell.src = 'app/images/pcell.png';
 
 function initializeGame(){
 	resetGame();
+	running = true;
 	requestAnimationFrame(draw);
 }
 function resetGame(){
@@ -61,8 +63,10 @@ function draw(timestamp){
 			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 		}
 	}
-
-	requestAnimationFrame(draw);
+	if(running){
+		requestAnimationFrame(draw);
+	}
+	
 };
 
 
@@ -122,7 +126,7 @@ function Token(column,line){
 		if(progress>duration){
 			start = -1;
 			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
-			//audio.play();
+			audio.play();
 		}else{
 			ctx.drawImage(token,x+canvasPosition.x,yStart+(yFinal-yStart)*ratio+canvasPosition.y,sizeCell,sizeCell);
 		}
@@ -148,6 +152,11 @@ $(document).ready(function() {
 		var column = getColumn(e);
 		yourTurn = false;
 		socket.getSocket().emit("puissance quatre",column);	
+	});
+
+	$(document).off("click", "#ff");
+	$(document).on("click", "#ff", function(e) {
+		running = false;
 	});
 });
 

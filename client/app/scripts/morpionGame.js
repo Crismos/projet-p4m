@@ -18,16 +18,15 @@ window.onresize = function() {
  	resize();
 };
 
-//$("#player1").html(localStorage.name);
 var NUMBER_CELL = 3;
 var canvas = document.getElementById("mcanvas");	
 var ctx = canvas.getContext("2d");
 var sizeCell = canvas.height/NUMBER_CELL;
 var yourTurn = false;
-//var audio = new Audio('token.wav');
 var canvasPosition = {x:0,y:0};
 var tokens = [];
 var backgroundCell = new Image();
+var running = false;
 backgroundCell.src = 'app/images/mcell.png';
 var crossToken = new Image();
 crossToken.src = 'app/images/crossToken.png';
@@ -37,6 +36,7 @@ circleToken.src = 'app/images/circleToken.png';
 function initializeGame(){
 	resetGame();
 	requestAnimationFrame(draw);
+	running = true;
 }
 function resetGame(){
 	for(i = 0; i<NUMBER_CELL; i++){
@@ -69,19 +69,12 @@ function draw(timestamp){
 		}
 	}
 
-	requestAnimationFrame(draw);
+	if(running){
+		requestAnimationFrame(draw);
+	}
 };
 
 
-/*function playToken(column){
-	for(i = 0; i<NUMBER_CELL; i++){
-		if(tokens[column][i]==null){
-			tokens[column][i] = new Token(column, i);
-			return;
-		}
-	}
-}
-*/
 function getPos(e){
 	var rect = canvas.getBoundingClientRect();
 	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;	
@@ -99,62 +92,12 @@ function getPos(e){
 
 	return [column, line];
 }
-/*
 
-function Token(column,line){
-
-	var column = column;
-	var line = line;
-	var x = column*sizeCell;
-	var yStart = -sizeCell;
-	var yFinal = sizeCell*NUMBER_CELL - line*sizeCell - sizeCell;
-	var yTmp = yStart;
-	var start = null;
-	var progress = null;
-	var duration = 800;
-	var token = null;
-
-
-	if(Token.count%2==0){
-		token = Token.redToken;
-	}else{
-		token = Token.yellowToken;
-	}
-	Token.count++;
-
-	this.draw = function(timestamp){
-		if(start === - 1){
-			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
-			return;
-		}
-		if(start===null) start = timestamp;
-		progress = timestamp - start;
-		ratio = progress / duration;
-
-		if(progress>duration){
-			start = -1;
-			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
-			//audio.play();
-		}else{
-			ctx.drawImage(token,x+canvasPosition.x,yStart+(yFinal-yStart)*ratio+canvasPosition.y,sizeCell,sizeCell);
-		}
-		
-	}
-}
-Token.redToken = new Image();
-Token.redToken.src = 'app/images/redToken.png';
-Token.yellowToken = new Image();
-Token.yellowToken.src = 'app/images/yellowToken.png';
-Token.count = 0;
-
-
-*/
 
 $(document).ready(function() {
 	$(document).off("click", "#mcanvas");
 	$(document).on("click", "#mcanvas", function(e) {
 		console.log("click");
-		//play(e);
 		if(!yourTurn){
 			return;
 		}
@@ -166,6 +109,10 @@ $(document).ready(function() {
 		yourTurn = false;
 		console.log(pos);
 		socket.getSocket().emit("morpion",pos);	
+	});
+	$(document).off("click", "#ff");
+	$(document).on("click", "#ff", function(e) {
+		running = false;
 	});
 });
 
