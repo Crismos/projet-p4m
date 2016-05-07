@@ -1,27 +1,26 @@
 var binded = false;
 
+
 function resize(){
 	var height = $(document).height();
 	var top = (height-$("canvas").height()) / 2;
 	var width = $(document).width();
 	var left = (width-($("canvas").width()+250))/2;
 	$(".loader").css("top", top);
-
 	$("#gameInfos").css("margin-left", $("canvas").width());
 	$("canvas").css("left", left);
 	$("#gameInfos").css("left", left);
-	console.log(top);
-}
- 
+} 
 resize();
 window.onresize = function() {
  	resize();
 };
 
-var NUMBER_CELL = 7;
+
+var NUMBER_COLUMN = 7;
 var canvas = document.getElementById("pcanvas");	
 var ctx = canvas.getContext("2d");
-var sizeCell = canvas.height/NUMBER_CELL;
+var sizeCell = canvas.height/NUMBER_COLUMN;
 var yourTurn = false;
 var audio = new Audio('app/images/token.wav');
 var canvasPosition = {x:0,y:0};
@@ -29,49 +28,47 @@ var tokens = [];
 var backgroundCell = new Image();
 backgroundCell.src = 'app/images/pcell.png';
 
+
 function initializeGame(){
 	resetGame();	
-	requestAnimationFrame(draw);
+	requestAnimationFrame(drawPuissance);
 }
+
+
 function resetGame(){
-	for(i = 0; i<NUMBER_CELL; i++){
+	for(i = 0; i<NUMBER_COLUMN; i++){
 		tokens[i] = []
-		for(j = 0; j<NUMBER_CELL; j++){
+		for(j = 0; j<NUMBER_COLUMN; j++){
 			tokens[i][j] = null;
 		}
 	}
 	yourTurn = false;
 }
 
-function draw(timestamp){	
+
+function drawPuissance(timestamp){	
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "#ecf0f1";
 	ctx.fillRect(0,0,canvas.width, canvas.height)
 	
-	for(i = 0; i<NUMBER_CELL; i++){
-		for(j = 0; j<NUMBER_CELL; j++){
+	for(i = 0; i<NUMBER_COLUMN; i++){
+		for(j = 0; j<NUMBER_COLUMN; j++){
 			if(tokens[i][j] !=null){
 				tokens[i][j].draw(timestamp);
 			}
 		}
 	}
-
-	for(i = 0; i<NUMBER_CELL; i++){
-		for(j = 0; j<NUMBER_CELL; j++){
+	for(i = 0; i<NUMBER_COLUMN; i++){
+		for(j = 0; j<NUMBER_COLUMN; j++){
 			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 		}
 	}
-
-	requestAnimationFrame(draw);		
-	
-
-
-	
+	requestAnimationFrame(drawPuissance);		
 };
 
 
 function playToken(column){
-	for(i = 0; i<NUMBER_CELL; i++){
+	for(i = 0; i<NUMBER_COLUMN; i++){
 		if(tokens[column][i]==null){
 			tokens[column][i] = new Token(column, i);
 			return;
@@ -79,33 +76,29 @@ function playToken(column){
 	}
 }
 
+
 function getColumn(e){
 	var rect = canvas.getBoundingClientRect();
 	var x = ((e.clientX - rect.left)/(rect.right - rect.left)*canvas.width) - canvasPosition.x;		
 	var column = Math.floor(x/sizeCell);
-	console.log("colonne : "+column);
-	if(column<0 || column >(NUMBER_CELL-1)){
+	if(column<0 || column >(NUMBER_COLUMN-1)){
 		return false
 	}
-	console.log("yep");
-
 	return column;
 }
 
 
 function Token(column,line){
-
 	var column = column;
 	var line = line;
 	var x = column*sizeCell;
 	var yStart = -sizeCell;
-	var yFinal = sizeCell*NUMBER_CELL - line*sizeCell - sizeCell;
+	var yFinal = sizeCell*NUMBER_COLUMN - line*sizeCell - sizeCell;
 	var yTmp = yStart;
 	var start = null;
 	var progress = null;
 	var duration = 800;
 	var token = null;
-
 
 	if(Token.count%2==0){
 		token = Token.redToken;
@@ -122,15 +115,13 @@ function Token(column,line){
 		if(start===null) start = timestamp;
 		progress = timestamp - start;
 		ratio = progress / duration;
-
 		if(progress>duration){
 			start = -1;
 			ctx.drawImage(token,x+canvasPosition.x,yFinal+canvasPosition.y,sizeCell,sizeCell);
 			audio.play();
 		}else{
 			ctx.drawImage(token,x+canvasPosition.x,yStart+(yFinal-yStart)*ratio+canvasPosition.y,sizeCell,sizeCell);
-		}
-		
+		}		
 	}
 }
 Token.redToken = new Image();
@@ -140,12 +131,9 @@ Token.yellowToken.src = 'app/images/yellowToken.png';
 Token.count = 0;
 
 
-
-
 $(document).ready(function() {
 	$(document).off("click", "#pcanvas");
 	$(document).on("click", "#pcanvas", function(e) {
-		//play(e);
 		if(!yourTurn){
 			return;
 		}
@@ -153,16 +141,13 @@ $(document).ready(function() {
 		yourTurn = false;
 		socket.getSocket().emit("puissance quatre",column);	
 	});
-
-
 });
-
 
 
 if(!binded) {
 	socket.getSocket().removeAllListeners("puissance quatre");
+
 	socket.getSocket().on("puissance quatre", function(data){	
-		console.log('recive puissance 4! ');
 		yourTurn = data.yourTurn;
 		if(yourTurn){
 			$("#information").html("A vous de joueur !");
@@ -177,8 +162,7 @@ if(!binded) {
 		}
 		if(data.column!=-1){
 			playToken(data.column);
-		}
-		
+		}		
 	});
 
 	socket.getSocket().on("votre adversaire de puissance 4 s'est barré", function(){
@@ -190,5 +174,4 @@ if(!binded) {
 
 
 initializeGame();
-
 binded = true;
