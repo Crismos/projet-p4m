@@ -27,12 +27,10 @@ var audio = new Audio('app/images/token.wav');
 var canvasPosition = {x:0,y:0};
 var tokens = [];
 var backgroundCell = new Image();
-var running = false;
 backgroundCell.src = 'app/images/pcell.png';
 
 function initializeGame(){
-	resetGame();
-	running = true;
+	resetGame();	
 	requestAnimationFrame(draw);
 }
 function resetGame(){
@@ -63,9 +61,11 @@ function draw(timestamp){
 			ctx.drawImage(backgroundCell,i*sizeCell+canvasPosition.x,j*sizeCell+canvasPosition.y,sizeCell,sizeCell);
 		}
 	}
-	if(running){
-		requestAnimationFrame(draw);
-	}
+
+	requestAnimationFrame(draw);		
+	
+
+
 	
 };
 
@@ -154,10 +154,7 @@ $(document).ready(function() {
 		socket.getSocket().emit("puissance quatre",column);	
 	});
 
-	$(document).off("click", "#ff");
-	$(document).on("click", "#ff", function(e) {
-		running = false;
-	});
+
 });
 
 
