@@ -26,7 +26,6 @@ var yourTurn = false;
 var canvasPosition = {x:0,y:0};
 var tokens = [];
 var backgroundCell = new Image();
-var running = false;
 backgroundCell.src = 'app/images/mcell.png';
 var crossToken = new Image();
 crossToken.src = 'app/images/crossToken.png';
@@ -36,7 +35,7 @@ circleToken.src = 'app/images/circleToken.png';
 function initializeGame(){
 	resetGame();
 	requestAnimationFrame(draw);
-	running = true;
+
 }
 function resetGame(){
 	for(i = 0; i<NUMBER_CELL; i++){
@@ -69,9 +68,8 @@ function draw(timestamp){
 		}
 	}
 
-	if(running){
-		requestAnimationFrame(draw);
-	}
+	requestAnimationFrame(draw);
+	
 };
 
 
@@ -110,10 +108,7 @@ $(document).ready(function() {
 		console.log(pos);
 		socket.getSocket().emit("morpion",pos);	
 	});
-	$(document).off("click", "#ff");
-	$(document).on("click", "#ff", function(e) {
-		running = false;
-	});
+
 });
 
 

@@ -36,12 +36,11 @@ var crossToken = new Image();
 crossToken.src = 'app/images/crossToken.png';
 var circleToken = new Image();
 circleToken.src = 'app/images/circleToken.png';
-var running = false;
 
 function initializeUltimate(){
-	resetUltimate();
-	requestAnimationFrame(drawUltimate);
 	running = true;
+	resetUltimate();
+	requestAnimationFrame(drawUltimate);	
 }
 function resetUltimate(){
 	for(i = 0; i<NUMBER_CELL; i++){
@@ -123,9 +122,9 @@ function drawUltimate(timestamp){
 		ctx.lineTo(9*sizeCell+canvasPosition.x,j*3*sizeCell+canvasPosition.y);
 		ctx.stroke();
 	}
-	if(running){
-		requestAnimationFrame(draw);
-	}
+	
+	requestAnimationFrame(draw);
+	
 };
 
 
@@ -165,10 +164,7 @@ $(document).ready(function() {
 		}*/
 		socket.getSocket().emit("ultimateMorpion",pos);	
 	});
-	$(document).off("click", "#ff");
-	$(document).on("click", "#ff", function(e) {
-		running = false;
-	});
+
 });
 
 
