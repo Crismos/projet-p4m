@@ -55,6 +55,7 @@ function resetUltimate(){
 			matrixGlobal[i][j] = 2;
 		}
 	}
+	previous = {x:-1,y:-1};
 	yourTurn = false;
 }
 
@@ -145,6 +146,7 @@ function getPosUltimate(e){
 $(document).ready(function() {
 	$(document).off("click", "#umcanvas");
 	$(document).on("click", "#umcanvas", function(e) {
+		
 		var pos = getPosUltimate(e);
 		socket.getSocket().emit("ultimateMorpion",pos);	
 	});

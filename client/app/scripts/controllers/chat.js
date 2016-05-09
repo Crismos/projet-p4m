@@ -53,7 +53,8 @@ angular.module('clientApp')
         }
   		}
   		this.messages.notif = function() {
-  			return that.messages.new.length > 0 ? (that.messages.new.length + (idGame != 0 ? 1 : 0)) : '';
+        var _notif = (that.messages.new.length + (invitation !== '' ? 1 : 0))
+  			return _notif > 0 ? _notif : '';
   		}
 
   		this.open = function() {
@@ -62,6 +63,9 @@ angular.module('clientApp')
   			$("#msg").focus();
   		}
   		this.close = function() {
+        if(window.event){
+          window.event.stopPropagation();
+        }
   			$scope.currentConversation = null;
   		}
       this.getInvitation = function() {
@@ -109,11 +113,14 @@ angular.module('clientApp')
   		$scope.message = '';
   	}
     socket.bind().on('invitation', function(o) {
+      console.log(o);
       if(!o.to) {
         var idConv = o.from;
         for(var key in $scope.conversations) {
           if($scope.conversations[key].user.id == idConv) {
-            $scope.conversations[key].setInvitation(o.type, o.igGame);
+            $scope.conversations[key].setInvitation(o.type, o.idGame);
+            console.log($scope.conversations[key].messages.notif());
+            $scope.$apply();
           }
         }
       }

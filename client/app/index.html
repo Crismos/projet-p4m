@@ -56,7 +56,7 @@
 
         </div>
         <div id="conversation" ng-class="{swap: !currentConversation}">
-          <div class="header">
+          <div class="header" ng-click="toggle()">
             <div id="conversationBack" ng-click="currentConversation.close()">
               <i class="fa fa-arrow-left"></i>
             </div>

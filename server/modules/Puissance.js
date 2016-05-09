@@ -85,7 +85,7 @@ function Puissance(id, user) {
 			var winner = getWinner();
 			if(winner != -1){
 				winner = players[winner].getPseudo();
-				console.log("::green::[Puissance]::white::Puissance 4 ! "+players[winner].getPseudo()+"gagne la partie de p4.");
+				console.log("::green::[Puissance]::white::Puissance 4 ! "+winner+"gagne la partie de p4.");
 			}
 			players[0].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -103,7 +103,7 @@ function Puissance(id, user) {
 			var winner = getWinner();
 			if(winner != -1){
 				winner = players[winner].getPseudo();
-				console.log("::green::[Puissance]::white::Puissance 4 ! "+players[winner].getPseudo()+"gagne la partie de p4.");
+				console.log("::green::[Puissance]::white::Puissance 4 ! "+winner+"gagne la partie de p4.");
 			}
 			players[0].getSocket().emit("puissance quatre",{yourTurn:1,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
 			players[1].getSocket().emit("puissance quatre",{yourTurn:0,column:column,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});

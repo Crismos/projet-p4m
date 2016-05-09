@@ -143,7 +143,7 @@ function Puissance(id, user) {
 				var winner = getWinner();
 				if(winner != -1 && winner != 444){
 					winner = players[winner].getPseudo()+" gagne la partie!";	
-					console.log("::green::[UltimateMorpion]::white::"+players[winner].getPseudo()+"gagne la partie d'ultimateMorpion.");
+					console.log("::green::[UltimateMorpion]::white::"+winner);
 				}
 				if(winner == 444){
 					winner = "Match nul!";
@@ -158,7 +158,7 @@ function Puissance(id, user) {
 				var winner = getWinner();
 				if(winner != -1 && winner != 444){
 					winner = players[winner].getPseudo()+" gagne la partie";	
-					console.log("::green::[UltimateMorpion]::white::"+players[winner].getPseudo()+"gagne la partie d'ultimateMorpion.");
+					console.log("::green::[UltimateMorpion]::white::"+winner);
 				}
 				if(winner == 444){
 					winner = "Match nul";
@@ -218,7 +218,7 @@ function Puissance(id, user) {
 		}
 
 		if(joueur0+joueur1+canceled == 9){
-			return -444;
+			return 444;
 		}
 
 		return -1;

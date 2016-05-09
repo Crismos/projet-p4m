@@ -29,7 +29,7 @@ var Parser = function() {
 				return tmpId;
 			return false;
 		}
-		if(data.indexOf('/invitation') == 0) {
+		if(data.indexOf('/invitation') == 0 || data.indexOf('/i') == 0 || data.indexOf('/invit') == 0 || data.indexOf('/inv') == 0) {
 			var user = userManager.getUser(socket.id);
 			if(user.getCurrentGame()) {
 				if(gameManager.getGame(user.getCurrentGame().getId())) {

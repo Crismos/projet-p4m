@@ -81,7 +81,7 @@ function Morpion(id, user) {
 			if(winner != -1){
 				if(winner != 2) {
 					winner = players[winner].getPseudo();
-					console.log("::green::[Morpion]::white::"+players[winner].getPseudo()+" gagne la partie de morpion!");
+					console.log("::green::[Morpion]::white::"+winner+" gagne la partie de morpion!");
 				}
 			}
 			players[0].getSocket().emit("morpion",{yourTurn:0,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
@@ -101,7 +101,7 @@ function Morpion(id, user) {
 			if(winner != -1){
 				if(winner != 2) {
 					winner = players[winner].getPseudo();
-					console.log("::green::[Morpion]::white::"+players[winner].getPseudo()+" gagne la partie de morpion!");
+					console.log("::green::[Morpion]::white::"+winner+" gagne la partie de morpion!");
 				}
 			}
 			players[0].getSocket().emit("morpion",{yourTurn:1,tokens: tokens,winner:winner,player1:players[0].getPseudo(),player2:players[1].getPseudo()});
