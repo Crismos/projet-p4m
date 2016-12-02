@@ -1,0 +1,21 @@
+{
+  "name": "projet-p4m",
+  "version": "1.0.0",
+  "description": "```\r git clone https://github.com/Crismos/projet-p4m.git\r npm install\r ```",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Crismos/projet-p4m.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Crismos/projet-p4m/issues"
+  },
+  "homepage": "https://github.com/Crismos/projet-p4m#readme",
+  "dependencies": {
+    "ejs": "^2.5.3",
+    "express": "^4.14.0",
+    "socket.io": "^1.7.1"
+  }
+}

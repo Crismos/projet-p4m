@@ -5,7 +5,7 @@ var config = {};
 
 fs = require('fs');
 // chargement du fichier de configuration
-fs.readFile('../config.cfg', 'utf8', function (err,data) {
+fs.readFile('config.cfg', 'utf8', function (err,data) {
 
 	console.log("Chargement de la config...");
 
